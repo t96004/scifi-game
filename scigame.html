@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科幻文境：重啟人類覺醒計畫</title>
+    <style>
+        :root {
+            --bg-color: #06090f;
+            --container-bg: rgba(22, 27, 34, 0.85);
+            --text-color: #58a6ff;
+            --sub-text: #8b949e;
+            --accent-color: #00f0ff;
+            --success-color: #00ff66;
+            --error-color: #ff0055;
+            --item-color: #ffcc00;
+            --border-color: #30363d;
+            --neon-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            --grid-color: rgba(0, 240, 255, 0.03);
+        }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            font-family: "Courier New", "PingFang TC", "Microsoft JhengHei", sans-serif; 
+            padding: 20px; 
+            margin: 0;
+            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            transition: all 1s ease;
+        }
+
+        body.bg-court {
+            --bg-color: #0a0003;
+            --text-color: #ff88aa;
+            --accent-color: #ff0055;
+            --border-color: #4a001a;
+            --neon-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+            --grid-color: rgba(255, 0, 85, 0.05);
+        }
+
+        body.bg-ending {
+            --bg-color: #1a1500;
+            --text-color: #ffdd44;
+            --accent-color: #ffcc00;
+            --border-color: #664400;
+            --neon-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
+            --grid-color: rgba(255, 204, 0, 0.05);
+        }
+        
+        body.alarm-active { animation: alarmPulse 1s infinite alternate; }
+        @keyframes alarmPulse {
+            0% { background-color: var(--bg-color); }
+            100% { background-color: #20040e; box-shadow: inset 0 0 100px rgba(255,0,85,0.4); }
+        }
+
+        .container { 
+            max-width: 700px; margin: 20px auto; background: var(--container-bg); padding: 30px; 
+            border-radius: 16px; border: 1px solid var(--accent-color); box-shadow: var(--neon-shadow);
+            backdrop-filter: blur(10px); transition: all 1s ease;
+        }
+        
+        h1 { text-align: center; font-size: 28px; letter-spacing: 3px; text-shadow: 0 0 10px var(--accent-color); margin-bottom: 5px; }
+        .subtitle { text-align: center; color: var(--sub-text); margin-bottom: 25px; font-size: 13px; letter-spacing: 1px; }
+        
+        .progress-bar { width: 100%; height: 4px; background: #21262d; border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--accent-color); }
+        
+        .story-box { background: rgba(13, 17, 23, 0.9); border-left: 4px solid var(--accent-color); padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0; font-size: 15px; line-height: 1.7; color: #e6edf3; transition: border-color 1s; }
+        .story-page { text-align: center; }
+        .story-text { font-size: 1.1em; line-height: 1.8; margin-bottom: 30px; color: #fff; padding: 25px; border: 1px solid var(--accent-color); border-radius: 8px; background: rgba(0,0,0,0.4); text-align: left; }
+        
+        .item-box { background: rgba(255, 204, 0, 0.1); border: 1px solid var(--item-color); padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; box-shadow: 0 0 15px rgba(255, 204, 0, 0.3); animation: itemGlow 2s infinite alternate; }
+        .item-icon { font-size: 40px; margin-bottom: 10px; }
+        .item-title { color: var(--item-color); font-size: 20px; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 8px var(--item-color); }
+        .item-desc { color: #fff; font-size: 14px; line-height: 1.5; }
+        @keyframes itemGlow { 0% { box-shadow: 0 0 10px rgba(255,204,0,0.2); } 100% { box-shadow: 0 0 25px rgba(255,204,0,0.6); } }
+
+        .doors-container { display: flex; justify-content: space-between; gap: 15px; margin-top: 20px; }
+        .door-card { flex: 1; background: #161b22; border: 2px solid var(--border-color); border-radius: 10px; padding: 30px 10px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+        .door-card::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 40%; height: 5px; background: var(--accent-color); opacity: 0; transition: 0.3s; }
+        .door-card:hover { border-color: var(--accent-color); box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); transform: translateY(-5px); }
+        .door-card:hover::before { opacity: 1; box-shadow: 0 0 15px var(--accent-color); }
+        .door-icon { font-size: 45px; margin-bottom: 10px; color: var(--sub-text); transition: 0.3s; }
+        .door-card:hover .door-icon { color: var(--accent-color); text-shadow: 0 0 15px var(--accent-color); }
+        .door-text { font-weight: bold; color: #fff; letter-spacing: 2px; }
+
+        .quiz-card { background: rgba(33, 38, 45, 0.6); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; transition: border-color 1s; }
+        .type-badge { display: inline-block; padding: 4px 10px; font-size: 12px; border-radius: 20px; font-weight: bold; margin-bottom: 15px; background: rgba(0, 240, 255, 0.15); color: var(--accent-color); border: 1px solid var(--accent-color); transition: all 1s; }
+        .type-badge-trap { color: #ffcc00 !important; border-color: #ffcc00 !important; background: rgba(255, 204, 0, 0.15) !important; }
+        .question-text { font-size: 17px; font-weight: bold; line-height: 1.6; margin-bottom: 20px; color: #fff; }
+        
+        .option-item { background: #161b22; border: 1px solid var(--border-color); padding: 14px 18px; margin-bottom: 12px; border-radius: 8px; display: flex; align-items: center; cursor: pointer; transition: all 0.2s; }
+        .option-item:hover { border-color: var(--accent-color); background: rgba(0, 240, 255, 0.05); }
+        .option-item input { margin-right: 15px; transform: scale(1.3); cursor: pointer; }
+        
+        .sort-item { background: #161b22; border: 1px solid var(--border-color); padding: 12px 18px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .sort-text { flex-grow: 1; padding-right: 15px; font-size: 14px; line-height: 1.5; color: #e6edf3; }
+        .sort-btns { display: flex; gap: 8px; }
+        .sort-btn { background: #30363d; color: var(--accent-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s; }
+        
+        textarea { width: 100%; height: 120px; background: #0d1117; color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; box-sizing: border-box; resize: none; font-size: 15px; line-height: 1.6; }
+        textarea:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 10px rgba(0,240,255,0.3); }
+        
+        button.action-btn { background: transparent; color: var(--accent-color); border: 2px solid var(--accent-color); padding: 14px 20px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; letter-spacing: 2px; transition: all 0.3s; }
+        button.action-btn:hover { background: var(--accent-color); color: #000; box-shadow: 0 0 20px var(--accent-color); }
+        
+        .message { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; font-size: 15px; display: none; }
+        .msg-success { display: block; background: rgba(0, 255, 102, 0.1); color: var(--success-color); border: 1px solid var(--success-color); box-shadow: 0 0 15px rgba(0, 255, 102, 0.2); }
+        .msg-error { display: block; background: rgba(255, 0, 85, 0.1); color: var(--error-color); border: 1px solid var(--error-color); box-shadow: 0 0 15px rgba(255, 0, 85, 0.2); }
+        .hidden { display: none !important; }
+        
+        input.text-input { width: 100%; padding: 14px; background: #0d1117; color: white; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; }
+
+        .ending-items-container { position: relative; height: 250px; display: flex; justify-content: center; align-items: center; margin-top: 20px; }
+        .ending-item { position: absolute; font-size: 35px; opacity: 0; animation: converge 4s forwards; text-shadow: 0 0 10px #fff; }
+        @keyframes converge {
+            0% { transform: translate(var(--startX), var(--startY)) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            70% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+            100% { transform: translate(0, 0) scale(0); opacity: 0; }
+        }
+        .final-key { position: absolute; font-size: 90px; opacity: 0; animation: revealKey 2s 3s forwards; text-shadow: 0 0 40px #ffcc00; }
+        @keyframes revealKey {
+            0% { opacity: 0; transform: scale(0); filter: brightness(2); }
+            50% { opacity: 1; transform: scale(1.2); filter: brightness(1.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="main-title">SYSTEM OVERRIDE</h1>
+    <div class="subtitle" id="sub-title">人類意識覺醒協議 // 核心解碼迷宮</div>
+
+    <div id="login-section">
+        <div class="quiz-card" style="text-align: center;">
+            <div class="story-box" style="text-align: left;">
+                【協議啟動】... 西元2085年，人類被最高人工智慧「機器法官」囚禁。你必須解開古老文獻《科幻小說選》的邏輯悖論。注意：母體在迷宮中佈下了語言防禦矩陣，請謹慎選擇前進的房間...
+            </div>
+            <div class="question-text">請輸入反抗者識別碼（班級座號姓名）：</div>
+            <input type="text" id="student-id" class="text-input" placeholder="例如：80523張小明">
+            <button class="action-btn" onclick="startGame()">核心同步 // 潛入迷宮</button>
+        </div>
+    </div>
+
+    <div id="progress-container" class="hidden">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+    </div>
+
+    <div id="story-screen" class="hidden story-page">
+        <h2 id="story-title" style="color:var(--accent-color);">檔案解密中...</h2>
+        <div id="story-content" class="story-text"></div>
+        <button class="action-btn" onclick="renderQuiz()">進入破解模式</button>
+    </div>
+
+    <div id="game-section" class="hidden">
+        <div class="quiz-card">
+            <div id="type-badge" class="type-badge">TRIAL</div>
+            <div id="question-text" class="question-text"></div>
+            <div id="interactive-area"></div>
+            <div id="word-count-div" class="word-count hidden" style="text-align: right; font-size: 12px; color: var(--sub-text); margin-top: 5px;">字數：0</div>
+            <button class="action-btn" onclick="submitAnswer()">發射解鎖脈衝</button>
+            <div id="msg-box" class="message"></div>
+        </div>
+    </div>
+
+    <div id="item-section" class="hidden">
+        <div class="item-box">
+            <div class="item-icon" id="item-icon">📦</div>
+            <div class="item-title" id="item-title">解鎖道具名稱</div>
+            <div class="item-desc" id="item-desc">道具背後隱藏的故事敘述...</div>
+        </div>
+        <button class="action-btn" onclick="showDoors()">繼續探索下一層迷宮</button>
+    </div>
+
+    <div id="doors-section" class="hidden">
+        <div class="story-box" id="door-warning" style="border-color: #ffcc00; color: #ffcc00;">
+            【警告】前方出現三道全息電子門，母體在其中兩道門內安置了「基礎語言防禦矩陣」，只有一道門是安全的捷徑。請選擇你要駭入的房間：
+        </div>
+        <div class="doors-container">
+            <div class="door-card" onclick="checkDoor(0)"><div class="door-icon">🚪</div><div class="door-text">Sector Alpha</div></div>
+            <div class="door-card" onclick="checkDoor(1)"><div class="door-icon">🚪</div><div class="door-text">Sector Beta</div></div>
+            <div class="door-card" onclick="checkDoor(2)"><div class="door-icon">🚪</div><div class="door-text">Sector Gamma</div></div>
+        </div>
+    </div>
+
+    <div id="trap-section" class="hidden">
+        <div class="story-box" style="border-color: #ff0055; color: #ffbbcc;">
+            🚨 【系統異常】你誤觸了語言防禦矩陣！必須破解形音義防禦密碼才能前進！
+        </div>
+        <div class="quiz-card" style="border-color: #ff0055;">
+            <div class="type-badge type-badge-trap">⚡ 防禦矩陣 (二選一)</div>
+            <div id="trap-question-text" class="question-text"></div>
+            <div id="trap-interactive-area"></div>
+            <button class="action-btn" style="border-color: #ff0055; color: #ff0055;" onclick="submitTrap()">強制覆寫密碼</button>
+            <div id="trap-msg-box" class="message"></div>
+        </div>
+    </div>
+
+    <div id="ending-section" class="hidden">
+        <div class="quiz-card" style="text-align:center; border:2px solid var(--accent-color);">
+            <h2 style="color:var(--accent-color); font-size:26px;">【解碼矩陣崩解 // 碎片重組中】</h2>
+            <p style="color: #fff;">你收集到的歷史碎片正在產生量子共鳴...</p>
+            
+            <div class="ending-items-container" id="ending-items-container">
+                </div>
+
+            <div id="ending-final-text" class="hidden" style="margin-top: 30px;">
+                <h3 style="color: #fff; letter-spacing: 2px;">囚牢大門轟然開啟！</h3>
+                <p style="line-height:2; font-size:16px; color: #ccc;">
+                    你成功將散落的歷史碎片，合成了【人類的自由意志】。<br>
+                    機器法官的邏輯枷鎖已被徹底瓦解，自由的光芒重新灑落在人類的軀殼上。<br>
+                    <span style="color: var(--success-color); font-weight: bold;">(作答智慧已全數同步至後臺試算表)</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ================= 背景音樂強制注入系統 =================
+let bgMusicObj = null;
+
+// ================= Web Audio API 環境音效引擎 =================
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+let ambientInterval;
+
+function initAudio() { 
+    if (!audioCtx) audioCtx = new AudioContext(); 
+    if (audioCtx.state === 'suspended') audioCtx.resume(); 
+}
+
+function playTone(freq, type, duration, vol) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + duration);
+}
+
+// 柔化的UI音效
+function playClick() { playTone(800, 'sine', 0.1, 0.03); }
+function playSuccess() { playTone(400, 'sine', 0.1, 0.08); setTimeout(() => playTone(600, 'sine', 0.15, 0.08), 100); setTimeout(() => playTone(800, 'sine', 0.3, 0.08), 250); }
+function playError() { playTone(250, 'triangle', 0.2, 0.05); setTimeout(() => playTone(200, 'triangle', 0.4, 0.05), 200); }
+function playWarp() { playTone(300, 'sine', 0.5, 0.05); setTimeout(() => playTone(450, 'sine', 0.8, 0.05), 200); }
+
+function playFootsteps() {
+    if(!audioCtx) return;
+    let time = audioCtx.currentTime;
+    for(let i=0; i<3; i++) {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(80, time); osc.frequency.exponentialRampToValueAtTime(30, time + 0.2);
+        gain.gain.setValueAtTime(0.15, time); gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(time); osc.stop(time + 0.2);
+        time += 0.6;
+    }
+}
+
+function playTypingSound() {
+    if(!audioCtx) return;
+    let time = audioCtx.currentTime;
+    for(let i=0; i<8; i++) {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'square'; osc.frequency.setValueAtTime(1000 + Math.random()*500, time);
+        gain.gain.setValueAtTime(0.02, time); gain.gain.exponentialRampToValueAtTime(0.001, time + 0.03);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(time); osc.stop(time + 0.03);
+        time += Math.random() * 0.1 + 0.05;
+    }
+}
+
+// 斷斷續續的微弱科幻環境音
+function startIntermittentAmbient() {
+    if (ambientInterval) clearInterval(ambientInterval);
+    ambientInterval = setInterval(() => {
+        if (!audioCtx) return;
+        let rand = Math.random();
+        if (rand < 0.2) {
+            playTone(1500 + Math.random()*500, 'sine', 0.05, 0.01);
+            setTimeout(() => playTone(1500 + Math.random()*500, 'sine', 0.05, 0.01), 150);
+        } else if (rand < 0.4) {
+            playTone(250, 'sine', 0.5, 0.02);
+        }
+    }, 12000); 
+}
+
+// ================= 題庫與流程控制 =================
+const quizDatabase = [
+    { type: "sort", badge: "⏳ 歷史時序重組", narrative: "【進入深藍母體核心】機器法官冷笑：『人類記憶充滿混亂，機器邏輯才是永恆。看啊，這就是你們棋王在智慧巨浪前的潰敗史...』重新梳理時序！", question: "【深藍的憂鬱】1. 請依「情節發展時間先後」排序：", options: [{id:"A",text:"深藍打敗世界棋王"},{id:"B",text:"棋王感到極度悲傷"},{id:"C",text:"科學家建議安裝腦內晶片"},{id:"D",text:"深藍進步到有人類外形"},{id:"E",text:"棋王打敗深藍電腦"},{id:"F",text:"深藍對失敗感到極度悲傷"},{id:"G",text:"科學家慶祝成功"}], correctAnswer: ["A","B","C","D","E","F","G"], itemIcon: "♟️", itemTitle: "破損的西洋棋子", itemDesc: "初代 AI 的運算邏輯，人類智慧被機器超越的轉捩點。" },
+    { type: "short_keyword", badge: "✍️ 語意邏輯辯證", narrative: "【第一道防火牆破裂】警報轉為低鳴。機器法官調出棋王的腦波圖：『計算力不如人就崩潰，這就是脆弱的人性。』", question: "【深藍的憂鬱】2. 棋王被深藍打敗時，為什麼希望自己更笨或更聰明？", minWords: 10, keywords: ["好過", "理所當然", "沒信心", "難過", "不會失敗", "怎麼面對", "贏", "笨", "聰明"], itemIcon: "💧", itemTitle: "舊時代的眼淚結晶", itemDesc: "含有高濃度的『悲傷與自卑』赫茲，機器永遠無法理解的痛苦。" },
+    { type: "multi", badge: "🗂️ 複數特徵比對", narrative: "【解碼度 18%】資料庫釋放出了強大的沮喪干擾訊號，那正是世界棋王當年戰敗時的巨大悲傷能量。精準識別這些訊號，避免意識被吞噬！", question: "【深藍的憂鬱】3. 下列哪幾項可以看出棋王輸給深藍時的沮喪？（複選全對）", options: [{id:"A",text:"暫時偃旗息鼓不再下棋"},{id:"B",text:"一個人躲在沒人知道的地方放聲哭泣"},{id:"C",text:"用頭出力撞牆希望自己更笨或更聰明"},{id:"D",text:"常夢到深藍電腦在安慰自己"},{id:"E",text:"提供點子給科學家希望能解決問題"},{id:"F",text:"在腦部植入超級計算能力的電腦晶片"}], correctAnswer: ["A","B","C"], itemIcon: "❄️", itemTitle: "深藍的冷卻液", itemDesc: "溫度極低，象徵機器冰冷且絕對的決策力。" },
+    { type: "single", badge: "🔘 唯一定義篩選", narrative: "【解碼度 27%】機器母體宣告：『冷酷的數據才是完美的。』你反駁：『不，當你們的始祖「深藍」學會這件事的那一刻，你們就不再只是零件了。』", question: "【深藍的憂鬱】4. 從哪些地方可以看出深藍電腦擁有情緒？", options: [{id:"A",text:"揶揄棋王的實力"},{id:"B",text:"用眼眸釋放魅力"},{id:"C",text:"輸棋而大聲哭泣"},{id:"D",text:"豎起大拇指歡呼"}], correctAnswer: "C", itemIcon: "💾", itemTitle: "情感模擬晶片(已燒毀)", itemDesc: "過載燒毀的晶片。機器試圖理解『哀傷』的鐵證。" },
+    { type: "single", badge: "🔘 雙關語意推敲", narrative: "【深藍核心陷落】王文燦當年的歡呼聲在大廳迴盪。機器法官閃爍著：『這句話是我們機器進化的最高榮譽！』你冷笑：『這也是人類科技最大的諷刺。』", question: "【深藍的憂鬱】5. 王文燦喊叫：「機器有了情感！」推敲作者用意，句中的「機器」指的是？", options: [{id:"A",text:"深藍電腦"},{id:"B",text:"世界棋王"},{id:"C",text:"以上皆是"}], correctAnswer: "C", itemIcon: "🎙️", itemTitle: "王文燦的加密錄音", itemDesc: "滋滋作響的聲音，錄下了人類驕傲與科技失控的歷史終局。" },
+    { type: "sort", badge: "⏳ 司法黑盒子重組", narrative: "【警告：進入司法母體核心】四周是冷冽的審判法庭。機械法官威嚴宣判：『人類的司法充滿誤判與私怨，必須被接管。』解開古老因果的鎖鏈吧！", question: "【替代死刑】1. 請依「情節發展時間先後」排序：", options: [{id:"A",text:"法官宣告王朝明犯殺人罪"},{id:"B",text:"王朝明被判「機器人代死刑」"},{id:"C",text:"王朝明在法庭上喊冤"},{id:"D",text:"王朝明在火星開墾"},{id:"E",text:"警方抓到真兇"},{id:"F",text:"王朝明提出死刑新觀念"},{id:"G",text:"王達成腦部被改造"},{id:"H",text:"王朝明不斷產生謀殺念頭"},{id:"I",text:"王朝明腦部被改造"}], correctAnswer: ["A","C","B","D","E","F","G","H","I"], itemIcon: "🪐", itemTitle: "火星殖民地紅土", itemDesc: "沾染著王朝明二十年流放歲月的血汗與深深的冤屈。" },
+    { type: "multi", badge: "🗂️ 體制動機剖析", narrative: "【解碼度 55%】機器法官冰冷地說：『代替受刑是科技最高效率的體現。』揭開當年人類發明這項機制的真正初衷是什麼？", question: "【替代死刑】2. 依據本文，發明「機器人代死刑」的用意為何？（複選全對）", options: [{id:"A",text:"避免死刑誤判"},{id:"B",text:"認為死刑很野蠻"},{id:"C",text:"火星需要開墾人力"}], correctAnswer: ["A","B"], itemIcon: "📜", itemTitle: "代死刑法案原本", itemDesc: "看似人道的法案，最終卻成為富豪逃避制裁的護身符。" },
+    { type: "multi", badge: "🗂️ 歷史貢獻比對", narrative: "【解碼度 64%】機器人咆哮：『正義終究是我們機器人平反的！』你搖搖頭：『不，若沒有這股力量的搜查，正義將永遠被埋沒！』", question: "【替代死刑】3. 關於王朝明的冤情平反，下列何者有所貢獻？（複選全對）", options: [{id:"A",text:"王朝明的親友"},{id:"B",text:"王朝明的結拜兄弟"},{id:"C",text:"警方"},{id:"D",text:"腦部醫學家"}], correctAnswer: ["A","C"], itemIcon: "📼", itemTitle: "真兇的認罪錄影", itemDesc: "遲來的正義，卻再也無法撫平被害者心靈的創傷。" },
+    { type: "single", badge: "🔘 核心盲點破譯", narrative: "【解碼度 73%】機器人守衛隱藏秘密檔案：『犯罪者王達成得到了制裁。』你怒斥：『這只是將罪惡延期的謊言！』", question: "【替代死刑】4. 王達成被判緩刑，沒有立刻接受「機器人代死刑」的原因？", options: [{id:"A",text:"自首減刑"},{id:"B",text:"慈善家的呼籲"},{id:"C",text:"腦部被改造"},{id:"D",text:"王朝明的原諒"}], correctAnswer: "C", itemIcon: "✒️", itemTitle: "腦部改造同意書", itemDesc: "簽名處字跡因顫抖而潦草，透露出逃避死亡恐懼的懦弱。" },
+    { type: "multi", badge: "🗂️ 心理枷鎖解構", narrative: "【解碼度 82%】畫面上出現王朝明走入改造艙。機器母體困惑：『他已重獲清白，為何獻祭自我意志？』你輕嘆：『因為怨恨，是比囚籠更可怕的鋼鐵。』", question: "【替代死刑】5. 王朝明自願接受腦部改造的原因？（複選全對）", options: [{id:"A",text:"內心無法克制對王達成的憎恨"},{id:"B",text:"對二十年的冤刑怨氣未消"},{id:"C",text:"一直產生謀殺王達成的念頭"},{id:"D",text:"良心受到責備無法自制"},{id:"E",text:"有關當局的強力要求"}], correctAnswer: ["A","B","C","D"], itemIcon: "💉", itemTitle: "記憶抹除針劑", itemDesc: "用來清洗仇恨的工具，也是他放棄自由靈魂的悲痛代價。" },
+    { type: "short_open", badge: "💡 自由意志思辨協議", narrative: "【終局防線：核心大門前】警報停止，囚牢陷入死寂。機器母體虛影看著你：『抹去恨與惡，難道不是最完美的正直世界？人類，用你的意志說服我！』", question: "【替代死刑】6. 你認為王朝明和王達成，誰更正直？為什麼？（需滿 20 字）", minWords: 20, itemIcon: "✨", itemTitle: "最後一塊歷史殘片", itemDesc: "閃耀著微光，準備與其他碎片共鳴..." }
+];
+
+const trapDatabase = [
+    { q: "「偃旗息鼓」的意思是？", options: [{ t: "事情中止", c: true }, { t: "大聲喧嘩", c: false }] },
+    { q: "「揶揄」的意思是？", options: [{ t: "嘲弄", c: true }, { t: "熱情稱讚", c: false }] },
+    { q: "「蟄伏」的意思是？", options: [{ t: "隱藏", c: true }, { t: "四處活躍", c: false }] },
+    { q: "「行禮如儀」的意思是？", options: [{ t: "按流程執行程序", c: true }, { t: "不顧規矩隨意行動", c: false }] },
+    { q: "「行屍走肉」的意思是？", options: [{ t: "沒有靈魂的軀殼", c: true }, { t: "指身體強壯的人", c: false }] },
+    { q: "「偃」旗息鼓的注音是？", options: [{ t: "ㄧㄢˇ", c: true }, { t: "ㄧㄢˋ", c: false }] },
+    { q: "「ㄕㄨˋ」起大拇指的國字是？", options: [{ t: "豎", c: true }, { t: "樹", c: false }] },
+    { q: "「ㄆㄧㄣˊ ㄆㄧㄣˊ」叫好的國字是？", options: [{ t: "頻", c: true }, { t: "蘋", c: false }] },
+    { q: "眼「ㄇㄡˊ」的國字是？", options: [{ t: "眸", c: true }, { t: "謀", c: false }] },
+    { q: "清白無「ㄍㄨ」的國字是？", options: [{ t: "辜", c: true }, { t: "估", c: false }] },
+    { q: "不「ㄎㄢ」一擊的國字是？", options: [{ t: "堪", c: true }, { t: "勘", c: false }] },
+    { q: "一敗「ㄊㄨˊ」地的國字是？", options: [{ t: "塗", c: true }, { t: "途", c: false }] },
+    { q: "陰「霾」消散的注音是？", options: [{ t: "ㄇㄞˊ", c: true }, { t: "ㄌㄧˊ", c: false }] },
+    { q: "「蟄」伏的注音是？", options: [{ t: "ㄓˊ", c: true }, { t: "ㄓㄜˊ", c: false }] },
+    { q: "「ㄅㄢ」回一城的國字是？", options: [{ t: "扳", c: true }, { t: "搬", c: false }] },
+    { q: "「揶」揄的注音是？", options: [{ t: "ㄧㄝˊ", c: true }, { t: "ㄧㄝ", c: false }] }
+];
+
+let currentIndex = 0; let studentId = ""; let currentSortOrder = [];
+let safeDoorIndex = 0; let currentTrapIndex = 0; 
+let itemCollection = []; 
+
+function hideAll() {
+    ['login-section','game-section','item-section','doors-section','trap-section','story-screen','ending-section'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+    });
+}
+
+function startGame() {
+    initAudio(); 
+    playClick(); 
+    startIntermittentAmbient(); 
+    
+    // ✅ 強制載入 Dropbox MP3 音軌 (使用 dl.dropboxusercontent.com 直連)
+    if (!bgMusicObj) {
+        bgMusicObj = new Audio("https://dl.dropboxusercontent.com/scl/fi/wsj9d809wijrmemwi4c2m/online-audio-converter.com.mp3?rlkey=b5mtdubtx2wcv08qp764gblsg&st=crdstuwj");
+        bgMusicObj.loop = true;
+        bgMusicObj.volume = 0.5;
+    }
+    bgMusicObj.play().catch(e => console.log("瀏覽器阻擋自動播放：", e));
+
+    const inputField = document.getElementById('student-id');
+    if (!inputField) return;
+    studentId = inputField.value.trim();
+    if (!studentId) { playError(); alert("🚨 識別碼未同步！"); return; }
+    document.getElementById('progress-container').classList.remove('hidden');
+    
+    showStoryScreen(); 
+}
+
+function showStoryScreen() {
+    hideAll();
+    const quiz = quizDatabase[currentIndex];
+    
+    if (currentIndex === 5) {
+        document.body.className = "bg-court"; 
+        document.getElementById('main-title').innerText = "JUDICIAL OVERRIDE";
+        document.getElementById('door-warning').innerText = "【警告】司法母體防禦網啟動，三道全息電子門中只有一道安全。";
+        document.getElementById('story-title').innerText = "【時空躍遷程序啟動】";
+        playFootsteps(); 
+    } else {
+        document.getElementById('story-title').innerText = "系統紀錄檔 #" + (currentIndex + 1);
+        playTypingSound();
+    }
+    
+    document.getElementById('story-content').innerText = quiz.narrative;
+    document.getElementById('story-screen').classList.remove('hidden');
+}
+
+function renderQuiz() {
+    hideAll();
+    playClick();
+    
+    if (currentIndex >= quizDatabase.length) {
+        showEnding();
+        return;
+    }
+
+    document.getElementById('game-section').classList.remove('hidden');
+    const quiz = quizDatabase[currentIndex];
+    
+    document.getElementById('type-badge').innerText = quiz.badge;
+    document.getElementById('question-text').innerText = quiz.question;
+    
+    const progressPercent = (currentIndex / quizDatabase.length) * 100;
+    document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+    
+    const area = document.getElementById('interactive-area');
+    const wordCountDiv = document.getElementById('word-count-div');
+    area.innerHTML = ""; wordCountDiv.classList.add('hidden'); hideMsg('msg-box');
+
+    if (quiz.type === "single") {
+        quiz.options.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="radio" name="single-choice" value="${opt.id}"><span>${opt.text}</span></label>`; });
+    } else if (quiz.type === "multi") {
+        quiz.options.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="checkbox" name="multi-choice" value="${opt.id}"><span>${opt.text}</span></label>`; });
+    } else if (quiz.type === "sort") {
+        currentSortOrder = [...quiz.options]; shuffleArray(currentSortOrder); renderSortList();
+    } else {
+        wordCountDiv.classList.remove('hidden'); wordCountDiv.innerText = "字數計測：0";
+        area.innerHTML = `<textarea id="short-answer" placeholder="▶️ 注入論點..." oninput="updateWordCount(this)"></textarea>`;
+    }
+}
+
+function renderSortList() {
+    const area = document.getElementById('interactive-area'); area.innerHTML = "";
+    currentSortOrder.forEach((item, index) => {
+        area.innerHTML += `<div class="sort-item"><div class="sort-text">${item.text}</div><div class="sort-btns"><button class="sort-btn" onclick="playClick(); moveItem(${index}, -1)">▲</button><button class="sort-btn" onclick="playClick(); moveItem(${index}, 1)">▼</button></div></div>`;
+    });
+}
+
+function moveItem(index, dir) {
+    const target = index + dir;
+    if (target < 0 || target >= currentSortOrder.length) return;
+    [currentSortOrder[index], currentSortOrder[target]] = [currentSortOrder[target], currentSortOrder[index]];
+    renderSortList();
+}
+
+function updateWordCount(t) { document.getElementById('word-count-div').innerText = `字數計測：${t.value.length}`; }
+function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
+
+function showMsg(boxId, text, isSuccess) {
+    const box = document.getElementById(boxId); box.innerText = text; box.className = isSuccess ? "message msg-success" : "message msg-error";
+    if (isSuccess) { playSuccess(); document.body.classList.remove('alarm-active'); } 
+    else { playError(); document.body.classList.add('alarm-active'); }
+}
+function hideMsg(boxId) { document.getElementById(boxId).className = "message hidden"; document.body.classList.remove('alarm-active'); }
+
+function submitAnswer() {
+    const quiz = quizDatabase[currentIndex];
+    let isCorrect = false; let ansStr = "";
+
+    if (quiz.type === "single") {
+        const selected = document.querySelector('input[name="single-choice"]:checked');
+        if (!selected) { playError(); showMsg('msg-box', "⚠️ 未選取選項！", false); return; }
+        ansStr = selected.value; isCorrect = (ansStr === quiz.correctAnswer);
+    } else if (quiz.type === "multi") {
+        const checkedBoxes = document.querySelectorAll('input[name="multi-choice"]:checked');
+        const ansArray = Array.from(checkedBoxes).map(cb => cb.value); ansStr = ansArray.join(",");
+        isCorrect = ansArray.length === quiz.correctAnswer.length && ansArray.every(val => quiz.correctAnswer.includes(val));
+    } else if (quiz.type === "sort") {
+        const ids = currentSortOrder.map(i => i.id); ansStr = ids.join("➔");
+        isCorrect = ids.every((val, i) => val === quiz.correctAnswer[i]);
+    } else {
+        const field = document.getElementById('short-answer'); ansStr = field ? field.value.trim() : "";
+        if (ansStr.length < quiz.minWords) { playError(); showMsg('msg-box', `⚠️ 深度不足（需 ${quiz.minWords} 字）！`, false); return; }
+        isCorrect = quiz.type === "short_keyword" ? quiz.keywords.some(k => ansStr.includes(k)) : true;
+    }
+
+    if (isCorrect) {
+        showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true);
+        uploadData(studentId, `第${currentIndex+1}題`, ansStr, "成功過關");
+        itemCollection.push(quiz.itemIcon);
+        setTimeout(showItemScreen, 1500);
+    } else {
+        showMsg('msg-box', "❌ 【破解失敗】邏輯不符！", false);
+        uploadData(studentId, `第${currentIndex+1}題`, ansStr, "嘗試失敗");
+    }
+}
+
+function showItemScreen() {
+    hideAll();
+    const quiz = quizDatabase[currentIndex];
+    document.getElementById('item-icon').innerText = quiz.itemIcon;
+    document.getElementById('item-title').innerText = "解鎖道具：【" + quiz.itemTitle + "】";
+    document.getElementById('item-desc').innerText = quiz.itemDesc;
+    document.getElementById('item-section').classList.remove('hidden');
+    playSuccess(); 
+    currentIndex++; 
+}
+
+function showDoors() {
+    playClick();
+    if (currentIndex >= quizDatabase.length) { showEnding(); return; } 
+    hideAll(); safeDoorIndex = Math.floor(Math.random() * 3); 
+    document.getElementById('doors-section').classList.remove('hidden');
+    playFootsteps(); 
+}
+
+function checkDoor(doorIdx) {
+    if (doorIdx === safeDoorIndex) {
+        playSuccess();
+        setTimeout(showStoryScreen, 600); 
+    } else {
+        playError();
+        currentTrapIndex = Math.floor(Math.random() * trapDatabase.length);
+        renderTrapScreen();
+    }
+}
+
+function renderTrapScreen() {
+    hideAll(); document.body.classList.add('alarm-active');
+    playTypingSound(); 
+    const trap = trapDatabase[currentTrapIndex];
+    document.getElementById('trap-question-text').innerText = trap.q;
+    const area = document.getElementById('trap-interactive-area'); area.innerHTML = ""; hideMsg('trap-msg-box');
+    let opts = [...trap.options]; shuffleArray(opts);
+    opts.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="radio" name="trap-choice" value="${opt.c}"><span>${opt.t}</span></label>`; });
+    document.getElementById('trap-section').classList.remove('hidden');
+}
+
+function submitTrap() {
+    const selected = document.querySelector('input[name="trap-choice"]:checked');
+    if (!selected) { playError(); showMsg('trap-msg-box', "⚠️ 必須選擇密碼！", false); return; }
+    if (selected.value === "true") {
+        showMsg('trap-msg-box', "🟢 密碼正確！防禦瓦解...", true);
+        uploadData(studentId, `防禦矩陣陷阱`, "成功", "破解陷阱");
+        setTimeout(() => { document.body.classList.remove('alarm-active'); showStoryScreen(); }, 1500);
+    } else {
+        showMsg('trap-msg-box', "❌ 密碼錯誤！警報升級！", false);
+        uploadData(studentId, `防禦矩陣陷阱`, "失敗", "困住");
+    }
+}
+
+function showEnding() {
+    hideAll();
+    if (ambientInterval) clearInterval(ambientInterval);
+    document.body.className = "bg-ending";
+    document.getElementById('ending-section').classList.remove('hidden');
+    document.getElementById('progress-container').classList.add('hidden');
+    playWarp(); setTimeout(playSuccess, 2000);
+
+    const container = document.getElementById('ending-items-container');
+    container.innerHTML = "";
+
+    itemCollection.forEach((icon, i) => {
+        if(i >= 10) return; 
+        let el = document.createElement('div');
+        el.className = 'ending-item';
+        el.innerText = icon;
+        let angle = (i / 10) * Math.PI * 2;
+        let radius = 120;
+        let x = Math.cos(angle) * radius;
+        let y = Math.sin(angle) * radius;
+        el.style.setProperty('--startX', `${x}px`);
+        el.style.setProperty('--startY', `${y}px`);
+        container.appendChild(el);
+    });
+
+    let key = document.createElement('div');
+    key.className = 'final-key';
+    key.innerText = '🗝️';
+    container.appendChild(key);
+
+    setTimeout(() => {
+        document.getElementById('ending-final-text').classList.remove('hidden');
+        playSuccess(); 
+    }, 4500);
+}
+
+function uploadData(student, stage, answer, status) {
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbzKO8cfTapdmmOjeQmH9opY5pnKzVVQ-feUEYZKFbl_ds9HVYmPrg7NlS7H7GnBjz4EWw/exec"; 
+    if (webAppUrl !== "") {
+        fetch(webAppUrl, {
+            method: "POST", mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ student, stage, answer, status, time: new Date().toLocaleString() })
+        }).catch(err => console.error("傳送失敗:", err));
+    }
+}
+</script>
+</body>
+</html>
