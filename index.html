@@ -51,6 +51,9 @@
         h1 { text-align: center; font-size: 28px; letter-spacing: 3px; text-shadow: 0 0 10px var(--accent-color); margin-bottom: 5px; }
         .subtitle { text-align: center; color: var(--sub-text); margin-bottom: 25px; font-size: 13px; letter-spacing: 1px; }
         
+        .progress-bar { width: 100%; height: 4px; background: #21262d; border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--accent-color); }
+        
         .story-box { background: rgba(13, 17, 23, 0.9); border-left: 4px solid var(--accent-color); padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0; font-size: 15px; line-height: 1.7; color: #e6edf3; }
         .story-page { text-align: center; }
         .story-text { font-size: 1.1em; line-height: 1.8; margin-bottom: 30px; color: #fff; padding: 25px; border: 1px solid var(--accent-color); border-radius: 8px; background: rgba(0,0,0,0.4); text-align: left; }
@@ -99,6 +102,7 @@
         .hidden { display: none !important; }
         input.text-input { width: 100%; padding: 14px; background: #0d1117; color: white; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; }
 
+        /* 結局動畫 */
         .ending-items-container { position: relative; height: 250px; display: flex; justify-content: center; align-items: center; margin-top: 20px; }
         .ending-item { position: absolute; font-size: 35px; opacity: 0; animation: converge 4s forwards; text-shadow: 0 0 10px #fff; }
         @keyframes converge { 0% { transform: translate(var(--startX), var(--startY)) scale(1); opacity: 0; } 20% { opacity: 1; } 70% { transform: translate(0, 0) scale(0.5); opacity: 1; } 100% { transform: translate(0, 0) scale(0); opacity: 0; } }
@@ -138,6 +142,10 @@
             <input type="text" id="student-id" class="text-input" placeholder="例如：80523張小明">
             <button class="action-btn" onclick="startGame()">核心同步 // 潛入迷宮</button>
         </div>
+    </div>
+
+    <div id="progress-container" class="hidden">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
     </div>
 
     <div id="story-screen" class="hidden story-page">
@@ -278,12 +286,11 @@ function startIntermittentAmbient() {
     }, 12000); 
 }
 
-// ================= 終極題庫結構 (結合解鎖機制) =================
-// unlockType: 'none', 'item', 'combine'
+// ================= 終極題庫結構 (地圖與解鎖機制) =================
 const quizDatabase = [
     { locationName: "棋局廢墟", unlockType: "none",
       type: "sort", badge: "⏳ 歷史時序重組", narrative: "【進入深藍母體核心】機器法官冷笑：『人類記憶充滿混亂，機器邏輯才是永恆。看啊，這就是你們棋王在智慧巨浪前的潰敗史...』重新梳理時序！", 
-      question: "【深藍的憂鬱】1. 請依「時間先後」排序以下事件：", 
+      question: "【深藍的憂鬱】1. 請依時間排序以下事件：", 
       options: [{id:"A",text:"深藍電腦打敗世界棋王"},{id:"B",text:"棋王對自己的失敗感到極度悲傷"},{id:"C",text:"電腦科學家王文燦建議棋王安裝腦內晶片"},{id:"D",text:"深藍電腦進步到有人類的外形"},{id:"E",text:"世界棋王打敗深藍電腦"},{id:"F",text:"深藍電腦對自己的失敗感到極度悲傷"},{id:"G",text:"電腦科學家慶祝自己成功了"}], 
       correctAnswer: ["A","B","C","D","E","F","G"], itemIcon: "♟️", itemTitle: "破損的西洋棋子", itemDesc: "初代 AI 的運算邏輯，可用來干擾高階母體運算。", givesPotion: true },
       
@@ -304,10 +311,10 @@ const quizDatabase = [
       type: "single", badge: "🔘 雙關語意推敲", narrative: "【深藍核心陷落】機器法官閃爍著：『這句話是機器進化的最高榮譽！』你冷笑：『這也是人類最大的諷刺。』", 
       question: "【深藍的憂鬱】5. 王文燦喊叫：「機器有了情感！」句中的「機器」指的是？", options: [{id:"A",text:"深藍電腦"},{id:"B",text:"世界棋王"},{id:"C",text:"以上皆是"}], correctAnswer: "C", itemIcon: "🎙️", itemTitle: "王文燦的加密錄音", itemDesc: "錄下了人類科技失控的歷史。" },
     
-    // === 第一個大魔王組合門 ===
+    // === 組合解謎門 1 ===
     { locationName: "時空迴廊", unlockType: "combine", combineTarget: ['🎙️', '♟️'], combineResultIcon: '⚡', combineResultName: '時空逆流密鑰', unlockHint: "警報！前方為司法黑盒子。請融合『人類科技失控的歷史』與『初代 AI 的運算邏輯』作為跨時空密鑰！",
       type: "sort", badge: "⏳ 司法黑盒子重組", narrative: "【時空躍遷完成】四周是冷冽的審判法庭。解開古老因果的鎖鏈吧！", 
-      question: "【替代死刑】1. 請依「時間先後」排序：", options: [{id:"A",text:"法官宣告王朝明犯殺人罪"},{id:"B",text:"王朝明被判「機器人代死刑」"},{id:"C",text:"王朝明在法庭上喊冤"},{id:"D",text:"王朝明在火星開墾"},{id:"E",text:"警方抓到真兇"},{id:"F",text:"王朝明提出死刑新觀念"},{id:"G",text:"王達成腦部被改造"},{id:"H",text:"王朝明不斷產生謀殺念頭"},{id:"I",text:"王朝明腦部被改造"}], correctAnswer: ["A","C","B","D","E","F","G","H","I"], itemIcon: "🪐", itemTitle: "火星殖民地紅土", itemDesc: "沾染著冤屈的實體物質驗證。" },
+      question: "【替代死刑】1. 請依時間排序以下事件：", options: [{id:"A",text:"法官宣告王朝明犯殺人罪"},{id:"B",text:"王朝明被判「機器人代死刑」"},{id:"C",text:"王朝明在法庭上喊冤"},{id:"D",text:"王朝明在火星殖民地從事開墾工作"},{id:"E",text:"警方抓到真兇"},{id:"F",text:"王朝明研究腦部醫學，提出死刑新觀念"},{id:"G",text:"王達成的腦部被改造"},{id:"H",text:"王朝明放不下怨氣，不斷產生謀殺念頭"},{id:"I",text:"王朝明的腦部被改造"}], correctAnswer: ["A","C","B","D","E","F","G","H","I"], itemIcon: "🪐", itemTitle: "火星殖民地紅土", itemDesc: "沾染著流放歲月與冤屈的物質。" },
       
     { locationName: "流放荒地", unlockType: "item", unlockItem: "🪐", unlockHint: "特區防禦網：『偵測到流放地禁區，需要沾染冤屈的實體物質驗證身份。』",
       type: "multi", badge: "🗂️ 體制動機剖析", narrative: "【解碼度 55%】機器法官：『代替受刑是科技最高效率。』揭開當年機制的初衷？", 
@@ -315,21 +322,21 @@ const quizDatabase = [
       
     { locationName: "司法檔案室", unlockType: "item", unlockItem: "📜", unlockHint: "檔案庫掃描器：『需要能代表人類荒謬法制的原始文件授權。』",
       type: "multi", badge: "🗂️ 歷史貢獻比對", narrative: "【解碼度 64%】你搖搖頭：『若沒有這股力量，正義將永遠被埋沒！』", 
-      question: "【替代死刑】3. 關於王朝明的冤情平反，下列何者有所貢獻？（複選）", options: [{id:"A",text:"王朝明的親友"},{id:"B",text:"王朝明的結拜兄弟"},{id:"C",text:"警方"},{id:"D",text:"腦部醫學家"}], correctAnswer: ["A","C"], itemIcon: "📼", itemTitle: "真兇的認罪錄影", itemDesc: "證明司法誤判的關鍵影音證據。" },
+      question: "【替代死刑】3. 關於王朝明的冤情平反，下列何者有所貢獻？（複選）", options: [{id:"A",text:"王朝明的親友"},{id:"B",text:"王朝明的結拜兄弟"},{id:"C",text:"警方"},{id:"D",text:"腦部醫學家"}], correctAnswer: ["A","C"], itemIcon: "📼", itemTitle: "真兇的認罪錄影", itemDesc: "證明司法誤判的關鍵證據。" },
       
     { locationName: "證據庫", unlockType: "item", unlockItem: "📼", unlockHint: "證據庫閘門：『請提交能證明司法誤判的關鍵影音證據。』",
       type: "single", badge: "🔘 核心盲點破譯", narrative: "【解碼度 73%】你怒斥：『這只是將罪惡延期的謊言！』", 
-      question: "【替代死刑】4. 王達成被判緩刑，沒有立刻接受「機器人代死刑」的原因？", options: [{id:"A",text:"自首減刑"},{id:"B",text:"慈善家的呼籲"},{id:"C",text:"腦部被改造"},{id:"D",text:"王朝明的原諒"}], correctAnswer: "C", itemIcon: "✒️", itemTitle: "腦部改造同意書", itemDesc: "帶有懦弱與逃避恐懼印記的簽名物件。" },
+      question: "【替代死刑】4. 王達成被判緩刑，沒有立刻接受「機器人代死刑」的原因？", options: [{id:"A",text:"自首減刑"},{id:"B",text:"慈善家的呼籲"},{id:"C",text:"腦部被改造"},{id:"D",text:"王朝明的原諒"}], correctAnswer: "C", itemIcon: "✒️", itemTitle: "腦部改造同意書", itemDesc: "帶有逃避恐懼印記的簽名物件。" },
       
     { locationName: "改造艙", unlockType: "item", unlockItem: "✒️", unlockHint: "改造艙掃描系統：『需要帶有懦弱與逃避恐懼印記的簽名物件啟動。』",
       type: "multi", badge: "🗂️ 心理枷鎖解構", narrative: "【解碼度 82%】你輕嘆：『因為怨恨，是比囚籠更可怕的鋼鐵。』", 
       question: "【替代死刑】5. 王朝明自願接受腦部改造的原因？（複選）", options: [{id:"A",text:"內心無法克制對王達成的憎恨"},{id:"B",text:"對二十年的冤刑怨氣未消"},{id:"C",text:"一直產生謀殺王達成的念頭"},{id:"D",text:"良心受到責備無法自制"},{id:"E",text:"有關當局的強力要求"}], correctAnswer: ["A","B","C","D"], itemIcon: "💉", itemTitle: "記憶抹除針劑", itemDesc: "抹除機制的終極載體。", givesPotion: true },
       
-    // === 第二個大魔王組合門 ===
+    // === 組合解謎門 2 ===
     { locationName: "核心控制閥", unlockType: "combine", combineTarget: ['💧', '💉'], combineResultIcon: '🕊️', combineResultName: '平靜空無代碼', unlockHint: "警告：中央核心充滿怨氣。必須調和『極致的悲傷』與『抹除機制』，方能中和能量開啟大門！",
       type: "short_open", badge: "💡 自由意志思辨協議", narrative: "【終局防線】機器虛影：『抹去恨與惡，難道不是完美的正直？人類，說服我！』", 
       question: "【替代死刑】6. 你認為王朝明和王達成，誰更正直？為什麼？", minWords: 20, 
-      hint: "沒有標準答案，但可以思考：你要用哪個時間點來評論？是在施行腦部改造前或後？被判決前或後？「正直」應該如何定義？怎麼判斷一個人是正直的？", itemIcon: "✨", itemTitle: "最後一塊歷史殘片", itemDesc: "準備與其他碎片共鳴..." }
+      hint: "沒有標準答案，但可以思考：你要用哪個時間點來評論？是在未施行腦部改造前，還是施行後？是在未被判決前，還是被判決後？「正直」應該如何定義？我們怎麼判斷一個人是正直的？", itemIcon: "✨", itemTitle: "最後一塊歷史殘片", itemDesc: "準備與其他碎片共鳴..." }
 ];
 
 const trapDatabase = [
@@ -346,8 +353,8 @@ const trapDatabase = [
 let currentIndex = 0; let studentId = ""; let currentSortOrder = [];
 let safeDoorIndex = 0; let currentTrapIndex = 0; 
 let itemCollection = []; let potions = 0; let currentUsedPotion = false;
-let gameState = 'story'; // 'story', 'lock', 'combine', 'quiz'
-let activeCombineSlot = null; let combineSelected = [];
+let gameState = 'story'; 
+let activeCombineSlot = null; let combineSelected = [null, null];
 
 function hideAll() {
     ['login-section','game-section','item-section','doors-section','trap-section','story-screen','lock-section','combine-section','ending-section'].forEach(id => {
@@ -407,8 +414,6 @@ function showStoryScreen() {
     
     if (currentIndex === 5) {
         document.getElementById('main-title').innerText = "JUDICIAL OVERRIDE";
-        document.getElementById('door-warning').innerText = "【警告】司法母體防禦網啟動，三道全息電子門中只有一道安全。";
-        document.getElementById('story-title').innerText = "【時空躍遷程序啟動】";
         playFootsteps(); 
     } else {
         document.getElementById('story-title').innerText = "系統紀錄檔 #" + (currentIndex + 1);
@@ -419,7 +424,7 @@ function showStoryScreen() {
     document.getElementById('story-screen').classList.remove('hidden');
 }
 
-// === 核心：進入門鎖與解謎機制 ===
+// === 核心：進入大門與解謎機制 ===
 function prepareUnlock() {
     hideAll(); playClick();
     const quiz = quizDatabase[currentIndex];
@@ -434,7 +439,7 @@ function prepareUnlock() {
         gameState = 'combine';
         document.getElementById('combine-title').innerText = (currentIndex===5) ? "【時空屏障：跨域密碼鎖】" : "【核心控制閥：能量調和】";
         document.getElementById('combine-hint').innerText = quiz.unlockHint;
-        activeCombineSlot = null; combineSelected = [];
+        activeCombineSlot = null; combineSelected = [null, null];
         document.getElementById('slot-1').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 1</span>'; 
         document.getElementById('slot-2').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 2</span>';
         document.getElementById('slot-1').className = "combine-slot"; document.getElementById('slot-2').className = "combine-slot";
@@ -443,18 +448,20 @@ function prepareUnlock() {
     }
 }
 
-// 點擊背包內道具的邏輯
+// 點擊背包道具
 function handleInventoryClick(icon) {
     if (gameState === 'lock') {
         if (icon === quizDatabase[currentIndex].unlockItem) {
-            playSuccess(); showMsg('lock-msg', '🟢 物質波段吻合，大門開啟！', true);
+            playSuccess(); showMsg('lock-msg', '🟢 物質波段吻合，大門強制開啟！', true);
             setTimeout(() => { renderQuiz(); }, 1500);
         } else {
             playError(); showMsg('lock-msg', '❌ 物質波段不符，大門毫無反應。', false);
         }
     } else if (gameState === 'combine') {
         if (activeCombineSlot) {
-            if (combineSelected.includes(icon)) { playError(); showMsg('combine-msg', '⚠️ 這個道具已經放入凹槽了！', false); return; }
+            if (combineSelected[0] === icon || combineSelected[1] === icon) { 
+                playError(); showMsg('combine-msg', '⚠️ 這個道具已經放入凹槽了！', false); return; 
+            }
             playClick();
             combineSelected[activeCombineSlot - 1] = icon;
             let slotElem = document.getElementById('slot-' + activeCombineSlot);
@@ -462,17 +469,15 @@ function handleInventoryClick(icon) {
             slotElem.classList.remove('active-slot'); slotElem.classList.add('filled');
             activeCombineSlot = null; hideMsg('combine-msg');
         } else {
-            playError(); showMsg('combine-msg', '⚠️ 請先點擊下方的融合凹槽，再選擇道具！', false);
+            playError(); showMsg('combine-msg', '⚠️ 請先點擊下方的融合凹槽，再從上方背包選擇道具！', false);
         }
     } else {
-        // 純看道具
         playClick();
     }
 }
 
 function selectCombineSlot(slotNum) {
-    playClick();
-    activeCombineSlot = slotNum;
+    playClick(); activeCombineSlot = slotNum;
     document.getElementById('slot-1').classList.remove('active-slot');
     document.getElementById('slot-2').classList.remove('active-slot');
     document.getElementById('slot-' + slotNum).classList.add('active-slot');
@@ -480,16 +485,15 @@ function selectCombineSlot(slotNum) {
 }
 
 function attemptCombine() {
-    let q = quizDatabase[currentIndex];
-    let target = q.combineTarget; 
-    if (combineSelected.length === 2 && target.includes(combineSelected[0]) && target.includes(combineSelected[1])) {
+    let q = quizDatabase[currentIndex]; let target = q.combineTarget; 
+    if (combineSelected[0] && combineSelected[1] && target.includes(combineSelected[0]) && target.includes(combineSelected[1])) {
         playSuccess();
         showMsg('combine-msg', `🟢 融合成功！生成【${q.combineResultName}】，大門強制開啟！`, true);
         if(!itemCollection.includes(q.combineResultIcon)) { itemCollection.push(q.combineResultIcon); updateInventoryUI(); }
         setTimeout(() => { renderQuiz(); }, 2000);
     } else {
-        playError(); showMsg('combine-msg', "❌ 融合失敗！能量衝突，請清空凹槽重新選擇。", false);
-        combineSelected = [];
+        playError(); showMsg('combine-msg', "❌ 融合失敗！物質粒子波段不符，請重新選擇。", false);
+        combineSelected = [null, null];
         document.getElementById('slot-1').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 1</span>'; 
         document.getElementById('slot-2').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 2</span>';
         document.getElementById('slot-1').className = "combine-slot"; document.getElementById('slot-2').className = "combine-slot";
@@ -576,8 +580,8 @@ function submitAnswer() {
         isCorrect = quiz.type === "short_keyword" ? quiz.keywords.some(k => ansStr.includes(k)) : true;
     }
 
-    let statusLog = currentUsedPotion ? "成功過關(已使用藥水)" : "成功過關";
-    let failLog = currentUsedPotion ? "嘗試失敗(已使用藥水)" : "嘗試失敗";
+    let statusLog = currentUsedPotion ? "成功過關(已用藥水)" : "成功過關";
+    let failLog = currentUsedPotion ? "嘗試失敗(已用藥水)" : "嘗試失敗";
 
     if (isCorrect) {
         showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true);
@@ -592,7 +596,7 @@ function submitAnswer() {
 }
 
 function showItemScreen() {
-    hideAll(); gameState = 'item'; playSuccess(); 
+    hideAll(); playSuccess(); 
     const quiz = quizDatabase[currentIndex];
     document.getElementById('item-icon').innerText = quiz.itemIcon;
     document.getElementById('item-title').innerText = "解鎖道具：【" + quiz.itemTitle + "】";
@@ -607,10 +611,9 @@ function showItemScreen() {
 
 function showDoors() {
     playClick();
-    if (currentIndex === 5) { showStoryScreen(); return; } // 第5關後強制跳轉
     if (currentIndex >= quizDatabase.length) { showEnding(); return; } 
     
-    hideAll(); gameState = 'doors'; safeDoorIndex = Math.floor(Math.random() * 3); 
+    hideAll(); safeDoorIndex = Math.floor(Math.random() * 3); 
     document.getElementById('doors-section').classList.remove('hidden');
     playFootsteps(); 
 }
@@ -624,7 +627,7 @@ function checkDoor(doorIdx) {
 }
 
 function renderTrapScreen() {
-    hideAll(); gameState = 'trap'; document.body.classList.add('alarm-active'); playTypingSound(); 
+    hideAll(); document.body.classList.add('alarm-active'); playTypingSound(); 
     const trap = trapDatabase[currentTrapIndex];
     document.getElementById('trap-question-text').innerText = trap.q;
     const area = document.getElementById('trap-interactive-area'); area.innerHTML = ""; hideMsg('trap-msg-box');
@@ -645,7 +648,7 @@ function submitTrap() {
 }
 
 function showEnding() {
-    hideAll(); gameState = 'ending'; updateMap();
+    hideAll(); updateMap();
     if (ambientInterval) clearInterval(ambientInterval);
     document.getElementById('inventory-ui').classList.add('hidden'); document.getElementById('map-ui').classList.add('hidden');
     document.body.className = "bg-ending"; document.getElementById('ending-section').classList.remove('hidden');
