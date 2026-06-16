@@ -112,7 +112,6 @@
 <body>
 
 <div class="container">
-    <!-- 頂部狀態列 -->
     <div id="status-ui" class="status-bar hidden">
         <div class="location-badge" id="current-location">📍 系統載入中...</div>
         <div style="display:flex; align-items:center; gap:20px;">
@@ -121,7 +120,6 @@
         </div>
     </div>
 
-    <!-- 登入區塊 -->
     <div id="login-section">
         <h1 id="main-title">SYSTEM OVERRIDE</h1>
         <div class="subtitle" id="sub-title">人類意識覺醒協議 // 核心解碼迷宮</div>
@@ -136,17 +134,14 @@
         </div>
     </div>
 
-    <!-- 動態渲染區塊 -->
     <div id="game-content" class="hidden"></div>
 
-    <!-- 下方動態全息迷宮地圖（可回頭探索點擊） -->
     <div id="map-ui" class="hologram-map hidden">
         <div class="map-title">🛰️ 母體全息迷宮儀 (支援歷史節點躍遷探索)</div>
         <div class="map-grid" id="dynamic-map-grid"></div>
     </div>
 </div>
 
-<!-- 道具觀察模態視窗 -->
 <div id="item-modal" class="modal-overlay hidden">
     <div class="item-box">
         <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
@@ -230,7 +225,7 @@ const trapDatabase = [
     { q: "「揶揄」的意思是？", options: [{ t: "嘲弄", c: true }, { t: "熱情稱讚", c: false }] },
     { q: "「蟄伏」的意思是？", options: [{ t: "隱藏", c: true }, { t: "四處活躍", c: false }] }, 
     { q: "「行禮如儀」的意思是？", options: [{ t: "按流程執行程序", c: true }, { t: "不顧規矩隨意行動", c: false }] },
-    { q: "「行屍走肉」的意思是？", options: [{ t: "沒有靈魂的軀殼", c: true }, { t: "身體強壯的人", c: false }] }
+    { q: "「行屍走肉」的意思 is？", options: [{ t: "沒有靈魂的軀殼", c: true }, { t: "身體強壯的人", c: false }] }
 ];
 
 const authorLines = [
@@ -504,7 +499,7 @@ function renderEngine(roomId) {
         else if (room.type === "password") {
             playTypingSound();
             html = `<h2 style="color:var(--item-color); text-align:center;">${room.name}</h2>
-                    <div class="story-text" style="border-color:var(--item-color); text-align:center; white-space:pre-wrap;">${room.story}</div>
+                    <div class="story-text" style="border-color:var(--item-color); text-align:center;">${room.story}</div>
                     <div class="quiz-card" style="text-align:center;">
                         <input type="text" id="pwd-input" class="text-input" placeholder="輸入解鎖代碼..." style="width:60%; margin-bottom:20px;">
                         <button type="button" class="action-btn" onclick="checkPassword('${roomId}')">驗證密碼</button>
@@ -570,7 +565,7 @@ function renderEngine(roomId) {
 
 // === API 安全通訊防護網 ===
 async function uploadData(student, stage, answer, status) {
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbwV-mwT_9qQ_TXA4nbZ5T1s--ONn07fqM3zxvteh49qp2qaqVlHIPmCzeyUdqlw7pu1MA/exec"; 
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbxeB-HsI4w5R-HfSrqzmIwqDhz2pGmz7Fut88PzSrCQ9apZSbtS8Ssr8fc02gIuYeFXRw/exec"; 
     try {
         let response = await fetch(webAppUrl, {
             method: "POST",
