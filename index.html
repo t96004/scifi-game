@@ -58,7 +58,7 @@
         .item-icon { font-size: 60px; margin-bottom: 15px; text-shadow: 0 0 15px var(--item-color); }
         .item-title { color: var(--item-color); font-size: 22px; font-weight: bold; margin-bottom: 15px; }
         .item-desc { color: #fff; font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
-        .inspect-text { color: var(--accent-color); font-weight: bold; font-size: 15px; line-height: 1.6; margin-top: 15px; padding: 15px; border: 1px dashed var(--accent-color); background: rgba(0,240,255,0.05); border-radius: 8px; }
+        .inspect-text { color: var(--accent-color); font-weight: bold; font-size: 15px; line-height: 1.6; margin-top: 15px; padding: 15px; border: 1px dashed var(--accent-color); background: rgba(0,240,255,0.05); border-radius: 8px; white-space: pre-wrap; }
 
         /* 合成系統 */
         .combine-container { display: flex; justify-content: space-between; gap: 15px; margin-top: 20px; }
@@ -198,6 +198,16 @@ const itemDB = {
     '✒️': { title: "腦部改造同意書", desc: "帶有逃避恐懼印記的簽名物件。", inspect: "簽名者：王達成。紙張上還有冷汗的痕跡。" },
     '💉': { title: "記憶抹除針劑", desc: "抹除機制的終極載體。", inspect: "針筒內流淌著能將記憶化為虛無的發光液體。" }
 };
+
+// 【防 Emoji 編碼干擾器】根據乾淨的字串獲取真實道具資料
+function getItemInfo(rawIcon) {
+    const cleanStr = (s) => s ? s.replace(/\uFE0F/g, '').trim() : '';
+    const target = cleanStr(rawIcon);
+    for (let key in itemDB) {
+        if (cleanStr(key) === target) return itemDB[key];
+    }
+    return { title: "未知晶體", desc: "無法解析的能量聚合體。", inspect: "沒有發現特別之處。" };
+}
 
 const trapDatabase = [
     { q: "「偃旗息鼓」的意思是？", options: [{ t: "事情中止", c: true }, { t: "大聲喧嘩", c: false }] }, 
@@ -388,9 +398,9 @@ function renderEngine(roomId) {
                     <div class="quiz-card" style="text-align:center;">
                         <input type="text" id="pwd-input" class="text-input" placeholder="輸入解鎖代碼..." style="width:60%; margin-bottom:20px;">
                         <button type="button" class="action-btn" onclick="checkPassword('${roomId}')">驗證密碼</button>
-                        <div id="pwd-msg" class="message"></div>`;
-            if (room.onFail) { html += `<button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail}')">返回上一層</button>`; }
-            html += `</div>`;
+                        <div id="pwd-msg" class="message"></div>
+                        <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall2'}')">返回上一層</button>
+                    </div>`;
         }
         else if (room.type === "lock") {
             playTypingSound();
@@ -399,8 +409,8 @@ function renderEngine(roomId) {
                     <div style="color:#8b949e; margin-bottom:20px; font-weight:bold; font-size:16px; text-align:center;">
                         👆 檢測啟動：請點擊上方【空間背包】中適合的道具注入 👆
                     </div>
-                    <div id="lock-msg" class="message"></div>`;
-            if (room.onFail) { html += `<button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail}')">放棄解鎖，返回</button>`; }
+                    <div id="lock-msg" class="message"></div>
+                    <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall1'}')">放棄解鎖，返回</button>`;
         }
         else if (room.type === "combine") {
             activeCombineSlot = null; combineSelected = [null, null]; playTypingSound();
@@ -491,7 +501,6 @@ function usePotion(roomId) {
 async function submitQuiz(roomId) {
     const room = rooms[roomId]; let isCorrect = false; let ansStr = "";
     
-    // 1. 本地驗證邏輯
     if (room.qType === "single") {
         const selected = document.querySelector('input[name="q-choice"]:checked'); if (!selected) { playError(); showMsg('msg-box', "⚠️ 未選取選項！", false); return; }
         ansStr = selected.value; isCorrect = (ansStr === room.ans);
@@ -509,7 +518,6 @@ async function submitQuiz(roomId) {
     let statusLog = currentUsedPotion ? "成功過關(已用藥水)" : "成功過關";
     let failLog = currentUsedPotion ? "嘗試失敗(已用藥水)" : "嘗試失敗";
 
-    // 2. 本地驗證失敗直接退回
     if (!isCorrect) {
         playError(); let errMsg = room.qType === "sort" ? "❌ 【破解失敗】歷史時序排列不正確，請重新調整！" : "❌ 【破解失敗】邏輯不符！";
         showMsg('msg-box', errMsg, false); 
@@ -517,7 +525,6 @@ async function submitQuiz(roomId) {
         return;
     }
 
-    // 3. 處理需要 AI 判斷的大魔王關卡
     const buttons = document.querySelectorAll('#game-content .quiz-card .action-btn');
     const submitBtn = buttons[buttons.length - 1];
 
@@ -527,14 +534,13 @@ async function submitQuiz(roomId) {
         if(submitBtn) { submitBtn.innerText = "發射解鎖脈衝"; submitBtn.disabled = false; submitBtn.style.opacity = "1"; }
 
         if (result && result.isPass === false) {
-            playError(); showMsg('msg-box', "❌ 【母體駁回】" + result.feedback, false);
+            playError(); showMsg('msg-box', "❌ 【母體駁回】\n" + result.feedback, false);
             return; 
         }
     } else {
         uploadData(studentId, `第${room.qIdx}題`, ansStr, statusLog); 
     }
 
-    // 4. 完美過關處理
     showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true);
     if(!itemCollection.includes(room.rewardItem)) itemCollection.push(room.rewardItem);
     if(room.givesPotion) { potions++; } updateInventoryUI(); 
@@ -542,22 +548,21 @@ async function submitQuiz(roomId) {
 }
 
 function showItemReward(roomId) {
-    const room = rooms[roomId]; playSuccess(); const itemInfo = itemDB[room.rewardItem];
+    const room = rooms[roomId]; playSuccess(); const itemInfo = getItemInfo(room.rewardItem);
     let html = `<div class="item-box" style="margin: 0 auto;"><div class="item-icon">${room.rewardItem}</div><div class="item-title">解鎖道具：【${itemInfo.title}】</div><div class="item-desc">${itemInfo.desc}</div></div>`;
     if(room.givesPotion) { html += `<div style="color:var(--success-color); font-weight:bold; text-align:center; margin-top:20px; font-size:16px;">🎉 系統額外補給：獲得【🧪 藥水 x 1】</div>`; }
     html += `<button type="button" class="action-btn" style="margin-top:30px;" onclick="renderEngine('${room.onClear}')">收下道具，繼續探索</button>`;
     document.getElementById('game-content').innerHTML = html;
 }
 
-// === 背包與融合機制 (100% 精準序列配對) ===
+// === 背包與融合機制 (100% 精準配對) ===
 function handleInventoryClick(idx) {
-    const icon = itemCollection[idx];
+    const rawIcon = itemCollection[idx];
     const room = rooms[currentRoom];
-    // 清除隱藏的表情符號編碼干擾
     const cleanStr = (s) => s ? s.replace(/\uFE0F/g, '').trim() : '';
 
     if (room && room.type === 'lock') {
-        if (cleanStr(icon) === cleanStr(room.reqItem)) {
+        if (cleanStr(rawIcon) === cleanStr(room.reqItem)) {
             playSuccess(); showMsg('lock-msg', '🟢 物質波段吻合，大門強制開啟！', true);
             setTimeout(() => { renderEngine(room.onUnlock); }, 1500);
         } else {
@@ -566,23 +571,23 @@ function handleInventoryClick(idx) {
     }
     else if (room && room.type === 'combine') {
         if (activeCombineSlot) {
-            if (cleanStr(combineSelected[0]) === cleanStr(icon) || cleanStr(combineSelected[1]) === cleanStr(icon)) { 
+            if (cleanStr(combineSelected[0]) === cleanStr(rawIcon) || cleanStr(combineSelected[1]) === cleanStr(rawIcon)) { 
                 playError(); showMsg('combine-msg', '⚠️ 這個道具已經放入凹槽了！', false); return; 
             }
-            playClick(); combineSelected[activeCombineSlot - 1] = icon; 
+            playClick(); combineSelected[activeCombineSlot - 1] = rawIcon; 
             let slotElem = document.getElementById('slot-' + activeCombineSlot);
-            slotElem.innerText = icon; slotElem.classList.remove('active-slot'); slotElem.classList.add('filled'); 
+            slotElem.innerText = rawIcon; slotElem.classList.remove('active-slot'); slotElem.classList.add('filled'); 
             activeCombineSlot = null; hideMsg('combine-msg');
         } else { 
             playError(); showMsg('combine-msg', '⚠️ 請先點擊下方的融合凹槽，再從上方背包選擇道具！', false); 
         }
     } else {
-        playClick(); inspectingItem = icon; let info = itemDB[icon] || { title: "未知晶體", desc: "無法解析的能量聚合體。" };
-        document.getElementById('modal-icon').innerText = icon; document.getElementById('modal-title').innerText = info.title; document.getElementById('modal-desc').innerText = info.desc;
+        playClick(); inspectingItem = rawIcon; let info = getItemInfo(rawIcon);
+        document.getElementById('modal-icon').innerText = rawIcon; document.getElementById('modal-title').innerText = info.title; document.getElementById('modal-desc').innerText = info.desc;
         document.getElementById('modal-inspect-text').classList.add('hidden'); document.getElementById('modal-inspect-btn').classList.remove('hidden'); document.getElementById('item-modal').classList.remove('hidden');
     }
 }
-function inspectItem() { playSuccess(); document.getElementById('modal-inspect-btn').classList.add('hidden'); let textDiv = document.getElementById('modal-inspect-text'); textDiv.innerText = itemDB[inspectingItem].inspect || "沒有發現特別之處。"; textDiv.classList.remove('hidden'); }
+function inspectItem() { playSuccess(); document.getElementById('modal-inspect-btn').classList.add('hidden'); let textDiv = document.getElementById('modal-inspect-text'); textDiv.innerText = getItemInfo(inspectingItem).inspect; textDiv.classList.remove('hidden'); }
 function closeItemModal() { playClick(); document.getElementById('item-modal').classList.add('hidden'); }
 function selectCombineSlot(slotNum) { playClick(); activeCombineSlot = slotNum; document.getElementById('slot-1').classList.remove('active-slot'); document.getElementById('slot-2').classList.remove('active-slot'); document.getElementById('slot-' + slotNum).classList.add('active-slot'); hideMsg('combine-msg'); }
 
