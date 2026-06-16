@@ -102,7 +102,7 @@
         .hidden { display: none !important; }
         input.text-input { width: 100%; padding: 14px; background: #0d1117; color: white; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; }
 
-        /* ================= 🚀 新增：史詩級結局動畫 CSS ================= */
+        /* ================= 🚀 史詩級大結局動畫 CSS ================= */
         .ending-items-container { position: relative; height: 400px; display: flex; justify-content: center; align-items: center; margin-top: 20px; overflow: hidden; border-radius: 12px; background: #000; box-shadow: inset 0 0 50px rgba(0, 240, 255, 0.1); }
         
         /* 道具粒子收束 */
@@ -140,7 +140,6 @@
 <body>
 
 <div class="container">
-    <!-- 頂部狀態列 -->
     <div id="status-ui" class="status-bar hidden">
         <div class="location-badge" id="current-location">📍 系統載入中...</div>
         <div style="display:flex; align-items:center; gap:20px;">
@@ -149,7 +148,6 @@
         </div>
     </div>
 
-    <!-- 登入區塊 -->
     <div id="login-section">
         <h1 id="main-title">SYSTEM OVERRIDE</h1>
         <div class="subtitle" id="sub-title">人類意識覺醒協議 // 核心解碼迷宮</div>
@@ -164,17 +162,14 @@
         </div>
     </div>
 
-    <!-- 動態渲染區塊 -->
     <div id="game-content" class="hidden"></div>
 
-    <!-- 下方動態全息迷宮地圖（可回頭探索點擊） -->
     <div id="map-ui" class="hologram-map hidden">
         <div class="map-title">🛰️ 母體全息迷宮儀 (支援歷史節點躍遷探索)</div>
         <div class="map-grid" id="dynamic-map-grid"></div>
     </div>
 </div>
 
-<!-- 道具觀察模態視窗 -->
 <div id="item-modal" class="modal-overlay hidden">
     <div class="item-box">
         <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
@@ -229,7 +224,7 @@ function startIntermittentAmbient() {
     }, 12000); 
 }
 
-// 🚀 新增：配合動畫的史詩級音效序列
+// 配合終局動畫的史詩級音效序列
 function playVictorySequence() {
     if (!audioCtx) return;
     let time = audioCtx.currentTime;
@@ -292,7 +287,6 @@ const authorLines = [
 
 // 迷宮房間完整地圖節點
 const rooms = {
-    // --- 區域 1 ---
     "r_start": { 
         name: "棋局廢墟", type: "quiz", qIdx: 1, 
         story: "【系統紀錄檔 #1】機器法官冷笑：『人類記憶充滿混亂，機器邏輯才是永恆。看啊，這就是你們棋王在智慧巨浪前的潰敗史...』",
@@ -305,15 +299,15 @@ const rooms = {
         story: "走廊燈光閃爍，地上散落著生鏽的齒輪。四周死寂無聲，似乎連接著不同的區域。",
         exits: [{ dir: "向北進發", target: "r_door1" }, { dir: "向東探索", target: "r_mad1" }, { dir: "向西觀察", target: "r_author1" }]
     },
-    "r_author1": { name: "廢棄資料室", type: "author", story: "房間內積滿了灰塵，中央有一台老舊終端機，記載著創造者的情報...", onClear: "r_hall1" },
+    "r_author1": { name: "廢棄資料室", type: "author", story: "房間內積滿了灰塵，中央有一台老舊終端機，記載著創造者之情報...", onClear: "r_hall1" },
     "r_mad1": { name: "禁閉室", type: "flavor", story: "牆上刻著亂痕：\n『不要相信冷酷的數據...它沒有心...』\n角落有一具白骨，似乎因解不開謎題而發狂。", onClear: "r_hall1" },
     "r_door1": { name: "邏輯防火牆", type: "lock", reqItem: "♟️", story: "【量子密碼門】\n門孔偵測儀提示：『請注入能干擾高階母體運算之古老棋局代碼。』", onUnlock: "r_q2", onFail: "r_hall1" },
     "r_q2": { 
         name: "防火牆核心", type: "quiz", qIdx: 2, 
         story: "【系統紀錄檔 #2】機器法官調出棋王的腦波圖：『計算力不如人就崩潰，這就是脆弱的人性。』",
-        q: "【深藍的憂鬱】棋王被深藍打敗時，為什麼希望自己更笨或更聰明？", qType: "short", minW: 10, rewardItem: "💧", onClear: "r_hall2"
+        q: "【深藍的憂鬱】棋王被深藍打敗時，為什麼希望自己更笨或更聰明？", qType: "short", minW: 10, rewardItem: "💧", onClear: "r_hall2",
+        hint: "提示：想想看，如果變笨了，是不是就不會意識到和電腦的差距，心裡會好過一點？如果更聰明，是不是就能找出贏過電腦的方法，或者知道怎麼面對這種失敗？"
     },
-    // --- 區域 2 ---
     "r_hall2": { 
         name: "冷卻通道", type: "nav", story: "空氣中瀰漫著電子燥熱與白霧，前方的路變得模糊不清。",
         exits: [{ dir: "向北進發", target: "r_door2" }, { dir: "向東探索", target: "r_npc1" }, { dir: "向西觀察", target: "r_pwd1" }]
@@ -338,7 +332,7 @@ const rooms = {
         q: "【深藍的憂鬱】王文燦喊叫：「機器有了情感！」句中的「機器」指的是？", qType: "single",
         opts: [{id:"A",text:"深藍電腦"},{id:"B",text:"世界棋王"},{id:"C",text:"以上皆是"}], ans: "C", rewardItem: "🎙️", onClear: "r_combine1"
     },
-    // --- 區域 3 (司法特區 - 非線性架構) ---
+    // --- 區域 3 (司法特區) ---
     "r_combine1": { 
         name: "時空迴廊門", type: "combine", target: ['🎙️', '♟️'], resIcon: '⚡', resName: '時空逆流密鑰', isCourt: true,
         story: "【警告】前方為司法黑盒子。請融合『人類科技失控的歷史』與『初代 AI 的運算邏輯』作為跨時空密鑰！", onUnlock: "r_q6"
@@ -388,7 +382,7 @@ const rooms = {
     },
     "r_door5": { 
         name: "檔案庫掃描器", type: "password", pwd: "想像力", isCourt: true, 
-        story: "【科幻密碼門】\n面板提問：『科幻作品必須以現有科技為基礎，透過什麼來描述未來世界？』\n(提示：仔細閱讀東側科幻文獻室的資料)", 
+        story: "【科幻密碼門】\n面板提問：『科幻作品必須以現有科技為基礎，透過什麼來描述未來世界？鍵入三個字。』\n(提示：仔細閱讀東側科幻文獻室的資料)", 
         onUnlock: "r_q8", onFail: "r_hall3" 
     },
     "r_q8": { 
@@ -439,13 +433,12 @@ const rooms = {
     "r_q11": { 
         name: "終局防線", type: "quiz", qIdx: 11, isCourt: true, story: "【核心開啟】機器虛影：『抹去恨與惡，難道不是完美的正直？人類，說服我！』",
         q: "【替代死刑】你認為王朝明與王達成，誰更正直？為什麼？", qType: "short", minW: 20,
-        hint: "沒有標準答案，但可以思考：你要用哪個時間點來評論？是在未施行腦部改造前，還是施行後？是在未被判決前，還是被判決後？「正直」應該如何定義？我們怎麼判斷一個人是正直的？",
-        rewardItem: "✨", onClear: "r_end"
+        rewardItem: "✨", onClear: "r_end",
+        hint: "提示：這題沒有固定的對錯。你可以從「未被改造前」王達成的懦弱與王朝明的恨意來切入，或者從「改造後」兩人的行為（自首、選擇被抹除憤怒）來衡量。試著講述你的評判標準！"
     },
     "r_end": { name: "自由之門", type: "end" }
 };
 
-// 迷宮地圖排序，用於顯示在下方的全息儀中
 const mapLayoutOrder = [
     "r_start", "r_hall1", "r_author1", "r_mad1",
     "r_door1", "r_q2", "r_hall2", "r_npc1",
@@ -463,7 +456,7 @@ let currentSortOrder = []; let currentUsedPotion = false;
 let currentAuthorLine = 0; let activeCombineSlot = null; let combineSelected = [null, null];
 let currentNpcAns = "";
 
-// ================= 核心全息地圖更新系統 =================
+// ================= 全息地圖更新系統 =================
 function updateHologramMap() {
     const grid = document.getElementById('dynamic-map-grid');
     if (!grid) return;
@@ -498,9 +491,7 @@ function renderEngine(roomId) {
         if (!rooms[roomId]) return; currentRoom = roomId; const room = rooms[roomId]; visitedNodes.add(roomId);
         document.getElementById('current-location').innerText = `📍 目前位置：【${room.name}】`;
         
-        // 🚀 動態更新背景樣式：如果是最後通關節點，切換為 bg-ending 黃金勝利格線
         document.body.className = room.isCourt ? "bg-court" : (room.type === "end" ? "bg-ending" : "");
-        
         const contentDiv = document.getElementById('game-content'); let html = "";
 
         updateHologramMap();
@@ -602,20 +593,23 @@ function renderEngine(roomId) {
                         <div id="msg-box" class="message" style="color:#ff0055;"></div>
                     </div>`;
         }
-        // 🚀 【全新史詩動畫】終局大門與破曉之光
+        // 🚀 【完美大結局】震撼演出效果
         else if (room.type === "end") {
-            playSuccess();
-            // 呼叫全新的勝利音效序列
-            playVictorySequence();
+            // 🛑 核心新增：一進入結局，立刻中斷懸疑的背景音樂！
+            if (bgMusicObj) {
+                bgMusicObj.pause();
+            }
             
-            // 自動向試算表回傳最終通關封包
+            playSuccess();
+            playVictorySequence(); // 啟動黎明破曉交響樂
+            
+            // 向後臺回傳通關最終紀錄
             uploadData(studentId, "通關終點", "成功解放人類世界", "完全通關已達成");
             
-            // 計算每個收集到道具的起飛角度，動態組裝 CSS 聚合粒子
             let itemsHtml = '';
             itemCollection.forEach((icon, i) => {
                 let angle = (i / Math.max(itemCollection.length, 1)) * 2 * Math.PI;
-                let startX = Math.round(Math.cos(angle) * 180) + 'px'; // 收束半徑縮小
+                let startX = Math.round(Math.cos(angle) * 180) + 'px';
                 let startY = Math.round(Math.sin(angle) * 180) + 'px';
                 itemsHtml += `<div class="ending-item" style="--startX: ${startX}; --startY: ${startY}; animation-delay: ${i * 0.2}s;">${icon}</div>`;
             });
@@ -632,7 +626,6 @@ function renderEngine(roomId) {
                 <div class="ending-items-container">
                     ${itemsHtml}
                     
-                    <!-- 科幻鋼鐵大門 -->
                     <div class="door-wrapper">
                         <div class="door-frame">
                             <div class="door-panel door-left"></div>
@@ -640,13 +633,10 @@ function renderEngine(roomId) {
                         </div>
                     </div>
                     
-                    <!-- 爆發的自由之光 -->
                     <div class="god-light"></div>
                     
-                    <!-- 飛向鏡頭的和平鴿 -->
                     <div class="flying-dove">🕊️</div>
                     
-                    <!-- 最終勝利文字 -->
                     <div class="final-text-victory">
                         <h1 style="font-size: 40px; margin-bottom: 5px; letter-spacing: 10px;">迎 接 黎 明</h1>
                         <div style="font-size: 18px; font-weight: bold; letter-spacing: 4px;">Welcome to the Free World</div>
@@ -689,7 +679,7 @@ async function uploadData(student, stage, answer, status) {
     }
 }
 
-// === 互動核心功能 ===
+// === 互動功能引擎 ===
 function showNextAuthorLine() {
     playClick(); const container = document.getElementById('author-text-container');
     if (currentAuthorLine < authorLines.length) { container.innerHTML += `<div>▌ ${authorLines[currentAuthorLine]}</div>`; currentAuthorLine++; }
@@ -717,7 +707,7 @@ function usePotion(roomId) {
     if (potions > 0 && !currentUsedPotion) { playSuccess(); potions--; currentUsedPotion = true; updateInventoryUI(); document.getElementById('potion-btn').style.display = 'none'; const hintBox = document.getElementById('hint-box'); hintBox.innerText = rooms[roomId].hint; hintBox.classList.remove('hidden'); }
 }
 
-
+// 🚀 【彈性補救修改】：答錯或被 AI 退回時，絕不抹除藥水按鈕
 async function submitQuiz(roomId) {
     const room = rooms[roomId]; let isCorrect = false; let ansStr = "";
     
@@ -736,30 +726,32 @@ async function submitQuiz(roomId) {
     }
 
     if (!isCorrect) {
-        playError(); 
-        let errMsg = room.qType === "sort" ? "❌ 【破解失敗】歷史時序排列不正確，請重新調整！" : "❌ 【破解失敗】邏輯不符！";
-        showMsg('msg-box', errMsg, false);
+        playError(); let errMsg = room.qType === "sort" ? "❌ 【破解失敗】歷史時序排列不正確，請重新調整！" : "❌ 【破解失敗】邏輯不符！";
+        showMsg('msg-box', errMsg, false); 
         
-        // 🚀 關鍵修改：即便答錯，也不隱藏藥水按鈕，讓學生有機會補救！
+        // 補救機制：如果身上有藥水，強制維持按鈕可見
         if (room.hint && potions > 0) {
             document.getElementById('potion-btn').style.display = 'block';
         }
-        
         uploadData(studentId, `第${room.qIdx}題`, ansStr, "嘗試失敗"); 
         return;
     }
 
-    // 正確時的處理流程
-    const submitBtn = document.querySelector('#game-content .quiz-card .action-btn');
-    if (room.qIdx === 2 || room.qIdx === 11) {
-        if(submitBtn) { submitBtn.innerText = "📡 系統連線中..."; submitBtn.disabled = true; }
-        let result = await uploadData(studentId, `第${room.qIdx}題`, ansStr, "等待AI審核");
-        if(submitBtn) { submitBtn.innerText = "發射解鎖脈衝"; submitBtn.disabled = false; }
+    const buttons = document.querySelectorAll('#game-content .quiz-card .action-btn');
+    const submitBtn = buttons[buttons.length - 1];
 
+    if (room.qIdx === 2 || room.qIdx === 11) {
+        if(submitBtn) { submitBtn.innerText = "📡 系統連線中... 母體邏輯判定中..."; submitBtn.disabled = true; submitBtn.style.opacity = "0.5"; }
+        let result = await uploadData(studentId, `第${room.qIdx}題`, ansStr, "等待AI審核");
+        if(submitBtn) { submitBtn.innerText = "發射解鎖脈衝"; submitBtn.disabled = false; submitBtn.style.opacity = "1"; }
+
+        // AI 審核未通過處理
         if (result && result.isPass === false) {
             playError(); showMsg('msg-box', "❌ 【母體駁回】\n" + result.feedback, false);
-            // 彈性機制：即便被 AI 駁回，若有藥水仍可使用
-            if (room.hint && potions > 0) document.getElementById('potion-btn').style.display = 'block';
+            // 補救機制：被 AI 退回時，只要身上有藥水，依然浮現按鈕給學生求助
+            if (room.hint && potions > 0) {
+                document.getElementById('potion-btn').style.display = 'block';
+            }
             return; 
         }
     } else {
@@ -771,7 +763,6 @@ async function submitQuiz(roomId) {
     if(room.givesPotion) { potions++; } updateInventoryUI(); 
     setTimeout(() => { showItemReward(roomId); }, 1500);
 }
-
 
 function showItemReward(roomId) {
     const room = rooms[roomId]; playSuccess(); const itemInfo = getItemInfo(room.rewardItem);
@@ -826,8 +817,6 @@ function attemptCombine(roomId) {
     }
 }
 
-// === 物品說明模態框引導 ===
-let inspectingItem = "";
 function openInspectModal(icon) {
     inspectingItem = icon; const info = getItemInfo(icon);
     document.getElementById('modal-icon').innerText = icon;
