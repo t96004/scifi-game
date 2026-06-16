@@ -523,7 +523,8 @@ function renderEngine(roomId) {
 
 // === API 安全通訊防護網 (此處已更新為最新 Google 擴充網址) ===
 async function uploadData(student, stage, answer, status) {
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbyp3K-ivrbTrU1_tl8UGVFcQp3MIrx3ls3eOJEyBjmUKDL-EA6u9nUG6A5k35Jrjg-aYA/exec"; 
+    // 這裡替換成了您最新的網址
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbz-PAohDVsVux8srnK1qGTAjTkSfNJgEr9shNVPCPby-4AxOZFrHBXNfUvMwvNm5-zl7w/exec"; 
     try {
         let response = await fetch(webAppUrl, {
             method: "POST",
