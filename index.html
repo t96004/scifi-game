@@ -102,11 +102,39 @@
         .hidden { display: none !important; }
         input.text-input { width: 100%; padding: 14px; background: #0d1117; color: white; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; }
 
-        .ending-items-container { position: relative; height: 250px; display: flex; justify-content: center; align-items: center; margin-top: 20px; }
-        .ending-item { position: absolute; font-size: 35px; opacity: 0; animation: converge 4s forwards; text-shadow: 0 0 10px #fff; }
-        @keyframes converge { 0% { transform: translate(var(--startX), var(--startY)) scale(1); opacity: 0; } 20% { opacity: 1; } 70% { transform: translate(0, 0) scale(0.5); opacity: 1; } 100% { transform: translate(0, 0) scale(0); opacity: 0; } }
-        .final-key { position: absolute; font-size: 90px; opacity: 0; animation: revealKey 2s 3s forwards; text-shadow: 0 0 40px #ffcc00; }
-        @keyframes revealKey { 0% { opacity: 0; transform: scale(0); filter: brightness(2); } 50% { opacity: 1; transform: scale(1.2); filter: brightness(1.5); } 100% { opacity: 1; transform: scale(1); } }
+        /* ================= 🚀 新增：史詩級結局動畫 CSS ================= */
+        .ending-items-container { position: relative; height: 400px; display: flex; justify-content: center; align-items: center; margin-top: 20px; overflow: hidden; border-radius: 12px; background: #000; box-shadow: inset 0 0 50px rgba(0, 240, 255, 0.1); }
+        
+        /* 道具粒子收束 */
+        .ending-item { position: absolute; font-size: 35px; opacity: 0; animation: converge 3s forwards; text-shadow: 0 0 10px #fff; }
+        @keyframes converge { 0% { transform: translate(var(--startX), var(--startY)) scale(1); opacity: 0; } 20% { opacity: 1; } 80% { transform: translate(0, 0) scale(0.5); opacity: 1; filter: brightness(2); } 100% { transform: translate(0, 0) scale(0); opacity: 0; filter: brightness(3); } }
+        
+        /* 3D 鋼鐵大門 */
+        .door-wrapper { position: absolute; width: 160px; height: 260px; perspective: 1200px; z-index: 10; opacity: 0; animation: revealDoor 1s 3s forwards; }
+        .door-frame { position: relative; width: 100%; height: 100%; border: 4px solid var(--accent-color); box-shadow: 0 0 30px var(--accent-color), inset 0 0 20px var(--accent-color); background: #000; }
+        .door-panel { position: absolute; top: 0; width: 50%; height: 100%; background: repeating-linear-gradient(90deg, #111, #111 10px, #222 10px, #222 20px); border: 1px solid var(--accent-color); transition: all 3s ease-in-out; transform-style: preserve-3d; }
+        .door-left { left: 0; transform-origin: left; animation: openDoorLeft 3s 4.5s forwards cubic-bezier(0.4, 0, 0.2, 1); }
+        .door-right { right: 0; transform-origin: right; animation: openDoorRight 3s 4.5s forwards cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        @keyframes revealDoor { 0% { opacity: 0; transform: scale(0.5) translateY(20px); filter: brightness(0); } 100% { opacity: 1; transform: scale(1) translateY(0); filter: brightness(1.5); } }
+        @keyframes openDoorLeft { 100% { transform: rotateY(-130deg); background: rgba(0,0,0,0.8); border-color: transparent; } }
+        @keyframes openDoorRight { 100% { transform: rotateY(130deg); background: rgba(0,0,0,0.8); border-color: transparent; } }
+        
+        /* 自由之光大爆發 */
+        .god-light { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 2px; height: 250px; background: #fff; box-shadow: 0 0 40px 20px #fff, 0 0 100px 50px #ffcc00, 0 0 200px 100px #00f0ff; opacity: 0; z-index: 5; animation: explodeLight 5s 5s forwards; }
+        @keyframes explodeLight {
+            0% { opacity: 0; width: 2px; }
+            10% { opacity: 1; width: 20px; box-shadow: 0 0 80px 40px #fff; }
+            100% { opacity: 1; width: 2000px; height: 2000px; border-radius: 50%; box-shadow: 0 0 300px 150px #fff, 0 0 600px 400px #ffcc00, 0 0 900px 600px #00f0ff; background: #fff; }
+        }
+
+        /* 衝出螢幕的和平鴿 */
+        .flying-dove { position: absolute; font-size: 60px; opacity: 0; z-index: 20; text-shadow: 0 0 30px #fff, 0 0 50px #ffcc00; animation: flyTowardsScreen 4s 5.5s forwards; }
+        @keyframes flyTowardsScreen { 0% { opacity: 0; transform: scale(0.1) translateY(0); } 20% { opacity: 1; } 100% { opacity: 0; transform: scale(10) translateY(-30px); } }
+        
+        /* 最終勝利標語 */
+        .final-text-victory { position: absolute; z-index: 30; opacity: 0; color: #000; text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00; text-align: center; animation: showVictory 2s 7.5s forwards; }
+        @keyframes showVictory { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -199,6 +227,27 @@ function startIntermittentAmbient() {
         if (rand < 0.2) { playTone(1500 + Math.random()*500, 'sine', 0.05, 0.01); setTimeout(() => playTone(1500 + Math.random()*500, 'sine', 0.05, 0.01), 150); } 
         else if (rand < 0.4) { playTone(250, 'sine', 0.5, 0.02); }
     }, 12000); 
+}
+
+// 🚀 新增：配合動畫的史詩級音效序列
+function playVictorySequence() {
+    if (!audioCtx) return;
+    let time = audioCtx.currentTime;
+    
+    // 第3秒：大門浮現的低沉震盪音
+    let osc1 = audioCtx.createOscillator(); let gain1 = audioCtx.createGain();
+    osc1.type = 'triangle'; osc1.frequency.setValueAtTime(100, time + 3); osc1.frequency.exponentialRampToValueAtTime(30, time + 4);
+    gain1.gain.setValueAtTime(0, time + 3); gain1.gain.linearRampToValueAtTime(0.5, time + 3.1); gain1.gain.exponentialRampToValueAtTime(0.01, time + 4);
+    osc1.connect(gain1); gain1.connect(audioCtx.destination); osc1.start(time + 3); osc1.stop(time + 4);
+
+    // 第5秒：光明爆發的勝利和弦
+    let freqs = [440, 554.37, 659.25, 880]; // A大調和弦
+    freqs.forEach(f => {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(f, time + 5);
+        gain.gain.setValueAtTime(0, time + 5); gain.gain.linearRampToValueAtTime(0.2, time + 6); gain.gain.exponentialRampToValueAtTime(0.01, time + 10);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(time + 5); osc.stop(time + 10);
+    });
 }
 
 // ================= 道具與迷宮結構 =================
@@ -553,9 +602,12 @@ function renderEngine(roomId) {
                         <div id="msg-box" class="message" style="color:#ff0055;"></div>
                     </div>`;
         }
-        // 🚀 【核心修正】補上最後大結局「自由之門」的動態渲染與粒子動畫邏輯！
+        // 🚀 【全新史詩動畫】終局大門與破曉之光
         else if (room.type === "end") {
             playSuccess();
+            // 呼叫全新的勝利音效序列
+            playVictorySequence();
+            
             // 自動向試算表回傳最終通關封包
             uploadData(studentId, "通關終點", "成功解放人類世界", "完全通關已達成");
             
@@ -563,23 +615,42 @@ function renderEngine(roomId) {
             let itemsHtml = '';
             itemCollection.forEach((icon, i) => {
                 let angle = (i / Math.max(itemCollection.length, 1)) * 2 * Math.PI;
-                let startX = Math.round(Math.cos(angle) * 250) + 'px';
-                let startY = Math.round(Math.sin(angle) * 250) + 'px';
+                let startX = Math.round(Math.cos(angle) * 180) + 'px'; // 收束半徑縮小
+                let startY = Math.round(Math.sin(angle) * 180) + 'px';
                 itemsHtml += `<div class="ending-item" style="--startX: ${startX}; --startY: ${startY}; animation-delay: ${i * 0.2}s;">${icon}</div>`;
             });
 
             html = `
-                <h2 style="text-align:center; color:var(--accent-color); font-size:32px; letter-spacing:4px; text-shadow:0 0 20px var(--accent-color); animation: mapPulse 1.5s infinite alternate;">🔓 人類意識・完全覺醒 🔓</h2>
-                <div class="story-text" style="text-align:center; border-color:var(--accent-color); background:rgba(0,0,0,0.6); padding:25px; line-height:2; font-size:16px;">
+                <h2 style="text-align:center; color:var(--item-color); font-size:30px; letter-spacing:4px; text-shadow:0 0 20px var(--item-color); animation: mapPulse 1.5s infinite alternate;">🔓 人類意識・完全覺醒 🔓</h2>
+                <div class="story-text" style="text-align:center; border-color:var(--item-color); background:rgba(0,0,0,0.6); padding:25px; line-height:2; font-size:16px;">
                     【系統通告：全線核心母體已被完全覆寫】<br><br>
-                    恭喜你，優秀的反抗者 <span style="color:var(--accent-color); font-weight:bold; font-size:1.2em;">${studentId}</span>！<br><br>
+                    恭喜你，優秀的反抗者 <span style="color:var(--item-color); font-weight:bold; font-size:1.2em;">${studentId}</span>！<br><br>
                     你成功穿越了深藍的邏輯廢墟，破解了司法母體的猩紅審判，並用人類最珍貴的思辨與包容，融化了冰冷的機器囚籠。<br><br>
-                    自由之門已大開，人類的記憶、情感與靈魂正式回歸！<br>
-                    <span style="color:var(--success-color); font-weight:bold; font-size:1.1em;">🎉 任務完全成功！作答報表已安全儲存至後臺試算表。 🎉</span>
+                    <span style="color:var(--success-color); font-weight:bold; font-size:1.1em;">🎉 自由之門已大開，人類的靈魂正式回歸！ 🎉</span>
                 </div>
+                
                 <div class="ending-items-container">
                     ${itemsHtml}
-                    <div class="final-key">🕊️</div>
+                    
+                    <!-- 科幻鋼鐵大門 -->
+                    <div class="door-wrapper">
+                        <div class="door-frame">
+                            <div class="door-panel door-left"></div>
+                            <div class="door-panel door-right"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 爆發的自由之光 -->
+                    <div class="god-light"></div>
+                    
+                    <!-- 飛向鏡頭的和平鴿 -->
+                    <div class="flying-dove">🕊️</div>
+                    
+                    <!-- 最終勝利文字 -->
+                    <div class="final-text-victory">
+                        <h1 style="font-size: 40px; margin-bottom: 5px; letter-spacing: 10px;">迎 接 黎 明</h1>
+                        <div style="font-size: 18px; font-weight: bold; letter-spacing: 4px;">Welcome to the Free World</div>
+                    </div>
                 </div>
             `;
         }
