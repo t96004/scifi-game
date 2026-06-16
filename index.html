@@ -82,6 +82,8 @@
         
         button.action-btn { background: transparent; color: var(--accent-color); border: 2px solid var(--accent-color); padding: 14px 20px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; letter-spacing: 2px; transition: all 0.3s; }
         button.action-btn:hover { background: var(--accent-color); color: #000; box-shadow: 0 0 20px var(--accent-color); }
+        button.potion-btn { border-color: var(--success-color); color: var(--success-color); margin-bottom: 15px; display: none; }
+        button.potion-btn:hover { background: var(--success-color); color: #000; box-shadow: 0 0 20px var(--success-color); }
         
         .message { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; font-size: 15px; display: none; }
         .msg-success { display: block; background: rgba(0, 255, 102, 0.1); color: var(--success-color); border: 1px solid var(--success-color); }
@@ -145,7 +147,7 @@
 </div>
 
 <script>
-// 音效引擎
+// ================= 音效引擎 =================
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioCtx, ambientInterval, bgMusicObj = null;
 
@@ -187,7 +189,7 @@ function startIntermittentAmbient() {
     }, 12000); 
 }
 
-// === 道具與陷阱資料庫 ===
+// ================= 道具與陷阱資料庫 =================
 const itemDB = {
     '♟️': { title: "破損的西洋棋子", desc: "初代 AI 的運算邏輯，可干擾母體運算。", inspect: "底部刻著細小的文字：『這不是終點，而是開端。』" },
     '💧': { title: "舊時代的眼淚結晶", desc: "含有高濃度的『悲傷與自卑』赫茲。", inspect: "冰冷的結晶中，似乎倒映著人類的脆弱。" },
@@ -224,7 +226,7 @@ const authorLines = [
     "著名作品有《尋找陽光的旅程》、《銀河迷航記》、《時間魔術師》等書。"
 ];
 
-// === 迷宮房間資料庫 (RPG 節點式) ===
+// ================= 迷宮房間資料庫 (RPG 節點式) =================
 const rooms = {
     // --- 區域 1 ---
     "r_start": { 
@@ -387,7 +389,7 @@ const rooms = {
     },
     "r_combine2": { 
         name: "核心控制閥", type: "combine", target: ['💧', '💉'], resIcon: '🕊️', resName: '平靜空無代碼', isCourt: true,
-        story: "【警告】中央核心充滿王朝明的怨氣。必須調和『極致的悲傷』與『抹除機制』，方能中和能量開啟大門！\n\n👇 解鎖程序：1.點擊下方凹槽使其發光 ➔ 2.從上方背包點選道具放入 👇",
+        story: "【警告】中央核心充滿怨氣。必須調和『極致的悲傷』與『抹除機制』，方能中和能量開啟大門！\n\n👇 解鎖程序：1.點擊下方凹槽使其發光 ➔ 2.從上方背包點選道具放入 👇",
         onUnlock: "r_q11"
     },
     "r_q11": { 
@@ -477,7 +479,7 @@ function renderEngine(roomId) {
                         <input type="text" id="pwd-input" class="text-input" placeholder="輸入解鎖代碼..." style="width:60%; margin-bottom:20px;">
                         <button class="action-btn" onclick="checkPassword('${roomId}')">驗證密碼</button>
                         <div id="pwd-msg" class="message"></div>
-                        <button class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail}')">返回上一層</button>
+                        <button class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall2'}')">返回上一層</button>
                     </div>`;
         }
         else if (room.type === "lock") {
@@ -488,7 +490,7 @@ function renderEngine(roomId) {
                         👆 檢測啟動：請點擊上方【空間背包】中適合的道具注入 👆
                     </div>
                     <div id="lock-msg" class="message"></div>
-                    <button class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_start'}')">放棄解鎖，返回</button>`;
+                    <button class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall1'}')">放棄解鎖，返回</button>`;
         }
         else if (room.type === "combine") {
             activeCombineSlot = null; combineSelected = [null, null]; playTypingSound();
@@ -559,14 +561,18 @@ function showNextAuthorLine() {
 function submitNpc(roomId) {
     const selected = document.querySelector('input[name="npc-choice"]:checked');
     if (!selected) { playError(); showMsg('npc-msg', "⚠️ 必須做出選擇！", false); return; }
+    
     document.getElementById('npc-btn').classList.add('hidden');
-    document.getElementById('npc-opts').style.pointerEvents = 'none'; document.getElementById('npc-opts').style.opacity = '0.5';
+    document.getElementById('npc-opts').style.pointerEvents = 'none';
+    document.getElementById('npc-opts').style.opacity = '0.5';
     document.getElementById('npc-leave-btn').classList.remove('hidden');
+
     if (selected.value === "true") {
-        potions++; updateInventoryUI(); showMsg('npc-msg', "🟢 答對了！獲得【🧪 藥水 x 1】", true);
+        potions++; updateInventoryUI();
+        showMsg('npc-msg', "🟢 答對了！獲得【🧪 藥水 x 1】", true);
         uploadData(studentId, `NPC遭遇戰`, "成功", "獲得藥水");
     } else {
-        showMsg('npc-msg', `❌ 答錯了！正確答案是「${currentNpcAns}」。對方失望地逃走了...`, false);
+        showMsg('npc-msg', `❌ 答錯了！正確答案是「${currentNpcAns}」。對方失望地帶著藥水逃走了...`, false);
         uploadData(studentId, `NPC遭遇戰`, "失敗", "錯失藥水");
     }
 }
@@ -574,8 +580,11 @@ function submitNpc(roomId) {
 function checkPassword(roomId) {
     const val = document.getElementById('pwd-input').value.trim(); const room = rooms[roomId];
     if (val === room.pwd) {
-        showMsg('pwd-msg', "🟢 密碼正確！通道已解鎖。", true); setTimeout(() => { renderEngine(room.onUnlock); }, 1500);
-    } else { showMsg('pwd-msg', "❌ 密碼錯誤！", false); playError(); }
+        showMsg('pwd-msg', "🟢 密碼正確！通道已解鎖。", true);
+        setTimeout(() => { renderEngine(room.onUnlock); }, 1500);
+    } else {
+        showMsg('pwd-msg', "❌ 密碼錯誤！", false); playError();
+    }
 }
 
 function usePotion(roomId) {
@@ -588,59 +597,125 @@ function usePotion(roomId) {
 }
 
 function submitQuiz(roomId) {
-    const room = rooms[roomId]; let isCorrect = false; let ansStr = "";
-    if (room.qType === "single") {
-        const selected = document.querySelector('input[name="q-choice"]:checked');
-        if (!selected) { playError(); showMsg('msg-box', "⚠️ 未選取選項！", false); return; }
-        ansStr = selected.value; isCorrect = (ansStr === room.ans);
-    } else if (room.qType === "multi") {
-        const checkedBoxes = document.querySelectorAll('input[name="q-choice"]:checked');
-        const ansArray = Array.from(checkedBoxes).map(cb => cb.value); ansStr = ansArray.join(",");
-        isCorrect = ansArray.length === room.ans.length && ansArray.every(val => room.ans.includes(val));
-    } else if (room.qType === "sort") {
-        const ids = currentSortOrder.map(i => i.id); ansStr = ids.join("➔");
-        isCorrect = ids.every((val, i) => val === room.ans[i]);
-    } else {
-        const field = document.getElementById('short-answer'); ansStr = field ? field.value.trim() : "";
-        if (ansStr.length < room.minW) { playError(); showMsg('msg-box', `⚠️ 深度不足（需 ${room.minW} 字）！`, false); return; }
-        isCorrect = room.keywords ? room.keywords.some(k => ansStr.includes(k)) : true;
-    }
-    let statusLog = currentUsedPotion ? "成功過關(已用藥水)" : "成功過關";
-    let failLog = currentUsedPotion ? "嘗試失敗(已用藥水)" : "嘗試失敗";
-    if (isCorrect) {
-        showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true); uploadData(studentId, `第${room.qIdx}題`, ansStr, statusLog);
-        if(!itemCollection.includes(room.rewardItem)) itemCollection.push(room.rewardItem);
-        if(room.givesPotion) { potions++; }
-        updateInventoryUI();
-        setTimeout(() => { showItemReward(roomId); }, 1500);
-    } else {
-        showMsg('msg-box', "❌ 【破解失敗】邏輯不符！", false); uploadData(studentId, `第${room.qIdx}題`, ansStr, failLog);
+    try {
+        const room = rooms[roomId]; let isCorrect = false; let ansStr = "";
+
+        if (room.qType === "single") {
+            const selected = document.querySelector('input[name="q-choice"]:checked');
+            if (!selected) { playError(); showMsg('msg-box', "⚠️ 未選取選項！", false); return; }
+            ansStr = selected.value; isCorrect = (ansStr === room.ans);
+        } else if (room.qType === "multi") {
+            const checkedBoxes = document.querySelectorAll('input[name="q-choice"]:checked');
+            const ansArray = Array.from(checkedBoxes).map(cb => cb.value); ansStr = ansArray.join(",");
+            isCorrect = ansArray.length === room.ans.length && ansArray.every(val => room.ans.includes(val));
+        } else if (room.qType === "sort") {
+            const ids = currentSortOrder.map(i => i.id); ansStr = ids.join("➔");
+            isCorrect = ids.every((val, i) => val === room.ans[i]);
+        } else {
+            const field = document.getElementById('short-answer'); ansStr = field ? field.value.trim() : "";
+            if (ansStr.length < room.minW) { playError(); showMsg('msg-box', `⚠️ 深度不足（需 ${room.minW} 字）！`, false); return; }
+            if (room.keywords) { isCorrect = room.keywords.some(k => ansStr.includes(k)); } else { isCorrect = true; }
+        }
+
+        let statusLog = currentUsedPotion ? "成功過關(已用藥水)" : "成功過關";
+        let failLog = currentUsedPotion ? "嘗試失敗(已用藥水)" : "嘗試失敗";
+
+        if (isCorrect) {
+            showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true);
+            uploadData(studentId, `第${room.qIdx}題`, ansStr, statusLog);
+            
+            if(!itemCollection.includes(room.rewardItem)) itemCollection.push(room.rewardItem);
+            if(room.givesPotion) { potions++; }
+            updateInventoryUI();
+            
+            setTimeout(() => { showItemReward(roomId); }, 1500);
+        } else {
+            playError();
+            let errMsg = room.qType === "sort" ? "❌ 【破解失敗】歷史時序排列不正確，請重新調整！" : "❌ 【破解失敗】邏輯不符！";
+            showMsg('msg-box', errMsg, false); 
+            uploadData(studentId, `第${room.qIdx}題`, ansStr, failLog);
+        }
+    } catch(e) {
+        alert("作答判定發生錯誤：" + e.message);
     }
 }
 
 function showItemReward(roomId) {
-    const room = rooms[roomId]; playSuccess(); const itemInfo = itemDB[room.rewardItem];
-    let html = `<div class="item-box" style="margin: 0 auto;">
-                    <div class="item-icon">${room.rewardItem}</div>
-                    <div class="item-title">解鎖道具：【${itemInfo.title}】</div>
-                    <div class="item-desc">${itemInfo.desc}</div>
-                </div>`;
-    if(room.givesPotion) { html += `<div style="color:var(--success-color); font-weight:bold; text-align:center; margin-top:20px; font-size:16px;">🎉 系統額外補給：獲得【🧪 藥水 x 1】</div>`; }
-    html += `<button class="action-btn" style="margin-top:30px;" onclick="renderEngine('${room.onClear}')">收下道具，繼續前進</button>`;
+    const room = rooms[roomId]; playSuccess();
+    const itemInfo = itemDB[room.rewardItem];
+    
+    let html = `
+        <div class="item-box" style="margin: 0 auto;">
+            <div class="item-icon">${room.rewardItem}</div>
+            <div class="item-title">解鎖道具：【${itemInfo.title}】</div>
+            <div class="item-desc">${itemInfo.desc}</div>
+        </div>
+    `;
+    if(room.givesPotion) {
+        html += `<div style="color:var(--success-color); font-weight:bold; text-align:center; margin-top:20px; font-size:16px;">🎉 系統額外補給：獲得【🧪 藥水 x 1】</div>`;
+    }
+    html += `<button class="action-btn" style="margin-top:30px;" onclick="renderEngine('${room.onClear}')">收下道具，繼續探索</button>`;
+    
     document.getElementById('game-content').innerHTML = html;
 }
 
-// === 背包觀察與互動 ===
+// === 排序與雜項 ===
+function renderSortList() {
+    const area = document.getElementById('interactive-area'); area.innerHTML = "";
+    currentSortOrder.forEach((item, index) => {
+        area.innerHTML += `<div class="sort-item"><div class="sort-text">${item.text}</div><div class="sort-btns"><button class="sort-btn" onclick="playClick(); moveItem(${index}, -1)">▲</button><button class="sort-btn" onclick="playClick(); moveItem(${index}, 1)">▼</button></div></div>`;
+    });
+}
+function moveItem(index, dir) {
+    const target = index + dir; if (target < 0 || target >= currentSortOrder.length) return;
+    [currentSortOrder[index], currentSortOrder[target]] = [currentSortOrder[target], currentSortOrder[index]]; renderSortList();
+}
+function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
+function updateWordCount(t) { document.getElementById('word-count-div').innerText = `字數計測：${t.value.length}`; }
+
+function showMsg(boxId, text, isSuccess) {
+    const box = document.getElementById(boxId); box.innerText = text; box.className = isSuccess ? "message msg-success" : "message msg-error";
+    if (isSuccess) { playSuccess(); document.body.classList.remove('alarm-active'); } else { playError(); document.body.classList.add('alarm-active'); }
+}
+function hideMsg(boxId) { const b=document.getElementById(boxId); if(b) b.className = "message hidden"; document.body.classList.remove('alarm-active'); }
+
+// === 組合系統 ===
+function selectCombineSlot(slotNum) {
+    playClick(); activeCombineSlot = slotNum;
+    document.getElementById('slot-1').classList.remove('active-slot');
+    document.getElementById('slot-2').classList.remove('active-slot');
+    document.getElementById('slot-' + slotNum).classList.add('active-slot');
+    hideMsg('combine-msg');
+}
+function attemptCombine(roomId) {
+    let room = rooms[roomId]; let target = room.target; 
+    if (combineSelected[0] && combineSelected[1] && target.includes(combineSelected[0]) && target.includes(combineSelected[1])) {
+        playSuccess();
+        showMsg('combine-msg', `🟢 融合成功！生成【${room.resName}】，大門強制開啟！`, true);
+        if(!itemCollection.includes(room.resIcon)) { itemCollection.push(room.resIcon); updateInventoryUI(); }
+        setTimeout(() => { renderEngine(room.onUnlock); }, 2000);
+    } else {
+        playError(); showMsg('combine-msg', "❌ 融合失敗！物質粒子波段不符，請重新選擇。", false);
+        combineSelected = [null, null];
+        document.getElementById('slot-1').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 1</span>'; 
+        document.getElementById('slot-2').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 2</span>';
+        document.getElementById('slot-1').className = "combine-slot"; document.getElementById('slot-2').className = "combine-slot";
+    }
+}
+
+// === 背包觀察系統 ===
 let inspectingItem = "";
 function handleInventoryClick(icon) {
     const room = rooms[currentRoom];
     if (room && room.type === 'lock') {
         if (icon === room.reqItem) {
-            playSuccess(); showMsg('lock-msg', '🟢 物質波段吻合，大門強制開啟！', true); setTimeout(() => { renderEngine(room.onUnlock); }, 1500);
+            playSuccess(); showMsg('lock-msg', '🟢 物質波段吻合，大門強制開啟！', true);
+            setTimeout(() => { renderEngine(room.onUnlock); }, 1500);
         } else {
             playError(); showMsg('lock-msg', '❌ 物質波段不符，大門毫無反應。', false);
         }
-    } else if (room && room.type === 'combine') {
+    }
+    else if (room && room.type === 'combine') {
         if (activeCombineSlot) {
             if (combineSelected[0] === icon || combineSelected[1] === icon) { playError(); showMsg('combine-msg', '⚠️ 已放入凹槽！', false); return; }
             playClick(); combineSelected[activeCombineSlot - 1] = icon;
@@ -648,63 +723,47 @@ function handleInventoryClick(icon) {
             slotElem.innerText = icon; slotElem.classList.remove('active-slot'); slotElem.classList.add('filled');
             activeCombineSlot = null; hideMsg('combine-msg');
         } else {
-            playError(); showMsg('combine-msg', '⚠️ 請先點擊下方的融合凹槽，再從上方背包選擇道具！', false);
+            playError(); showMsg('combine-msg', '⚠️ 請先點擊下方的融合凹槽，再選擇道具！', false);
         }
     } else {
-        playClick(); inspectingItem = icon; let info = itemDB[icon] || { title: "未知晶體", desc: "無法解析的能量聚合體。" };
-        document.getElementById('modal-icon').innerText = icon; document.getElementById('modal-title').innerText = info.title;
+        // 打開觀察模態視窗
+        playClick(); inspectingItem = icon;
+        let info = itemDB[icon] || { title: "未知晶體", desc: "無法解析的能量聚合體。" };
+        document.getElementById('modal-icon').innerText = icon;
+        document.getElementById('modal-title').innerText = info.title;
         document.getElementById('modal-desc').innerText = info.desc;
-        document.getElementById('modal-inspect-text').classList.add('hidden'); document.getElementById('modal-inspect-btn').classList.remove('hidden');
+        document.getElementById('modal-inspect-text').classList.add('hidden');
+        document.getElementById('modal-inspect-btn').classList.remove('hidden');
         document.getElementById('item-modal').classList.remove('hidden');
     }
 }
-function inspectItem() { playSuccess(); document.getElementById('modal-inspect-btn').classList.add('hidden'); let textDiv = document.getElementById('modal-inspect-text'); textDiv.innerText = itemDB[inspectingItem].inspect || "沒有發現特別之處。"; textDiv.classList.remove('hidden'); }
-function closeItemModal() { playClick(); document.getElementById('item-modal').classList.add('hidden'); }
-
-// === 合成系統 ===
-function selectCombineSlot(slotNum) {
-    playClick(); activeCombineSlot = slotNum;
-    document.getElementById('slot-1').classList.remove('active-slot'); document.getElementById('slot-2').classList.remove('active-slot');
-    document.getElementById('slot-' + slotNum).classList.add('active-slot'); hideMsg('combine-msg');
+function inspectItem() {
+    playSuccess();
+    let info = itemDB[inspectingItem];
+    document.getElementById('modal-inspect-btn').classList.add('hidden');
+    let textDiv = document.getElementById('modal-inspect-text');
+    textDiv.innerText = info.inspect || "沒有發現特別之處。";
+    textDiv.classList.remove('hidden');
 }
-function attemptCombine(roomId) {
-    let room = rooms[roomId]; let target = room.target; 
-    if (combineSelected[0] && combineSelected[1] && target.includes(combineSelected[0]) && target.includes(combineSelected[1])) {
-        playSuccess(); showMsg('combine-msg', `🟢 融合成功！生成【${room.resName}】，大門強制開啟！`, true);
-        if(!itemCollection.includes(room.resIcon)) { itemCollection.push(room.resIcon); updateInventoryUI(); }
-        setTimeout(() => { renderEngine(room.onUnlock); }, 2000);
-    } else {
-        playError(); showMsg('combine-msg', "❌ 融合失敗！物質粒子波段不符，請重新選擇。", false); combineSelected = [null, null];
-        document.getElementById('slot-1').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 1</span>'; document.getElementById('slot-2').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 2</span>';
-        document.getElementById('slot-1').className = "combine-slot"; document.getElementById('slot-2').className = "combine-slot";
-    }
+function closeItemModal() {
+    playClick(); document.getElementById('item-modal').classList.add('hidden');
 }
 
-// === 其他工具 ===
-function updateInventoryUI() {
-    let html = ''; itemCollection.forEach(icon => { html += `<span class="inv-item" title="點擊" onclick="handleInventoryClick('${icon}')">${icon}</span>`; });
-    document.getElementById('inventory-list').innerHTML = html; document.getElementById('potion-count').innerText = potions;
-}
-function renderSortList() {
-    const area = document.getElementById('interactive-area'); area.innerHTML = "";
-    currentSortOrder.forEach((item, index) => {
-        area.innerHTML += `<div class="sort-item"><div class="sort-text">${item.text}</div><div class="sort-btns"><button class="sort-btn" onclick="playClick(); moveItem(${index}, -1)">▲</button><button class="sort-btn" onclick="playClick(); moveItem(${index}, 1)">▼</button></div></div>`;
-    });
-}
-function moveItem(index, dir) { const target = index + dir; if (target < 0 || target >= currentSortOrder.length) return; [currentSortOrder[index], currentSortOrder[target]] = [currentSortOrder[target], currentSortOrder[index]]; renderSortList(); }
-function updateWordCount(t) { document.getElementById('word-count-div').innerText = `字數計測：${t.value.length}`; }
-function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
-
+// === 啟動與結局 ===
 function startGame() {
     initAudio(); playClick(); startIntermittentAmbient(); 
     if (!bgMusicObj) { bgMusicObj = new Audio("https://dl.dropboxusercontent.com/scl/fi/wsj9d809wijrmemwi4c2m/online-audio-converter.com.mp3?rlkey=b5mtdubtx2wcv08qp764gblsg&st=crdstuwj"); bgMusicObj.loop = true; bgMusicObj.volume = 0.5; }
     bgMusicObj.play().catch(e => console.log(e));
-    const inputField = document.getElementById('student-id'); if (!inputField) return; studentId = inputField.value.trim();
+
+    const inputField = document.getElementById('student-id');
+    if (!inputField) return; studentId = inputField.value.trim();
     if (!studentId) { playError(); alert("🚨 識別碼未同步！"); return; }
     
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('status-ui').classList.remove('hidden');
-    updateInventoryUI(); renderEngine("r_start"); 
+    
+    updateInventoryUI();
+    renderEngine("r_start"); 
 }
 
 function showEnding() {
@@ -712,6 +771,7 @@ function showEnding() {
     document.getElementById('status-ui').classList.add('hidden'); document.getElementById('game-content').innerHTML = "";
     document.body.className = "bg-ending"; document.getElementById('ending-section').classList.remove('hidden');
     playWarp(); setTimeout(playSuccess, 2000);
+
     const container = document.getElementById('ending-items-container'); container.innerHTML = "";
     itemCollection.forEach((icon, i) => {
         if(i >= 10 || icon === '🧪') return; 
@@ -721,13 +781,17 @@ function showEnding() {
         container.appendChild(el);
     });
     let key = document.createElement('div'); key.className = 'final-key'; key.innerText = '🗝️'; container.appendChild(key);
+
     setTimeout(() => { document.getElementById('ending-final-text').classList.remove('hidden'); playSuccess(); }, 4500);
 }
 
 function uploadData(student, stage, answer, status) {
     const webAppUrl = "https://script.google.com/macros/s/AKfycbzKO8cfTapdmmOjeQmH9opY5pnKzVVQ-feUEYZKFbl_ds9HVYmPrg7NlS7H7GnBjz4EWw/exec"; 
     if (webAppUrl !== "") {
-        fetch(webAppUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ student, stage, answer, status, time: new Date().toLocaleString() }) }).catch(err => console.error(err));
+        fetch(webAppUrl, {
+            method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ student, stage, answer, status, time: new Date().toLocaleString() })
+        }).catch(err => console.error(err));
     }
 }
 </script>
