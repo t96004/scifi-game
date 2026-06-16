@@ -469,7 +469,7 @@ function renderEngine(roomId) {
             playFootsteps();
             html = `<div class="story-box" style="border-color:#ffcc00; color:#ffcc00;">【探索紀錄】</div>
                     <div class="story-text">${room.story}</div>
-                    <button type="button" class="action-btn" onclick="renderEngine('${room.onClear}')">探索完畢，返回樞紐</button>`;
+                    <button type="button" class="action-btn" onclick="renderEngine('${room.onClear}')">探索完畢，返回上一層</button>`;
         }
         else if (room.type === "author") {
             playFootsteps(); currentAuthorLine = 0;
@@ -504,7 +504,7 @@ function renderEngine(roomId) {
                         <input type="text" id="pwd-input" class="text-input" placeholder="輸入解鎖代碼..." style="width:60%; margin-bottom:20px;">
                         <button type="button" class="action-btn" onclick="checkPassword('${roomId}')">驗證密碼</button>
                         <div id="pwd-msg" class="message"></div>
-                        <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall2'}')">返回樞紐</button>
+                        <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall2'}')">返回上一層</button>
                     </div>`;
         }
         else if (room.type === "lock") {
@@ -565,7 +565,7 @@ function renderEngine(roomId) {
 
 // === API 安全通訊防護網 ===
 async function uploadData(student, stage, answer, status) {
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbwZEViXSgWAyN8m7sTYia4Da_oUn3pbzwW03l_50NSRSU3e2UYC-lON0cJJaz5am--cgw/exec"; 
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbx7IotIk8BBql7AN00jchDR07IFj1eHt4feX1cPlYAbvM5WqRZS-MdzLiw6XBjXWjcHEw/exec"; 
     try {
         let response = await fetch(webAppUrl, {
             method: "POST",
