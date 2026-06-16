@@ -112,6 +112,7 @@
 <body>
 
 <div class="container">
+    <!-- 頂部狀態列 -->
     <div id="status-ui" class="status-bar hidden">
         <div class="location-badge" id="current-location">📍 系統載入中...</div>
         <div style="display:flex; align-items:center; gap:20px;">
@@ -120,6 +121,7 @@
         </div>
     </div>
 
+    <!-- 登入區塊 -->
     <div id="login-section">
         <h1 id="main-title">SYSTEM OVERRIDE</h1>
         <div class="subtitle" id="sub-title">人類意識覺醒協議 // 核心解碼迷宮</div>
@@ -134,14 +136,17 @@
         </div>
     </div>
 
+    <!-- 動態渲染區塊 -->
     <div id="game-content" class="hidden"></div>
 
+    <!-- 下方動態全息迷宮地圖（可回頭探索點擊） -->
     <div id="map-ui" class="hologram-map hidden">
         <div class="map-title">🛰️ 母體全息迷宮儀 (支援歷史節點躍遷探索)</div>
         <div class="map-grid" id="dynamic-map-grid"></div>
     </div>
 </div>
 
+<!-- 道具觀察模態視窗 -->
 <div id="item-modal" class="modal-overlay hidden">
     <div class="item-box">
         <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
@@ -207,7 +212,8 @@ const itemDB = {
     '📜': { title: "代死刑法案原本", desc: "代表人類荒謬法制的原始文件。", inspect: "法案的邊角被人憤怒地撕碎。" },
     '📼': { title: "真兇的認罪錄影", desc: "證明司法誤判的關鍵證據。", inspect: "影像中的人面無表情，似乎毫無悔意。" },
     '✒️': { title: "腦部改造同意書", desc: "帶有逃避恐懼印記的簽名物件。", inspect: "簽名者：王達成。紙張上還有冷汗的痕跡。" },
-    '💉': { title: "記憶抹除針劑", desc: "抹除機制的終極載體。", inspect: "針筒內流淌著能將記憶化為虛無的發光液體。" }
+    '💉': { title: "記憶抹除針劑", desc: "抹除機制的終極載體。", inspect: "針筒內流淌著能將記憶化為虛無的發光液體。" },
+    '⚖️': { title: "翻案證據", desc: "結合了法案漏洞與真兇供詞的絕對證據。", inspect: "天平的兩端，分別刻著『法律』與『人性』。" }
 };
 
 function getItemInfo(rawIcon) {
@@ -224,7 +230,7 @@ const trapDatabase = [
     { q: "「揶揄」的意思是？", options: [{ t: "嘲弄", c: true }, { t: "熱情稱讚", c: false }] },
     { q: "「蟄伏」的意思是？", options: [{ t: "隱藏", c: true }, { t: "四處活躍", c: false }] }, 
     { q: "「行禮如儀」的意思是？", options: [{ t: "按流程執行程序", c: true }, { t: "不顧規矩隨意行動", c: false }] },
-    { q: "「行屍走肉」的意思 is？", options: [{ t: "沒有靈魂的軀殼", c: true }, { t: "身體強壯的人", c: false }] }
+    { q: "「行屍走肉」的意思是？", options: [{ t: "沒有靈魂的軀殼", c: true }, { t: "身體強壯的人", c: false }] }
 ];
 
 const authorLines = [
@@ -283,7 +289,7 @@ const rooms = {
         q: "【深藍的憂鬱】王文燦喊叫：「機器有了情感！」句中的「機器」指的是？", qType: "single",
         opts: [{id:"A",text:"深藍電腦"},{id:"B",text:"世界棋王"},{id:"C",text:"以上皆是"}], ans: "C", rewardItem: "🎙️", onClear: "r_combine1"
     },
-    // --- 區域 3 (司法特區) ---
+    // --- 區域 3 (司法特區 - 全新非線性架構) ---
     "r_combine1": { 
         name: "時空迴廊門", type: "combine", target: ['🎙️', '♟️'], resIcon: '⚡', resName: '時空逆流密鑰', isCourt: true,
         story: "【警告】前方為司法黑盒子。請融合『人類科技失控的歷史』與『初代 AI 的運算邏輯』作為跨時空密鑰！", onUnlock: "r_q6"
@@ -296,41 +302,82 @@ const rooms = {
             {id:"A",text:"法官宣告王朝明犯殺人罪"},
             {id:"B",text:"王朝明被判「機器人代死刑」"},
             {id:"C",text:"王朝明在法庭上喊冤"},
-            {id:"D",text:"王朝明的腦部被改造，在火星殖民地從事開墾工作"},
+            {id:"D",text:"王朝明在火星殖民地從事開墾工作"},
             {id:"E",text:"警方抓到真兇"},
             {id:"F",text:"王朝明研究腦部醫學，提出死刑新觀念"},
-            {id:"G",text:"王達成的腦部被改造"},
-            {id:"H",text:"王達成接受緩刑"},
-            {id:"I",text:"王朝明放不下怨氣，不斷產生謀殺念頭"},
-            {id:"J",text:"王朝明的腦部被改造成正直的人"}
+            {id:"G",text:"王達成的腦部被改造，接受緩刑"},
+            {id:"H",text:"王朝明放不下怨氣，不斷產生謀殺念頭"},
+            {id:"I",text:"王朝明的腦部被改造"}
         ], 
-        ans: ["A","B","C","D","E","F","G","H","I","J"], rewardItem: "🪐", onClear: "r_hall3"
+        ans: ["A","B","C","D","E","F","G","H","I"], rewardItem: "🪐", onClear: "r_hall3"
     },
     "r_hall3": { 
-        name: "司法長廊", type: "nav", isCourt: true, story: "走廊兩側排列著鐵窗，聽見微弱的嘆息聲與電流滋滋聲。",
-        exits: [{ dir: "向北進發", target: "r_door4" }, { dir: "向西探索", target: "r_npc2" }, { dir: "向東觀察", target: "r_mad2" }]
+        name: "司法解謎樞紐", type: "nav", isCourt: true, 
+        story: "走廊兩側交錯著不同的閘門，右側有一間閃爍微光的檔案庫，中央的真理檢驗台散發出冷光。",
+        exits: [
+            { dir: "向西突破", target: "r_door4" }, 
+            { dir: "向東觀察", target: "r_scifi_lib" }, 
+            { dir: "向北解碼", target: "r_door5" }, 
+            { dir: "啟動合成", target: "r_combine_evidence" }
+        ]
     },
-    "r_npc2": { name: "暗網交易點", type: "npc", isCourt: true, story: "黑客：『司法母體的語言矩陣快把我逼瘋了。幫我破解這道題，藥水給你。』", onClear: "r_hall3" },
-    "r_mad2": { name: "審問室", type: "flavor", isCourt: true, story: "留著發黃日記：『機器人真的能代替我們受罪嗎？還是連同我們的靈魂一起奪走了？』", onClear: "r_hall3" },
-    "r_door4": { name: "流放地防禦網", type: "lock", reqItem: "🪐", isCourt: true, story: "【量子密碼門】\n提示：『偵測到流放地禁區，需要沾染冤屈的實體物質驗證身份。』", onUnlock: "r_q7", onFail: "r_hall3" },
+    "r_scifi_lib": { 
+        name: "科幻文獻室", type: "flavor", isCourt: true, 
+        story: "你在殘破的書架上找到一頁資料：\n\n「科幻」是「科學幻想」的簡稱。科幻作品通常以小說、劇本、漫畫、卡通、電影等形式呈現，它必須以現有的科技資料為根據，透過『想像力』對未來世界或過去情景作幻想式的描述，表現出文學性、科學性和哲學性等特色。\n\n科幻作品雖然幻想成分極濃，但其中某些事物或情境卻預示了世界的變化和科技的發展。因此，科幻作品反而常走在科技發明之前，讓人不得不佩服這些創作者的想像力。", 
+        onClear: "r_hall3" 
+    },
+    "r_door4": { 
+        name: "流放地防禦網", type: "lock", reqItem: "🪐", isCourt: true, 
+        story: "【量子密碼門】\n提示：『偵測到流放地禁區，需要沾染冤屈的實體物質驗證身份。』", 
+        onUnlock: "r_q7", onFail: "r_hall3" 
+    },
     "r_q7": { 
-        name: "流放荒地", type: "quiz", qIdx: 7, isCourt: true, story: "【系統紀錄檔 #7】機器法官：『代替受刑是科技最高效率。』揭開當年機制的初衷？",
+        name: "流放荒地", type: "quiz", qIdx: 7, isCourt: true, 
+        story: "【系統紀錄檔 #7】機器法官：『代替受刑是科技最高效率。』揭開當年機制的初衷？",
         q: "【替代死刑】依據本文，發明「機器人代死刑」的用意為何？（複選）", qType: "multi",
-        opts: [{id:"A",text:"避免死刑誤判"},{id:"B",text:"認為死刑很野蠻"},{id:"C",text:"火星需要開墾人力"}], ans: ["A","B"], rewardItem: "📜", onClear: "r_door5"
+        opts: [{id:"A",text:"避免死刑誤判"},{id:"B",text:"認為死刑很野蠻"},{id:"C",text:"火星需要開墾人力"}], ans: ["A","B"], rewardItem: "📜", onClear: "r_hall3"
     },
-    "r_door5": { name: "檔案庫掃描器", type: "lock", reqItem: "📜", isCourt: true, story: "【量子密碼門】\n提示：『需要能代表人類荒謬法制的原始文件授權。』", onUnlock: "r_q8", onFail: "r_hall3" },
+    "r_door5": { 
+        name: "檔案庫掃描器", type: "password", pwd: "想像力", isCourt: true, 
+        story: "【科幻密碼門】\n面板提問：『科幻作品必須以現有科技為基礎，透過什麼來描述未來世界？』\n(提示：仔細閱讀東側科幻文獻室的資料)", 
+        onUnlock: "r_q8", onFail: "r_hall3" 
+    },
     "r_q8": { 
-        name: "司法檔案室", type: "quiz", qIdx: 8, isCourt: true, story: "【系統紀錄檔 #8】你搖搖頭：『若沒有這股力量，正義將永遠被埋沒！』",
+        name: "司法檔案室", type: "quiz", qIdx: 8, isCourt: true, 
+        story: "【系統紀錄檔 #8】你搖搖頭：『若沒有這股力量，正義將永遠被埋沒！』",
         q: "【替代死刑】關於王朝明的冤情平反，下列何者有所貢獻？（複選）", qType: "multi",
-        opts: [{id:"A",text:"王朝明的親友"},{id:"B",text:"王朝明的結拜兄弟"},{id:"C",text:"警方"},{id:"D",text:"腦部醫學家"}], ans: ["A","C"], rewardItem: "📼", onClear: "r_door6"
+        opts: [{id:"A",text:"王朝明的親友"},{id:"B",text:"王朝明的結拜兄弟"},{id:"C",text:"警方"},{id:"D",text:"腦部醫學家"}], ans: ["A","C"], rewardItem: "📼", onClear: "r_hall3"
     },
-    "r_door6": { name: "證據庫閘門", type: "lock", reqItem: "📼", isCourt: true, story: "【量子密碼門】\n提示：『請提交能證明司法誤判的關鍵影音證據。』", onUnlock: "r_q9", onFail: "r_hall3" },
+    "r_combine_evidence": { 
+        name: "真理檢驗台", type: "combine", target: ['📜', '📼'], resIcon: '⚖️', resName: '翻案證據', isCourt: true, 
+        story: "【警告】前方進入審判長廊。請融合『荒謬法制的原始文件』與『司法誤判的影音證據』，提煉出足以推翻判決的關鍵證據！", 
+        onUnlock: "r_hall4" 
+    },
+    "r_hall4": { 
+        name: "審判長廊", type: "nav", isCourt: true, 
+        story: "走廊兩側排列著鐵窗，聽見微弱的嘆息聲與電流滋滋聲。前方就是最終的改造艙防線了。",
+        exits: [
+            { dir: "向西探索", target: "r_npc2" }, 
+            { dir: "向東破解", target: "r_door6" }, 
+            { dir: "向北進發", target: "r_door7" }
+        ]
+    },
+    "r_npc2": { name: "暗網交易點", type: "npc", isCourt: true, story: "黑客：『司法母體的語言矩陣快把我逼瘋了。幫我破解這道題，藥水給你。』", onClear: "r_hall4" },
+    "r_door6": { 
+        name: "證據庫閘門", type: "lock", reqItem: "⚖️", isCourt: true, 
+        story: "【量子密碼門】\n提示：『請提交足以推翻判決的翻案證據。』", 
+        onUnlock: "r_q9", onFail: "r_hall4" 
+    },
     "r_q9": { 
         name: "證據庫", type: "quiz", qIdx: 9, isCourt: true, story: "【系統紀錄檔 #9】你怒斥：『這只是將罪惡延期的謊言！』",
         q: "【替代死刑】王達成被判緩刑，沒有立刻接受「機器人代死刑」的原因？", qType: "single",
-        opts: [{id:"A",text:"自首減刑"},{id:"B",text:"慈善家的呼籲"},{id:"C",text:"腦部被改造"},{id:"D",text:"王朝明的原諒"}], ans: "C", rewardItem: "✒️", onClear: "r_door7"
+        opts: [{id:"A",text:"自首減刑"},{id:"B",text:"慈善家的呼籲"},{id:"C",text:"腦部被改造"},{id:"D",text:"王朝明的原諒"}], ans: "C", rewardItem: "✒️", onClear: "r_hall4"
     },
-    "r_door7": { name: "改造艙掃描器", type: "lock", reqItem: "✒️", isCourt: true, story: "【量子密碼門】\n提示：『需要帶有懦弱與逃避恐懼印記的簽名物件啟動。』", onUnlock: "r_q10", onFail: "r_hall3" },
+    "r_door7": { 
+        name: "改造艙掃描器", type: "lock", reqItem: "✒️", isCourt: true, 
+        story: "【量子密碼門】\n提示：『需要帶有懦弱與逃避恐懼印記的簽名物件啟動。』", 
+        onUnlock: "r_q10", onFail: "r_hall4" 
+    },
     "r_q10": { 
         name: "改造艙", type: "quiz", qIdx: 10, isCourt: true, story: "【系統紀錄檔 #10】你輕嘆：『因為怨恨，是比囚籠更可怕的鋼鐵。』",
         q: "【替代死刑】王朝明自願接受腦部改造的原因？（複選）", qType: "multi",
@@ -355,10 +402,10 @@ const mapLayoutOrder = [
     "r_door1", "r_q2", "r_hall2", "r_npc1",
     "r_pwd1", "r_q3", "r_door2", "r_q4",
     "r_door3", "r_q5", "r_combine1", "r_q6",
-    "r_hall3", "r_npc2", "r_mad2", "r_door4",
-    "r_q7", "r_door5", "r_q8", "r_door6",
-    "r_q9", "r_door7", "r_q10", "r_combine2",
-    "r_q11", "r_end"
+    "r_hall3", "r_scifi_lib", "r_door4", "r_q7", 
+    "r_door5", "r_q8", "r_combine_evidence", "r_hall4", 
+    "r_npc2", "r_door6", "r_q9", "r_door7", 
+    "r_q10", "r_combine2", "r_q11", "r_end"
 ];
 
 let currentRoom = ""; let studentId = ""; 
@@ -427,7 +474,7 @@ function renderEngine(roomId) {
             playFootsteps();
             html = `<div class="story-box" style="border-color:#ffcc00; color:#ffcc00;">【探索紀錄】</div>
                     <div class="story-text">${room.story}</div>
-                    <button type="button" class="action-btn" onclick="renderEngine('${room.onClear}')">探索完畢，返回上一層</button>`;
+                    <button type="button" class="action-btn" onclick="renderEngine('${room.onClear}')">探索完畢，返回樞紐</button>`;
         }
         else if (room.type === "author") {
             playFootsteps(); currentAuthorLine = 0;
@@ -457,12 +504,12 @@ function renderEngine(roomId) {
         else if (room.type === "password") {
             playTypingSound();
             html = `<h2 style="color:var(--item-color); text-align:center;">${room.name}</h2>
-                    <div class="story-text" style="border-color:var(--item-color); text-align:center;">${room.story}</div>
+                    <div class="story-text" style="border-color:var(--item-color); text-align:center; white-space:pre-wrap;">${room.story}</div>
                     <div class="quiz-card" style="text-align:center;">
                         <input type="text" id="pwd-input" class="text-input" placeholder="輸入解鎖代碼..." style="width:60%; margin-bottom:20px;">
                         <button type="button" class="action-btn" onclick="checkPassword('${roomId}')">驗證密碼</button>
                         <div id="pwd-msg" class="message"></div>
-                        <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall2'}')">返回上一層</button>
+                        <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall2'}')">返回樞紐</button>
                     </div>`;
         }
         else if (room.type === "lock") {
@@ -521,9 +568,8 @@ function renderEngine(roomId) {
     } catch (error) { alert("系統載入異常，請重新整理！錯誤：" + error.message); }
 }
 
-// === API 安全通訊防護網 (此處已更新為最新 Google 擴充網址) ===
+// === API 安全通訊防護網 ===
 async function uploadData(student, stage, answer, status) {
-    // 替換為最新的 API 網址
     const webAppUrl = "https://script.google.com/macros/s/AKfycbwV-mwT_9qQ_TXA4nbZ5T1s--ONn07fqM3zxvteh49qp2qaqVlHIPmCzeyUdqlw7pu1MA/exec"; 
     try {
         let response = await fetch(webAppUrl, {
