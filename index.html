@@ -81,14 +81,14 @@
         textarea { width: 100%; height: 120px; background: #0d1117; color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; box-sizing: border-box; resize: none; font-size: 15px; line-height: 1.6; }
         
         button.action-btn { background: transparent; color: var(--accent-color); border: 2px solid var(--accent-color); padding: 14px 20px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; letter-spacing: 2px; transition: all 0.3s; }
-        button.action-btn:hover { background: var(--accent-color); color: #000; box-shadow: 0 0 20px var(--accent-color); }
+        button.action-btn:hover:not(:disabled) { background: var(--accent-color); color: #000; box-shadow: 0 0 20px var(--accent-color); }
         button.potion-btn { border-color: var(--success-color); color: var(--success-color); margin-bottom: 15px; display: none; }
         button.potion-btn:hover { background: var(--success-color); color: #000; box-shadow: 0 0 20px var(--success-color); }
         
-        .message { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; font-size: 15px; display: none; }
-        .msg-success { display: block; background: rgba(0, 255, 102, 0.1); color: var(--success-color); border: 1px solid var(--success-color); }
+        .message { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; text-align: left; font-size: 15px; display: none; white-space: pre-wrap; line-height: 1.6; }
+        .msg-success { display: block; background: rgba(0, 255, 102, 0.1); color: var(--success-color); border: 1px solid var(--success-color); text-align: center; }
         .msg-error { display: block; background: rgba(255, 0, 85, 0.1); color: var(--error-color); border: 1px solid var(--error-color); }
-        .msg-hint { display: block; background: rgba(0, 240, 255, 0.1); color: #fff; border: 1px solid var(--accent-color); text-align: left; font-weight: normal; line-height: 1.6; white-space: pre-wrap; margin-bottom:15px; }
+        .msg-hint { display: block; background: rgba(0, 240, 255, 0.1); color: #fff; border: 1px solid var(--accent-color); font-weight: normal; }
         .hidden { display: none !important; }
         input.text-input { width: 100%; padding: 14px; background: #0d1117; color: white; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; }
 
@@ -100,6 +100,21 @@
     </style>
 </head>
 <body>
+
+<audio id="bg-music" loop crossorigin="anonymous">
+    <source src="https://dl.dropboxusercontent.com/scl/fi/wsj9d809wijrmemwi4c2m/online-audio-converter.com.mp3?rlkey=b5mtdubtx2wcv08qp764gblsg&st=crdstuwj" type="audio/mpeg">
+</audio>
+
+<div id="item-modal" class="modal-overlay hidden">
+    <div class="item-box">
+        <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
+        <div id="modal-icon" class="item-icon"></div>
+        <div id="modal-title" class="item-title"></div>
+        <div id="modal-desc" class="item-desc"></div>
+        <button type="button" id="modal-inspect-btn" class="action-btn" style="margin-top:10px;" onclick="inspectItem()">🔍 深度觀察</button>
+        <div id="modal-inspect-text" class="inspect-text hidden"></div>
+    </div>
+</div>
 
 <div class="container">
     <div id="status-ui" class="status-bar hidden">
@@ -125,17 +140,6 @@
     </div>
 
     <div id="game-content" class="hidden"></div>
-</div>
-
-<div id="item-modal" class="modal-overlay hidden">
-    <div class="item-box">
-        <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
-        <div id="modal-icon" class="item-icon"></div>
-        <div id="modal-title" class="item-title"></div>
-        <div id="modal-desc" class="item-desc"></div>
-        <button type="button" id="modal-inspect-btn" class="action-btn" style="margin-top:10px;" onclick="inspectItem()">🔍 深度觀察</button>
-        <div id="modal-inspect-text" class="inspect-text hidden"></div>
-    </div>
 </div>
 
 <script>
@@ -279,7 +283,7 @@ const rooms = {
     },
     "r_npc2": { name: "暗網交易點", type: "npc", isCourt: true, story: "黑客：『司法母體的語言矩陣快把我逼瘋了。幫我破解這道題，藥水給你。』", onClear: "r_hall3" },
     "r_mad2": { name: "審問室", type: "flavor", isCourt: true, story: "留著發黃日記：『機器人真的能代替我們受罪嗎？還是連同我們的靈魂一起奪走了？』", onClear: "r_hall3" },
-    "r_door4": { name: "流放地防禦網", type: "lock", reqItem: "🪐", isCourt: true, story: "【量子密碼門】\n提示：『偵測到流放地禁區，需要補給沾染冤屈的實體物質驗證身份。』", onUnlock: "r_q7" },
+    "r_door4": { name: "流放地防禦網", type: "lock", reqItem: "🪐", isCourt: true, story: "【量子密碼門】\n提示：『偵測到流放地禁區，需要沾染冤屈的實體物質驗證身份。』", onUnlock: "r_q7" },
     "r_q7": { 
         name: "流放荒地", type: "quiz", qIdx: 7, isCourt: true, story: "【系統紀錄檔 #7】機器法官：『代替受刑是科技最高效率。』揭開當年機制的初衷？",
         q: "【替代死刑】依據本文，發明「機器人代死刑」的用意為何？（複選）", qType: "multi",
@@ -420,7 +424,7 @@ function renderEngine(roomId) {
                         <div id="interactive-area"></div>
                         <div id="word-count-div" class="word-count hidden" style="text-align: right; font-size: 12px; color: var(--sub-text); margin-top: 5px;">字數：0</div>
                         <button type="button" class="action-btn" onclick="submitQuiz('${roomId}')">發射解鎖脈衝</button>
-                        <div id="msg-box" class="message"></div>
+                        <div id="msg-box" class="message" style="color:#ff0055;"></div>
                     </div>`;
         }
         contentDiv.innerHTML = html; contentDiv.classList.remove('hidden');
@@ -439,6 +443,22 @@ function renderEngine(roomId) {
             }
         }
     } catch (error) { alert("系統載入異常，請重新整理！錯誤：" + error.message); }
+}
+
+// === API 安全通訊防護網 (隔離背景連線) ===
+async function uploadData(student, stage, answer, status) {
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbwKz4OSXo7gANs5nuTBqTReO-5SWSXcHY_eXhhNEsgtdI8NA1j22Mq23wXHrcHKftmT/exec"; 
+    try {
+        let response = await fetch(webAppUrl, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ student, stage, answer, status, time: new Date().toLocaleString() })
+        });
+        return await response.json();
+    } catch (err) {
+        console.error("後臺資料傳送異常:", err);
+        return { success: true, isPass: true, feedback: "連線異常，系統強制放行。" };
+    }
 }
 
 // === 互動核心功能 ===
@@ -468,8 +488,10 @@ function usePotion(roomId) {
     if (potions > 0 && !currentUsedPotion) { playSuccess(); potions--; currentUsedPotion = true; updateInventoryUI(); document.getElementById('potion-btn').style.display = 'none'; const hintBox = document.getElementById('hint-box'); hintBox.innerText = rooms[roomId].hint; hintBox.classList.remove('hidden'); }
 }
 
-function submitQuiz(roomId) {
+async function submitQuiz(roomId) {
     const room = rooms[roomId]; let isCorrect = false; let ansStr = "";
+    
+    // 1. 本地驗證邏輯
     if (room.qType === "single") {
         const selected = document.querySelector('input[name="q-choice"]:checked'); if (!selected) { playError(); showMsg('msg-box', "⚠️ 未選取選項！", false); return; }
         ansStr = selected.value; isCorrect = (ansStr === room.ans);
@@ -480,20 +502,45 @@ function submitQuiz(roomId) {
         const ids = currentSortOrder.map(i => i.id); ansStr = ids.join("➔"); isCorrect = ids.every((val, i) => val === room.ans[i]);
     } else {
         const field = document.getElementById('short-answer'); ansStr = field ? field.value.trim() : "";
-        if (ansStr.length < room.minW) { playError(); showMsg('msg-box', `⚠️ 深度不足（需 ${room.minW} 字）！`, false); return; }
+        if (ansStr.length < room.minW) { playError(); showMsg('msg-box', `⚠️ 深度不足（需寫滿 ${room.minW} 字）！`, false); return; }
         isCorrect = room.keywords ? room.keywords.some(k => ansStr.includes(k)) : true;
     }
+
     let statusLog = currentUsedPotion ? "成功過關(已用藥水)" : "成功過關";
     let failLog = currentUsedPotion ? "嘗試失敗(已用藥水)" : "嘗試失敗";
-    
-    if (isCorrect) {
-        showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true); uploadData(studentId, `第${room.qIdx}題`, ansStr, statusLog);
-        if(!itemCollection.includes(room.rewardItem)) itemCollection.push(room.rewardItem);
-        if(room.givesPotion) { potions++; } updateInventoryUI(); setTimeout(() => { showItemReward(roomId); }, 1500);
-    } else {
+
+    // 2. 本地驗證失敗直接退回
+    if (!isCorrect) {
         playError(); let errMsg = room.qType === "sort" ? "❌ 【破解失敗】歷史時序排列不正確，請重新調整！" : "❌ 【破解失敗】邏輯不符！";
-        showMsg('msg-box', errMsg, false); uploadData(studentId, `第${room.qIdx}題`, ansStr, failLog);
+        showMsg('msg-box', errMsg, false); 
+        uploadData(studentId, `第${room.qIdx}題`, ansStr, failLog); // 背景紀錄
+        return;
     }
+
+    // 3. 處理需要 AI 判斷的大魔王關卡 (第 11 題)
+    const buttons = document.querySelectorAll('#game-content .quiz-card .action-btn');
+    const submitBtn = buttons[buttons.length - 1];
+
+    if (room.qIdx === 11) {
+        if(submitBtn) { submitBtn.innerText = "📡 系統連線中... 母體邏輯判定中..."; submitBtn.disabled = true; submitBtn.style.opacity = "0.5"; }
+        
+        let result = await uploadData(studentId, `第${room.qIdx}題`, ansStr, "等待AI審核");
+        
+        if(submitBtn) { submitBtn.innerText = "發射解鎖脈衝"; submitBtn.disabled = false; submitBtn.style.opacity = "1"; }
+
+        if (result && result.isPass === false) {
+            playError(); showMsg('msg-box', "❌ 【母體駁回】" + result.feedback, false);
+            return; // 被 AI 擋下，不繼續執行
+        }
+    } else {
+        uploadData(studentId, `第${room.qIdx}題`, ansStr, statusLog); // 普通關卡直接背景傳送
+    }
+
+    // 4. 完美過關處理
+    showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true);
+    if(!itemCollection.includes(room.rewardItem)) itemCollection.push(room.rewardItem);
+    if(room.givesPotion) { potions++; } updateInventoryUI(); 
+    setTimeout(() => { showItemReward(roomId); }, 1500);
 }
 
 function showItemReward(roomId) {
@@ -563,19 +610,6 @@ function showEnding() {
     itemCollection.forEach((icon, i) => { if(i >= 10 || icon === '🧪') return; let el = document.createElement('div'); el.className = 'ending-item'; el.innerText = icon; let angle = (i / 10) * Math.PI * 2; let radius = 120; el.style.setProperty('--startX', `${Math.cos(angle) * radius}px`); el.style.setProperty('--startY', `${Math.sin(angle) * radius}px`); container.appendChild(el); });
     let key = document.createElement('div'); key.className = 'final-key'; key.innerText = '🗝️'; container.appendChild(key);
     setTimeout(() => { document.getElementById('ending-final-text').classList.remove('hidden'); playSuccess(); }, 4500);
-}
-
-function uploadData(student, stage, answer, status) {
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbzKO8cfTapdmmOjeQmH9opY5pnKzVVQ-feUEYZKFbl_ds9HVYmPrg7NlS7H7GnBjz4EWw/exec"; 
-    if (webAppUrl !== "") {
-        try {
-            fetch(webAppUrl, {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify({ student, stage, answer, status, time: new Date().toLocaleString() })
-            });
-        } catch(err) { console.error("後臺資料傳送隔離阻斷:", err); }
-    }
 }
 </script>
 </body>
