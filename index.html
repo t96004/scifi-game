@@ -205,6 +205,7 @@ const itemDB = {
     '🎙️': { title: "王文燦的加密錄音", desc: "錄下了人類科技失控的歷史。", inspect: "播放出滋滋作響的雜音，隱約聽見人們在歡呼。" },
     '🪐': { title: "火星殖民地紅土", desc: "沾染著流放歲月與冤屈的物質。", inspect: "紅土中混雜著鐵鏽與不甘的血汗。" },
     '📜': { title: "代死刑法案原本", desc: "代表人類荒謬法制的原始文件。", inspect: "法案的邊角被人憤怒地撕碎。" },
+    '📜': { title: "代死刑法案原本", desc: "代表人類荒謬法制的原始文件。", inspect: "法案的邊角被人憤怒地撕碎。" },
     '📼': { title: "真兇的認罪錄影", desc: "證明司法誤判的關鍵證據。", inspect: "影像中的人面無表情，似乎毫無悔意。" },
     '✒️': { title: "腦部改造同意書", desc: "帶有逃避恐懼印記的簽名物件。", inspect: "簽名者：王達成。紙張上還有冷汗的痕跡。" },
     '💉': { title: "記憶抹除針劑", desc: "抹除機制的終極載體。", inspect: "針筒內流淌著能將記憶化為虛無的發光液體。" },
@@ -243,7 +244,7 @@ const rooms = {
         name: "棋局廢墟", type: "quiz", qIdx: 1, 
         story: "【系統紀錄檔 #1】機器法官冷笑：『人類記憶充滿混亂，機器邏輯才是永恆。看啊，這就是你們棋王在智慧巨浪前的潰敗史...』",
         q: "【深藍的憂鬱】請依時間排序以下事件：", qType: "sort",
-        opts: [{id:"A",text:"深藍電腦打敗世界棋王"},{id:"B",text:"棋王對自己的失敗感到極度悲傷"},{id:"C",text:"電腦科學家王文燦建議棋王安裝腦內晶片"},{id:"D",text:"深藍電腦進步到有人類的外形"},{id:"E",text:"世界棋王打敗深藍電腦"},{id:"F",text:"深藍電腦對自己的失敗感到極度悲傷"},{id:"G",text:"電腦科學家慶祝自己成功了"}], 
+        opts: [{id:"A",text:"深藍电脑打敗世界棋王"},{id:"B",text:"棋王對自己的失敗感到極度悲傷"},{id:"C",text:"电脑科學家王文燦建議棋王安裝腦內晶片"},{id:"D",text:"深藍电脑進步到有人類的外形"},{id:"E",text:"世界棋王打敗深藍电脑"},{id:"F",text:"深藍电脑對自己的失敗感到極度悲傷"},{id:"G",text:"电脑科學家慶祝自己成功了"}], 
         ans: ["A","B","C","D","E","F","G"], rewardItem: "♟️", givesPotion: true, onClear: "r_hall1"
     },
     "r_hall1": { 
@@ -269,22 +270,22 @@ const rooms = {
     "r_q3": { 
         name: "機房內部", type: "quiz", qIdx: 3, story: "【系統紀錄檔 #3】資料庫釋放強大的沮喪干擾訊號，精準識別 these 訊號，避免意識被吞噬！",
         q: "【深藍的憂鬱】下列哪幾項可以看出棋王輸給深藍時的沮喪？（複選）", qType: "multi",
-        opts: [{id:"A",text:"暫時偃旗息鼓不再下棋"},{id:"B",text:"一個人躲在沒人知道的地方放聲哭泣"},{id:"C",text:"用頭出力撞牆希望自己更笨或更聰明"},{id:"D",text:"常夢到深藍電腦在安慰自己"},{id:"E",text:"提供點子給科學家希望能解決問題"},{id:"F",text:"在腦部植入超級計算能力的電腦晶片"}], 
+        opts: [{id:"A",text:"暫時偃旗息鼓不再下棋"},{id:"B",text:"一個人躲在沒人知道的地方放聲哭泣"},{id:"C",text:"用頭出力撞牆希望自己更笨或更聰明"},{id:"D",text:"常夢到深藍电脑在安慰自己"},{id:"E",text:"提供點子給科學家希望能解決問題"},{id:"F",text:"在腦部植入超級計算能力的电脑晶片"}], 
         ans: ["A","B","C"], rewardItem: "❄️", onClear: "r_hall2"
     },
     "r_door2": { name: "情感矩陣大門", type: "lock", reqItem: "❄️", story: "【量子密碼門】\n大門冰凍：『系統過凍，請注入極低溫的冷卻液以毒攻毒。』", onUnlock: "r_q4", onFail: "r_hall2" },
     "r_q4": { 
         name: "情感矩陣", type: "quiz", qIdx: 4, story: "【系統紀錄檔 #4】機器宣告：『冷酷的數據才是完美的。』你反駁：『不，當你們的始祖學會這件事的那一刻，跨越了機器的界線。』",
-        q: "【深藍的憂鬱】從哪些地方可以看出深藍電腦擁有情緒？", qType: "single",
+        q: "【深藍的憂鬱】從哪些地方可以看出深藍电脑擁有情緒？", qType: "single",
         opts: [{id:"A",text:"揶揄棋王的實力"},{id:"B",text:"用眼眸釋放魅力"},{id:"C",text:"輸棋而大聲哭泣"},{id:"D",text:"豎起大拇指歡呼"}], ans: "C", rewardItem: "💾", onClear: "r_door3"
     },
     "r_door3": { name: "實驗室鎖孔", type: "lock", reqItem: "💾", story: "【量子密碼門】\n鎖孔提示：『需要讀取舊時代情感記憶的載體介面才能進入實驗室。』", onUnlock: "r_q5", onFail: "r_hall2" },
     "r_q5": { 
         name: "實驗室遺址", type: "quiz", qIdx: 5, story: "【系統紀錄檔 #5】機器法官閃爍著：『這句話是機器進化的最高榮譽！』你冷笑：『這也是人類最大的諷刺。』",
         q: "【深藍的憂鬱】王文燦喊叫：「機器有了情感！」句中的「機器」指的是？", qType: "single",
-        opts: [{id:"A",text:"深藍電腦"},{id:"B",text:"世界棋王"},{id:"C",text:"以上皆是"}], ans: "C", rewardItem: "🎙️", onClear: "r_combine1"
+        opts: [{id:"A",text:"深藍电脑"},{id:"B",text:"世界棋王"},{id:"C",text:"以上皆是"}], ans: "C", rewardItem: "🎙️", onClear: "r_combine1"
     },
-    // --- 區域 3 (司法特區 - 全新非線性架構) ---
+    // --- 區域 3 (司法特區 - 非線性架構) ---
     "r_combine1": { 
         name: "時空迴廊門", type: "combine", target: ['🎙️', '♟️'], resIcon: '⚡', resName: '時空逆流密鑰', isCourt: true,
         story: "【警告】前方為司法黑盒子。請融合『人類科技失控的歷史』與『初代 AI 的運算邏輯』作為跨時空密鑰！", onUnlock: "r_q6"
@@ -318,7 +319,7 @@ const rooms = {
     },
     "r_scifi_lib": { 
         name: "科幻文獻室", type: "flavor", isCourt: true, 
-        story: "你在殘破的書架上找到一頁資料：\n\n「科幻」是「科學幻想」的簡稱。科幻作品通常以小說、劇本、漫畫、卡通、電影等形式呈現，它必須以現有的科技資料為根據，透過『想像力』對未來世界或過去情景作幻想式的描述，表現出文學性、科學性和哲學性等特色。\n\n科幻作品雖然幻想成分極濃，但其中某些事物或情境卻預示了世界的變化和科技的發展。因此，科幻作品反而常走在科技發明之前，讓人不得不佩服這些創作者的想像力。", 
+        story: "你在殘破的書架上找到一頁資料：\n\n「科幻」是「科學幻想」的簡稱。科幻作品通常以小說、劇本、漫畫、卡通、電影等形式呈現，它必須以現有的科技資料為根據，透過『想像力』對未來世界或過去情景作幻想式的描述，表現出文學性、科學性和哲學性等特色。\n\n科幻作品雖然幻想成分極濃，但其中某些事物或情境卻預示了世界的變化和科技的發展。因此，科幻作品反而常走在科技發明之前，讓人不得不佩服 these 創作者的想像力。", 
         onClear: "r_hall3" 
     },
     "r_door4": { 
@@ -443,7 +444,10 @@ function renderEngine(roomId) {
     try {
         if (!rooms[roomId]) return; currentRoom = roomId; const room = rooms[roomId]; visitedNodes.add(roomId);
         document.getElementById('current-location').innerText = `📍 目前位置：【${room.name}】`;
-        document.body.className = room.isCourt ? "bg-court" : "";
+        
+        // 🚀 動態更新背景樣式：如果是最後通關節點，切換為 bg-ending 黃金勝利格線
+        document.body.className = room.isCourt ? "bg-court" : (room.type === "end" ? "bg-ending" : "");
+        
         const contentDiv = document.getElementById('game-content'); let html = "";
 
         updateHologramMap();
@@ -545,6 +549,37 @@ function renderEngine(roomId) {
                         <div id="msg-box" class="message" style="color:#ff0055;"></div>
                     </div>`;
         }
+        // 🚀 【核心修正】補上最後大結局「自由之門」的動態渲染與粒子動畫邏輯！
+        else if (room.type === "end") {
+            playSuccess();
+            // 自動向試算表回傳最終通關封包
+            uploadData(studentId, "通關終點", "成功解放人類世界", "完全通關已達成");
+            
+            // 計算每個收集到道具的起飛角度，動態組裝 CSS 聚合粒子
+            let itemsHtml = '';
+            itemCollection.forEach((icon, i) => {
+                let angle = (i / Math.max(itemCollection.length, 1)) * 2 * Math.PI;
+                let startX = Math.round(Math.cos(angle) * 250) + 'px';
+                let startY = Math.round(Math.sin(angle) * 250) + 'px';
+                itemsHtml += `<div class="ending-item" style="--startX: ${startX}; --startY: ${startY}; animation-delay: ${i * 0.2}s;">${icon}</div>`;
+            });
+
+            html = `
+                <h2 style="text-align:center; color:var(--accent-color); font-size:32px; letter-spacing:4px; text-shadow:0 0 20px var(--accent-color); animation: mapPulse 1.5s infinite alternate;">🔓 人類意識・完全覺醒 🔓</h2>
+                <div class="story-text" style="text-align:center; border-color:var(--accent-color); background:rgba(0,0,0,0.6); padding:25px; line-height:2; font-size:16px;">
+                    【系統通告：全線核心母體已被完全覆寫】<br><br>
+                    恭喜你，優秀的反抗者 <span style="color:var(--accent-color); font-weight:bold; font-size:1.2em;">${studentId}</span>！<br><br>
+                    你成功穿越了深藍的邏輯廢墟，破解了司法母體的猩紅審判，並用人類最珍貴的思辨與包容，融化了冰冷的機器囚籠。<br><br>
+                    自由之門已大開，人類的記憶、情感與靈魂正式回歸！<br>
+                    <span style="color:var(--success-color); font-weight:bold; font-size:1.1em;">🎉 任務完全成功！作答報表已安全儲存至後臺試算表。 🎉</span>
+                </div>
+                <div class="ending-items-container">
+                    ${itemsHtml}
+                    <div class="final-key">🕊️</div>
+                </div>
+            `;
+        }
+        
         contentDiv.innerHTML = html; contentDiv.classList.remove('hidden');
 
         if (room.type === "quiz") {
@@ -565,7 +600,6 @@ function renderEngine(roomId) {
 
 // === API 安全通訊防護網 ===
 async function uploadData(student, stage, answer, status) {
-    // 您剛剛取得的最新、突破權限的網址
     const webAppUrl = "https://script.google.com/macros/s/AKfycbxV-dHDhA9klf2KYlrFALxdCX1Id3DfObqG-l-UX0KYNS20ZvBsMVzPJsGn4n8BGcZQGg/exec"; 
     try {
         let response = await fetch(webAppUrl, {
@@ -722,7 +756,7 @@ function openInspectModal(icon) {
     document.getElementById('item-modal').classList.remove('hidden');
 }
 
-// === 工具模模块 ===
+// === 工具模組 ===
 function updateInventoryUI() { let html = ''; itemCollection.forEach((icon, i) => { html += `<span class="inv-item" title="點擊" onclick="handleInventoryClick(${i})">${icon}</span>`; }); document.getElementById('inventory-list').innerHTML = html; document.getElementById('potion-count').innerText = potions; }
 function renderSortList() { const area = document.getElementById('interactive-area'); area.innerHTML = ""; currentSortOrder.forEach((item, index) => { area.innerHTML += `<div class="sort-item"><div class="sort-text">${item.text}</div><div class="sort-btns"><button type="button" class="sort-btn" onclick="playClick(); moveItem(${index}, -1)">▲</button><button type="button" class="sort-btn" onclick="playClick(); moveItem(${index}, 1)">▼</button></div></div>`; }); }
 function moveItem(index, dir) { const target = index + dir; if (target < 0 || target >= currentSortOrder.length) return; [currentSortOrder[index], currentSortOrder[target]] = [currentSortOrder[target], currentSortOrder[index]]; renderSortList(); }
