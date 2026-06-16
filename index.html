@@ -112,6 +112,7 @@
 <body>
 
 <div class="container">
+    <!-- 頂部狀態列 -->
     <div id="status-ui" class="status-bar hidden">
         <div class="location-badge" id="current-location">📍 系統載入中...</div>
         <div style="display:flex; align-items:center; gap:20px;">
@@ -120,6 +121,7 @@
         </div>
     </div>
 
+    <!-- 登入區塊 -->
     <div id="login-section">
         <h1 id="main-title">SYSTEM OVERRIDE</h1>
         <div class="subtitle" id="sub-title">人類意識覺醒協議 // 核心解碼迷宮</div>
@@ -134,14 +136,17 @@
         </div>
     </div>
 
+    <!-- 動態渲染區塊 -->
     <div id="game-content" class="hidden"></div>
 
+    <!-- 下方動態全息迷宮地圖（可回頭探索點擊） -->
     <div id="map-ui" class="hologram-map hidden">
         <div class="map-title">🛰️ 母體全息迷宮儀 (支援歷史節點躍遷探索)</div>
         <div class="map-grid" id="dynamic-map-grid"></div>
     </div>
 </div>
 
+<!-- 道具觀察模態視窗 -->
 <div id="item-modal" class="modal-overlay hidden">
     <div class="item-box">
         <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
@@ -297,12 +302,12 @@ const rooms = {
             {id:"A",text:"法官宣告王朝明犯殺人罪"},
             {id:"B",text:"王朝明被判「機器人代死刑」"},
             {id:"C",text:"王朝明在法庭上喊冤"},
-            {id:"D",text:"王朝明在火星殖民地從事開墾工作"},
+            {id:"D",text:"王朝明的腦部被改造，在火星殖民地從事開墾工作"},
             {id:"E",text:"警方抓到真兇"},
             {id:"F",text:"王朝明研究腦部醫學，提出死刑新觀念"},
             {id:"G",text:"王達成的腦部被改造，接受緩刑"},
             {id:"H",text:"王朝明放不下怨氣，不斷產生謀殺念頭"},
-            {id:"I",text:"王朝明的腦部被改造"}
+            {id:"I",text:"王朝明的腦部被改造，成為正直的人"}
         ], 
         ans: ["A","B","C","D","E","F","G","H","I"], rewardItem: "🪐", onClear: "r_hall3"
     },
@@ -469,7 +474,7 @@ function renderEngine(roomId) {
             playFootsteps();
             html = `<div class="story-box" style="border-color:#ffcc00; color:#ffcc00;">【探索紀錄】</div>
                     <div class="story-text">${room.story}</div>
-                    <button type="button" class="action-btn" onclick="renderEngine('${room.onClear}')">探索完畢，返回樞紐</button>`;
+                    <button type="button" class="action-btn" onclick="renderEngine('${room.onClear}')">探索完畢，返回上一層</button>`;
         }
         else if (room.type === "author") {
             playFootsteps(); currentAuthorLine = 0;
@@ -504,7 +509,7 @@ function renderEngine(roomId) {
                         <input type="text" id="pwd-input" class="text-input" placeholder="輸入解鎖代碼..." style="width:60%; margin-bottom:20px;">
                         <button type="button" class="action-btn" onclick="checkPassword('${roomId}')">驗證密碼</button>
                         <div id="pwd-msg" class="message"></div>
-                        <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall2'}')">返回樞紐</button>
+                        <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall2'}')">返回上一層</button>
                     </div>`;
         }
         else if (room.type === "lock") {
