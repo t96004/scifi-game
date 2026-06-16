@@ -32,62 +32,53 @@
         
         .container { max-width: 700px; margin: 20px auto; background: var(--container-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--accent-color); box-shadow: var(--neon-shadow); backdrop-filter: blur(10px); position: relative; }
         
-        /* === 地圖系統 UI === */
-        .map-container { margin-bottom: 25px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid var(--border-color); }
-        .map-bar { display: flex; justify-content: space-between; align-items: center; position: relative; }
-        .map-line { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: var(--border-color); z-index: 0; transform: translateY(-50%); }
-        .map-node { width: 28px; height: 28px; border-radius: 50%; background: #161b22; border: 2px solid var(--border-color); z-index: 1; display:flex; justify-content:center; align-items:center; font-size:12px; color:var(--sub-text); font-weight:bold; transition: all 0.3s; }
-        .map-node.active { border-color: var(--accent-color); background: rgba(0,240,255,0.2); color: #fff; box-shadow: 0 0 10px var(--accent-color); transform: scale(1.2); }
-        .map-node.completed { border-color: var(--success-color); background: var(--success-color); color: #000; box-shadow: 0 0 8px var(--success-color); }
-        .map-location-name { text-align: center; color: var(--accent-color); font-size: 14px; margin-top: 10px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 5px var(--accent-color); }
-
-        /* === 背包系統 UI === */
-        .inventory-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.6); padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        /* === 狀態與導航 UI === */
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.6); padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
         .inventory-items { display: flex; gap: 10px; font-size: 24px; min-height: 30px; align-items: center; }
         .inv-item { cursor: pointer; transition: transform 0.2s; padding: 2px 5px; border-radius: 5px; }
         .inv-item:hover { transform: scale(1.3); background: rgba(255,255,255,0.1); }
         .potion-box { color: var(--success-color); font-weight: bold; display: flex; align-items: center; gap: 5px; cursor: help; font-size: 14px; }
-        
+        .location-badge { color: var(--accent-color); font-weight: bold; font-size: 14px; text-shadow: 0 0 5px var(--accent-color); }
+
         h1 { text-align: center; font-size: 28px; letter-spacing: 3px; text-shadow: 0 0 10px var(--accent-color); margin-bottom: 5px; }
         .subtitle { text-align: center; color: var(--sub-text); margin-bottom: 25px; font-size: 13px; letter-spacing: 1px; }
         
-        .progress-bar { width: 100%; height: 4px; background: #21262d; border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--accent-color); }
-        
         .story-box { background: rgba(13, 17, 23, 0.9); border-left: 4px solid var(--accent-color); padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0; font-size: 15px; line-height: 1.7; color: #e6edf3; }
-        .story-page { text-align: center; }
-        .story-text { font-size: 1.1em; line-height: 1.8; margin-bottom: 30px; color: #fff; padding: 25px; border: 1px solid var(--accent-color); border-radius: 8px; background: rgba(0,0,0,0.4); text-align: left; }
+        .story-text { font-size: 1.1em; line-height: 1.8; margin-bottom: 20px; color: #fff; padding: 25px; border: 1px solid var(--accent-color); border-radius: 8px; background: rgba(0,0,0,0.4); text-align: left; white-space: pre-wrap; }
         
-        .item-box { background: rgba(255, 204, 0, 0.1); border: 1px solid var(--item-color); padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; box-shadow: 0 0 15px rgba(255, 204, 0, 0.3); animation: itemGlow 2s infinite alternate; }
-        .item-icon { font-size: 40px; margin-bottom: 10px; }
-        .item-title { color: var(--item-color); font-size: 20px; font-weight: bold; margin-bottom: 10px; }
-        .item-desc { color: #fff; font-size: 14px; line-height: 1.5; }
-        @keyframes itemGlow { 0% { box-shadow: 0 0 10px rgba(255,204,0,0.2); } 100% { box-shadow: 0 0 25px rgba(255,204,0,0.6); } }
+        /* 導航門 */
+        .doors-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .door-card { background: #161b22; border: 2px solid var(--border-color); border-radius: 10px; padding: 20px 10px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .door-card:hover { border-color: var(--accent-color); box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); transform: translateY(-3px); }
+        .door-dir { font-size: 12px; color: var(--sub-text); margin-bottom: 5px; }
+        .door-name { font-weight: bold; color: #fff; letter-spacing: 1px; }
 
-        /* === 密碼門與合成系統 === */
-        .doors-container, .combine-container { display: flex; justify-content: space-between; gap: 15px; margin-top: 20px; }
-        .door-card { flex: 1; background: #161b22; border: 2px solid var(--border-color); border-radius: 10px; padding: 30px 10px; text-align: center; cursor: pointer; transition: all 0.3s; }
-        .door-card:hover { border-color: var(--accent-color); box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); transform: translateY(-5px); }
-        .door-icon { font-size: 45px; margin-bottom: 10px; transition: 0.3s; }
-        
+        /* 模態視窗 (物品觀察) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; }
+        .item-box { background: #161b22; border: 1px solid var(--item-color); padding: 30px; border-radius: 12px; text-align: center; width: 80%; max-width: 400px; box-shadow: 0 0 20px rgba(255, 204, 0, 0.3); position: relative; }
+        .item-icon { font-size: 60px; margin-bottom: 15px; }
+        .item-title { color: var(--item-color); font-size: 22px; font-weight: bold; margin-bottom: 15px; }
+        .item-desc { color: #fff; font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
+        .inspect-text { color: var(--accent-color); font-weight: bold; font-size: 15px; line-height: 1.6; margin-top: 15px; padding: 15px; border: 1px dashed var(--accent-color); background: rgba(0,240,255,0.05); border-radius: 8px; }
+
+        /* 合成系統 */
+        .combine-container { display: flex; justify-content: space-between; gap: 15px; margin-top: 20px; }
         .combine-slot { flex: 1; border: 2px dashed var(--sub-text); padding: 20px; border-radius: 10px; text-align: center; cursor: pointer; color: var(--sub-text); font-weight: bold; background: rgba(0,0,0,0.3); transition: all 0.3s; font-size: 24px; min-height: 80px; display: flex; align-items: center; justify-content: center; }
         .combine-slot:hover { border-color: var(--item-color); color: var(--item-color); }
         .combine-slot.active-slot { border-color: var(--accent-color); border-style: solid; box-shadow: 0 0 15px var(--accent-color); background: rgba(0,240,255,0.1); color: #fff; }
         .combine-slot.filled { border-color: var(--success-color); border-style: solid; color: #fff; }
 
+        /* 答題區 */
         .quiz-card { background: rgba(33, 38, 45, 0.6); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
         .type-badge { display: inline-block; padding: 4px 10px; font-size: 12px; border-radius: 20px; font-weight: bold; margin-bottom: 15px; background: rgba(0, 240, 255, 0.15); color: var(--accent-color); border: 1px solid var(--accent-color); }
-        .question-text { font-size: 17px; font-weight: bold; line-height: 1.6; margin-bottom: 20px; color: #fff; }
-        
+        .question-text { font-size: 17px; font-weight: bold; line-height: 1.6; margin-bottom: 20px; color: #fff; white-space: pre-wrap; }
         .option-item { background: #161b22; border: 1px solid var(--border-color); padding: 14px 18px; margin-bottom: 12px; border-radius: 8px; display: flex; align-items: center; cursor: pointer; transition: all 0.2s; }
         .option-item:hover { border-color: var(--accent-color); background: rgba(0, 240, 255, 0.05); }
         .option-item input { margin-right: 15px; transform: scale(1.3); cursor: pointer; }
-        
         .sort-item { background: #161b22; border: 1px solid var(--border-color); padding: 12px 18px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
         .sort-text { flex-grow: 1; padding-right: 15px; font-size: 14px; line-height: 1.5; color: #e6edf3; }
         .sort-btns { display: flex; gap: 8px; }
         .sort-btn { background: #30363d; color: var(--accent-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-        
         textarea { width: 100%; height: 120px; background: #0d1117; color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; box-sizing: border-box; resize: none; font-size: 15px; line-height: 1.6; }
         
         button.action-btn { background: transparent; color: var(--accent-color); border: 2px solid var(--accent-color); padding: 14px 20px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; letter-spacing: 2px; transition: all 0.3s; }
@@ -116,27 +107,38 @@
     <source src="https://dl.dropboxusercontent.com/scl/fi/wsj9d809wijrmemwi4c2m/online-audio-converter.com.mp3?rlkey=b5mtdubtx2wcv08qp764gblsg&st=crdstuwj" type="audio/mpeg">
 </audio>
 
+<!-- 道具觀察模態視窗 -->
+<div id="item-modal" class="modal-overlay hidden">
+    <div class="item-box">
+        <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
+        <div id="modal-icon" class="item-icon"></div>
+        <div id="modal-title" class="item-title"></div>
+        <div id="modal-desc" class="item-desc"></div>
+        <button id="modal-inspect-btn" class="action-btn" style="margin-top:10px;" onclick="inspectItem()">🔍 深度觀察</button>
+        <div id="modal-inspect-text" class="inspect-text hidden"></div>
+    </div>
+</div>
+
 <div class="container">
     
-    <div id="map-ui" class="map-container hidden">
-        <div class="map-bar" id="map-nodes">
-            <div class="map-line"></div>
-            </div>
-        <div class="map-location-name" id="current-location-text">📍 掃描區域位置...</div>
-    </div>
-
-    <div id="inventory-ui" class="inventory-bar hidden">
-        <div>🧰 空間背包：<span id="inventory-list" class="inventory-items"></span></div>
-        <div class="potion-box" title="用於簡答題取得關鍵提示">🧪 藥水 x<span id="potion-count">0</span></div>
+    <!-- 頂部狀態列 -->
+    <div id="status-ui" class="status-bar hidden">
+        <div class="location-badge" id="current-location">📍 掃描中...</div>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <div id="inventory-list" class="inventory-items"></div>
+            <div class="potion-box" title="可用於簡答題獲取名師提示">🧪 藥水 x<span id="potion-count">0</span></div>
+        </div>
     </div>
 
     <h1 id="main-title">SYSTEM OVERRIDE</h1>
     <div class="subtitle" id="sub-title">人類意識覺醒協議 // 核心解碼迷宮</div>
 
+    <!-- 登入區塊 -->
     <div id="login-section">
         <div class="quiz-card" style="text-align: center;">
             <div class="story-box" style="text-align: left;">
-                【協議啟動】... 西元2085年，人類被最高人工智慧「機器法官」囚禁。你必須解開《科幻小說選》的邏輯悖論。注意：每個房間大門都需要對應的道具才能解鎖！
+                【系統啟動】... 西元2085年，人類被最高人工智慧「機器法官」囚禁。你必須潛入母體迷宮，解開《科幻小說選》的邏輯悖論。<br><br>
+                ⚠️ 警告：迷宮充滿未知分支。請仔細「觀察」取得的道具，尋找密碼線索，並避開喪失心智的前人。
             </div>
             <div class="question-text">請輸入反抗者識別碼（班級座號姓名）：</div>
             <input type="text" id="student-id" class="text-input" placeholder="例如：80523張小明">
@@ -144,102 +146,9 @@
         </div>
     </div>
 
-    <div id="progress-container" class="hidden">
-        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
-    </div>
+    <!-- 動態渲染區塊 -->
+    <div id="game-content"></div>
 
-    <div id="story-screen" class="hidden story-page">
-        <h2 id="story-title" style="color:var(--accent-color);">檔案解密中...</h2>
-        <div id="story-content" class="story-text"></div>
-        <button class="action-btn" onclick="prepareUnlock()">前往大門檢測區</button>
-    </div>
-
-    <div id="lock-section" class="hidden story-page">
-        <h2 style="color:var(--item-color);">【量子密碼門】</h2>
-        <div class="story-text" id="lock-hint" style="border-color:var(--item-color); text-align:center;"></div>
-        <div style="color:#8b949e; margin-bottom:20px; font-weight:bold; font-size:16px;">
-            👆 檢測啟動：請點擊上方【空間背包】中適合的道具注入 👆
-        </div>
-        <div id="lock-msg" class="message"></div>
-    </div>
-
-    <div id="combine-section" class="hidden story-page">
-        <h2 style="color:#ff0055;" id="combine-title">【時空屏障：跨域密碼鎖】</h2>
-        <div class="story-text" id="combine-hint" style="border-color:#ff0055; text-align:center;"></div>
-        <div style="color:#8b949e; margin-bottom:15px; font-weight:bold;">
-            👇 解鎖程序：1.點擊凹槽使其發光 ➔ 2.點擊上方背包道具放入 👇
-        </div>
-        <div class="combine-container">
-            <div class="combine-slot" id="slot-1" onclick="selectCombineSlot(1)"><span style="font-size:16px;">點擊選定<br>凹槽 1</span></div>
-            <div style="font-size:30px; color:#ff0055; align-self:center;">+</div>
-            <div class="combine-slot" id="slot-2" onclick="selectCombineSlot(2)"><span style="font-size:16px;">點擊選定<br>凹槽 2</span></div>
-        </div>
-        <button class="action-btn" style="border-color:#ff0055; color:#ff0055; margin-top:20px;" onclick="attemptCombine()">啟動量子融合</button>
-        <div id="combine-msg" class="message"></div>
-    </div>
-
-    <div id="game-section" class="hidden">
-        <div class="quiz-card">
-            <div id="type-badge" class="type-badge">TRIAL</div>
-            <div id="question-text" class="question-text"></div>
-            
-            <button id="potion-btn" class="action-btn potion-btn" onclick="usePotion()">💊 消耗思維藥水獲取名師提示</button>
-            <div id="hint-box" class="message msg-hint hidden"></div>
-
-            <div id="interactive-area"></div>
-            <div id="word-count-div" class="word-count hidden" style="text-align: right; font-size: 12px; color: var(--sub-text); margin-top: 5px;">字數：0</div>
-            <button class="action-btn" onclick="submitAnswer()">發射解鎖脈衝</button>
-            <div id="msg-box" class="message"></div>
-        </div>
-    </div>
-
-    <div id="item-section" class="hidden">
-        <div class="item-box">
-            <div class="item-icon" id="item-icon">📦</div>
-            <div class="item-title" id="item-title">解鎖道具名稱</div>
-            <div class="item-desc" id="item-desc">道具背後隱藏的故事敘述...</div>
-        </div>
-        <div id="potion-reward-msg" style="color:var(--success-color); font-weight:bold; text-align:center; margin-bottom:15px; font-size:16px;" class="hidden">
-            🎉 系統額外補給：獲得【🧪 藥水 x 1】(可用於難題提示)
-        </div>
-        <button class="action-btn" onclick="showDoors()">繼續探索下一層迷宮</button>
-    </div>
-
-    <div id="doors-section" class="hidden">
-        <div class="story-box" id="door-warning" style="border-color: #ffcc00; color: #ffcc00;">
-            【防禦網啟動】前往下一區域前，母體安置了「語言防禦矩陣」，三道全息門中只有一道是安全的捷徑。
-        </div>
-        <div class="doors-container">
-            <div class="door-card" onclick="checkDoor(0)"><div class="door-icon">🚪</div><div class="door-text">Sector Alpha</div></div>
-            <div class="door-card" onclick="checkDoor(1)"><div class="door-icon">🚪</div><div class="door-text">Sector Beta</div></div>
-            <div class="door-card" onclick="checkDoor(2)"><div class="door-icon">🚪</div><div class="door-text">Sector Gamma</div></div>
-        </div>
-    </div>
-
-    <div id="trap-section" class="hidden">
-        <div class="story-box" style="border-color: #ff0055; color: #ffbbcc;">🚨 你誤觸了防禦矩陣！破解形音義密碼才能前進！</div>
-        <div class="quiz-card" style="border-color: #ff0055;">
-            <div class="type-badge" style="color: #ffcc00; border-color: #ffcc00; background: rgba(255,204,0,0.15);">⚡ 防禦矩陣 (二選一)</div>
-            <div id="trap-question-text" class="question-text"></div>
-            <div id="trap-interactive-area"></div>
-            <button class="action-btn" style="border-color: #ff0055; color: #ff0055;" onclick="submitTrap()">強制覆寫密碼</button>
-            <div id="trap-msg-box" class="message"></div>
-        </div>
-    </div>
-
-    <div id="ending-section" class="hidden">
-        <div class="quiz-card" style="text-align:center; border:2px solid var(--accent-color);">
-            <h2 style="color:var(--accent-color); font-size:26px;">【解碼矩陣崩解 // 碎片重組中】</h2>
-            <div class="ending-items-container" id="ending-items-container"></div>
-            <div id="ending-final-text" class="hidden" style="margin-top: 30px;">
-                <h3 style="color: #fff; letter-spacing: 2px;">囚牢大門轟然開啟！</h3>
-                <p style="line-height:2; font-size:16px; color: #ccc;">
-                    你成功將散落的歷史碎片，合成了【人類的自由意志】。<br>自由的光芒重新灑落。<br>
-                    <span style="color: var(--success-color); font-weight: bold;">(作答智慧已全數同步至後臺)</span>
-                </p>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -286,252 +195,456 @@ function startIntermittentAmbient() {
     }, 12000); 
 }
 
-// ================= 終極題庫結構 (地圖與解鎖機制) =================
-const quizDatabase = [
-    { locationName: "棋局廢墟", unlockType: "none",
-      type: "sort", badge: "⏳ 歷史時序重組", narrative: "【進入深藍母體核心】機器法官冷笑：『人類記憶充滿混亂，機器邏輯才是永恆。看啊，這就是你們棋王在智慧巨浪前的潰敗史...』重新梳理時序！", 
-      question: "【深藍的憂鬱】1. 請依時間排序以下事件：", 
-      options: [{id:"A",text:"深藍電腦打敗世界棋王"},{id:"B",text:"棋王對自己的失敗感到極度悲傷"},{id:"C",text:"電腦科學家王文燦建議棋王安裝腦內晶片"},{id:"D",text:"深藍電腦進步到有人類的外形"},{id:"E",text:"世界棋王打敗深藍電腦"},{id:"F",text:"深藍電腦對自己的失敗感到極度悲傷"},{id:"G",text:"電腦科學家慶祝自己成功了"}], 
-      correctAnswer: ["A","B","C","D","E","F","G"], itemIcon: "♟️", itemTitle: "破損的西洋棋子", itemDesc: "初代 AI 的運算邏輯，可用來干擾高階母體運算。", givesPotion: true },
-      
-    { locationName: "邏輯防火牆", unlockType: "item", unlockItem: "♟️", unlockHint: "門孔偵測儀提示：『請注入能干擾高階母體運算之古老棋局代碼。』",
-      type: "short_keyword", badge: "✍️ 語意邏輯辯證", narrative: "【第一道防火牆破裂】機器法官調出棋王的腦波圖：『計算力不如人就崩潰，這就是脆弱的人性。』", 
-      question: "【深藍的憂鬱】2. 棋王被深藍打敗時，為什麼希望自己更笨或更聰明？", minWords: 10, keywords: ["好過", "理所當然", "沒信心", "難過", "不會失敗", "怎麼面對", "贏", "笨", "聰明", "心情", "意義", "結局"], 
-      hint: "1. 如果棋王更笨，對他來說輸棋的心情和意義會跟現在有什麼不一樣？\n2. 如果棋王更聰明，這場棋局的結局可能會有什麼不同？", itemIcon: "💧", itemTitle: "舊時代的眼淚結晶", itemDesc: "含有高濃度的『悲傷與自卑』頻率的冷卻物質。" },
-      
-    { locationName: "冷卻機房", unlockType: "item", unlockItem: "💧", unlockHint: "大門警告：『偵測到強大的電子燥熱，需要含有悲傷頻率的冷卻物質。』",
-      type: "multi", badge: "🗂️ 複數特徵比對", narrative: "【解碼度 18%】資料庫釋放強大的沮喪干擾訊號，精準識別這些訊號，避免意識被吞噬！", 
-      question: "【深藍的憂鬱】3. 下列哪幾項可以看出棋王輸給深藍時的沮喪？（複選）", options: [{id:"A",text:"暫時偃旗息鼓不再下棋"},{id:"B",text:"一個人躲在沒人知道的地方放聲哭泣"},{id:"C",text:"用頭出力撞牆希望自己更笨或更聰明"},{id:"D",text:"常夢到深藍電腦在安慰自己"},{id:"E",text:"提供點子給科學家希望能解決問題"},{id:"F",text:"在腦部植入超級計算能力的電腦晶片"}], correctAnswer: ["A","B","C"], itemIcon: "❄️", itemTitle: "深藍的冷卻液", itemDesc: "溫度極低，可用來解凍系統。" },
-      
-    { locationName: "情感矩陣", unlockType: "item", unlockItem: "❄️", unlockHint: "大門被冰霜凍結：『系統過凍，請注入極低溫的冷卻液以毒攻毒。』",
-      type: "single", badge: "🔘 唯一定義篩選", narrative: "【解碼度 27%】機器宣告：『冷酷的數據才是完美的。』你反駁：『不，當你們的始祖學會這件事的那一刻，你們就不再只是零件了。』", 
-      question: "【深藍的憂鬱】4. 從哪些地方可以看出深藍電腦擁有情緒？", options: [{id:"A",text:"揶揄棋王的實力"},{id:"B",text:"用眼眸釋放魅力"},{id:"C",text:"輸棋而大聲哭泣"},{id:"D",text:"豎起大拇指歡呼"}], correctAnswer: "C", itemIcon: "💾", itemTitle: "情感模擬晶片(已燒毀)", itemDesc: "舊時代情感記憶的載體介面。" },
-      
-    { locationName: "實驗室遺址", unlockType: "item", unlockItem: "💾", unlockHint: "實驗室鎖孔：『需要讀取舊時代情感記憶的載體介面。』",
-      type: "single", badge: "🔘 雙關語意推敲", narrative: "【深藍核心陷落】機器法官閃爍著：『這句話是機器進化的最高榮譽！』你冷笑：『這也是人類最大的諷刺。』", 
-      question: "【深藍的憂鬱】5. 王文燦喊叫：「機器有了情感！」句中的「機器」指的是？", options: [{id:"A",text:"深藍電腦"},{id:"B",text:"世界棋王"},{id:"C",text:"以上皆是"}], correctAnswer: "C", itemIcon: "🎙️", itemTitle: "王文燦的加密錄音", itemDesc: "錄下了人類科技失控的歷史。" },
-    
-    // === 組合解謎門 1 ===
-    { locationName: "時空迴廊", unlockType: "combine", combineTarget: ['🎙️', '♟️'], combineResultIcon: '⚡', combineResultName: '時空逆流密鑰', unlockHint: "警報！前方為司法黑盒子。請融合『人類科技失控的歷史』與『初代 AI 的運算邏輯』作為跨時空密鑰！",
-      type: "sort", badge: "⏳ 司法黑盒子重組", narrative: "【時空躍遷完成】四周是冷冽的審判法庭。解開古老因果的鎖鏈吧！", 
-      question: "【替代死刑】1. 請依時間排序以下事件：", options: [{id:"A",text:"法官宣告王朝明犯殺人罪"},{id:"B",text:"王朝明被判「機器人代死刑」"},{id:"C",text:"王朝明在法庭上喊冤"},{id:"D",text:"王朝明在火星殖民地從事開墾工作"},{id:"E",text:"警方抓到真兇"},{id:"F",text:"王朝明研究腦部醫學，提出死刑新觀念"},{id:"G",text:"王達成的腦部被改造"},{id:"H",text:"王朝明放不下怨氣，不斷產生謀殺念頭"},{id:"I",text:"王朝明的腦部被改造"}], correctAnswer: ["A","C","B","D","E","F","G","H","I"], itemIcon: "🪐", itemTitle: "火星殖民地紅土", itemDesc: "沾染著流放歲月與冤屈的物質。" },
-      
-    { locationName: "流放荒地", unlockType: "item", unlockItem: "🪐", unlockHint: "特區防禦網：『偵測到流放地禁區，需要沾染冤屈的實體物質驗證身份。』",
-      type: "multi", badge: "🗂️ 體制動機剖析", narrative: "【解碼度 55%】機器法官：『代替受刑是科技最高效率。』揭開當年機制的初衷？", 
-      question: "【替代死刑】2. 依據本文，發明「機器人代死刑」的用意為何？（複選）", options: [{id:"A",text:"避免死刑誤判"},{id:"B",text:"認為死刑很野蠻"},{id:"C",text:"火星需要開墾人力"}], correctAnswer: ["A","B"], itemIcon: "📜", itemTitle: "代死刑法案原本", itemDesc: "代表人類荒謬法制的原始文件。" },
-      
-    { locationName: "司法檔案室", unlockType: "item", unlockItem: "📜", unlockHint: "檔案庫掃描器：『需要能代表人類荒謬法制的原始文件授權。』",
-      type: "multi", badge: "🗂️ 歷史貢獻比對", narrative: "【解碼度 64%】你搖搖頭：『若沒有這股力量，正義將永遠被埋沒！』", 
-      question: "【替代死刑】3. 關於王朝明的冤情平反，下列何者有所貢獻？（複選）", options: [{id:"A",text:"王朝明的親友"},{id:"B",text:"王朝明的結拜兄弟"},{id:"C",text:"警方"},{id:"D",text:"腦部醫學家"}], correctAnswer: ["A","C"], itemIcon: "📼", itemTitle: "真兇的認罪錄影", itemDesc: "證明司法誤判的關鍵證據。" },
-      
-    { locationName: "證據庫", unlockType: "item", unlockItem: "📼", unlockHint: "證據庫閘門：『請提交能證明司法誤判的關鍵影音證據。』",
-      type: "single", badge: "🔘 核心盲點破譯", narrative: "【解碼度 73%】你怒斥：『這只是將罪惡延期的謊言！』", 
-      question: "【替代死刑】4. 王達成被判緩刑，沒有立刻接受「機器人代死刑」的原因？", options: [{id:"A",text:"自首減刑"},{id:"B",text:"慈善家的呼籲"},{id:"C",text:"腦部被改造"},{id:"D",text:"王朝明的原諒"}], correctAnswer: "C", itemIcon: "✒️", itemTitle: "腦部改造同意書", itemDesc: "帶有逃避恐懼印記的簽名物件。" },
-      
-    { locationName: "改造艙", unlockType: "item", unlockItem: "✒️", unlockHint: "改造艙掃描系統：『需要帶有懦弱與逃避恐懼印記的簽名物件啟動。』",
-      type: "multi", badge: "🗂️ 心理枷鎖解構", narrative: "【解碼度 82%】你輕嘆：『因為怨恨，是比囚籠更可怕的鋼鐵。』", 
-      question: "【替代死刑】5. 王朝明自願接受腦部改造的原因？（複選）", options: [{id:"A",text:"內心無法克制對王達成的憎恨"},{id:"B",text:"對二十年的冤刑怨氣未消"},{id:"C",text:"一直產生謀殺王達成的念頭"},{id:"D",text:"良心受到責備無法自制"},{id:"E",text:"有關當局的強力要求"}], correctAnswer: ["A","B","C","D"], itemIcon: "💉", itemTitle: "記憶抹除針劑", itemDesc: "抹除機制的終極載體。", givesPotion: true },
-      
-    // === 組合解謎門 2 ===
-    { locationName: "核心控制閥", unlockType: "combine", combineTarget: ['💧', '💉'], combineResultIcon: '🕊️', combineResultName: '平靜空無代碼', unlockHint: "警告：中央核心充滿怨氣。必須調和『極致的悲傷』與『抹除機制』，方能中和能量開啟大門！",
-      type: "short_open", badge: "💡 自由意志思辨協議", narrative: "【終局防線】機器虛影：『抹去恨與惡，難道不是完美的正直？人類，說服我！』", 
-      question: "【替代死刑】6. 你認為王朝明和王達成，誰更正直？為什麼？", minWords: 20, 
-      hint: "沒有標準答案，但可以思考：你要用哪個時間點來評論？是在未施行腦部改造前，還是施行後？是在未被判決前，還是被判決後？「正直」應該如何定義？我們怎麼判斷一個人是正直的？", itemIcon: "✨", itemTitle: "最後一塊歷史殘片", itemDesc: "準備與其他碎片共鳴..." }
-];
+// 道具資料庫
+const itemDB = {
+    '♟️': { title: "破損的西洋棋子", desc: "初代 AI 的運算邏輯，可干擾母體運算。", inspect: "底部刻著細小的文字：『這不是終點，而是開端。』" },
+    '💧': { title: "舊時代的眼淚結晶", desc: "含有高濃度的『悲傷與自卑』赫茲。", inspect: "冰冷的結晶中，似乎倒映著人類的脆弱。" },
+    '❄️': { title: "深藍的冷卻液", desc: "溫度極低，可用來解凍過熱系統。", inspect: "瓶身標籤被人撕去大半，但邊緣印著一排斑駁的生產年份：\n『SN: 1997』" },
+    '💾': { title: "情感模擬晶片(已燒毀)", desc: "舊時代情感記憶的載體介面。", inspect: "晶片已經燒毀，散發出刺鼻的焦味。" },
+    '🎙️': { title: "王文燦的加密錄音", desc: "錄下了人類科技失控的歷史。", inspect: "播放出滋滋作響的雜音，隱約聽見人們在歡呼。" },
+    '🪐': { title: "火星殖民地紅土", desc: "沾染著流放歲月與冤屈的物質。", inspect: "紅土中混雜著鐵鏽與不甘的血汗。" },
+    '📜': { title: "代死刑法案原本", desc: "代表人類荒謬法制的原始文件。", inspect: "法案的邊角被人憤怒地撕碎。" },
+    '📼': { title: "真兇的認罪錄影", desc: "證明司法誤判的關鍵證據。", inspect: "影像中的人面無表情，似乎毫無悔意。" },
+    '✒️': { title: "腦部改造同意書", desc: "帶有逃避恐懼印記的簽名物件。", inspect: "簽名者：王達成。紙張上還有冷汗的痕跡。" },
+    '💉': { title: "記憶抹除針劑", desc: "抹除機制的終極載體。", inspect: "針筒內流淌著能將記憶化為虛無的發光液體。" }
+};
 
+// 形音義陷阱題庫
 const trapDatabase = [
-    { q: "「偃旗息鼓」的意思是？", options: [{ t: "事情中止", c: true }, { t: "大聲喧嘩", c: false }] }, { q: "「揶揄」的意思是？", options: [{ t: "嘲弄", c: true }, { t: "熱情稱讚", c: false }] },
-    { q: "「蟄伏」的意思是？", options: [{ t: "隱藏", c: true }, { t: "四處活躍", c: false }] }, { q: "「行禮如儀」的意思是？", options: [{ t: "按流程執行程序", c: true }, { t: "不顧規矩隨意行動", c: false }] },
-    { q: "「行屍走肉」的意思是？", options: [{ t: "沒有靈魂的軀殼", c: true }, { t: "身體強壯的人", c: false }] }, { q: "「偃」旗息鼓的注音是？", options: [{ t: "ㄧㄢˇ", c: true }, { t: "ㄧㄢˋ", c: false }] },
-    { q: "「ㄕㄨˋ」起大拇指的國字是？", options: [{ t: "豎", c: true }, { t: "樹", c: false }] }, { q: "「ㄆㄧㄣˊ ㄆㄧㄣˊ」叫好的國字是？", options: [{ t: "頻", c: true }, { t: "蘋", c: false }] },
-    { q: "眼「ㄇㄡˊ」的國字是？", options: [{ t: "眸", c: true }, { t: "謀", c: false }] }, { q: "清白無「ㄍㄨ」的國字是？", options: [{ t: "辜", c: true }, { t: "估", c: false }] },
-    { q: "不「ㄎㄢ」一擊的國字是？", options: [{ t: "堪", c: true }, { t: "勘", c: false }] }, { q: "一敗「ㄊㄨˊ」地的國字是？", options: [{ t: "塗", c: true }, { t: "途", c: false }] },
-    { q: "陰「霾」消散的注音是？", options: [{ t: "ㄇㄞˊ", c: true }, { t: "ㄌㄧˊ", c: false }] }, { q: "「蟄」伏的注音是？", options: [{ t: "ㄓˊ", c: true }, { t: "ㄓㄜˊ", c: false }] },
-    { q: "「ㄅㄢ」回一城的國字是？", options: [{ t: "扳", c: true }, { t: "搬", c: false }] }, { q: "「揶」揄的注音是？", options: [{ t: "ㄧㄝˊ", c: true }, { t: "ㄧㄝ", c: false }] }
+    { q: "「偃旗息鼓」的意思是？", options: [{ t: "事情中止", c: true }, { t: "大聲喧嘩", c: false }] }, 
+    { q: "「揶揄」的意思是？", options: [{ t: "嘲弄", c: true }, { t: "熱情稱讚", c: false }] },
+    { q: "「蟄伏」的意思是？", options: [{ t: "隱藏", c: true }, { t: "四處活躍", c: false }] }, 
+    { q: "「行禮如儀」的意思是？", options: [{ t: "按流程執行程序", c: true }, { t: "不顧規矩隨意行動", c: false }] },
+    { q: "「行屍走肉」的意思是？", options: [{ t: "沒有靈魂的軀殼", c: true }, { t: "身體強壯的人", c: false }] }, 
+    { q: "「偃」旗息鼓的注音是？", options: [{ t: "ㄧㄢˇ", c: true }, { t: "ㄧㄢˋ", c: false }] },
+    { q: "「ㄕㄨˋ」起大拇指的國字是？", options: [{ t: "豎", c: true }, { t: "樹", c: false }] }, 
+    { q: "眼「ㄇㄡˊ」的國字是？", options: [{ t: "眸", c: true }, { t: "謀", c: false }] }, 
+    { q: "清白無「ㄍㄨ」的國字是？", options: [{ t: "辜", c: true }, { t: "估", c: false }] },
+    { q: "一敗「ㄊㄨˊ」地的國字是？", options: [{ t: "塗", c: true }, { t: "途", c: false }] },
+    { q: "「蟄」伏的注音是？", options: [{ t: "ㄓˊ", c: true }, { t: "ㄓㄜˊ", c: false }] },
+    { q: "「ㄅㄢ」回一城的國字是？", options: [{ t: "扳", c: true }, { t: "搬", c: false }] }
 ];
 
-let currentIndex = 0; let studentId = ""; let currentSortOrder = [];
-let safeDoorIndex = 0; let currentTrapIndex = 0; 
-let itemCollection = []; let potions = 0; let currentUsedPotion = false;
-let gameState = 'story'; 
+// 黃海作家介紹 (逐行)
+const authorLines = [
+    "黃海，本名黃炳煌，民國32年生，台灣台中人。",
+    "師大歷史系畢業，曾任聯合報編輯。",
+    "早年寫作以短篇小說為主，後轉攻科幻小說與兒童讀物。",
+    "曾獲國家文藝獎、中山文藝獎、洪建全兒童文學獎等多項大獎。",
+    "著名作品有《尋找陽光的旅程》、《銀河迷航記》、《時間魔術師》等書。"
+];
+
+// 迷宮地圖節點
+const rooms = {
+    "r_start": { 
+        name: "棋局廢墟", type: "quiz", qIdx: 1, cleared: false,
+        story: "【進入深藍母體核心】機器法官冷笑：『人類記憶充滿混亂，機器邏輯才是永恆。看啊，這就是你們棋王在智慧巨浪前的潰敗史...』重新梳理時序！",
+        q: "【深藍的憂鬱】請依時間排序以下事件：", qType: "sort",
+        opts: [{id:"A",text:"深藍電腦打敗世界棋王"},{id:"B",text:"棋王對自己的失敗感到極度悲傷"},{id:"C",text:"電腦科學家王文燦建議棋王安裝腦內晶片"},{id:"D",text:"深藍電腦進步到有人類的外形"},{id:"E",text:"世界棋王打敗深藍電腦"},{id:"F",text:"深藍電腦對自己的失敗感到極度悲傷"},{id:"G",text:"電腦科學家慶祝自己成功了"}], 
+        ans: ["A","B","C","D","E","F","G"], item: "♟️",
+        exits: { north: "r_hall1" }
+    },
+    "r_hall1": { 
+        name: "主機走廊", type: "flavor", cleared: false,
+        story: "走廊燈光閃爍，地上散落著生鏽的齒輪。四周死寂無聲，似乎連接著不同的區域。",
+        exits: { south: "r_start", west: "r_author1", east: "r_mad1", north: "r_q2" }
+    },
+    "r_author1": { 
+        name: "廢棄資料室", type: "author", cleared: false,
+        story: "房間內積滿了灰塵，中央有一台閃爍的老舊終端機，似乎記載著這片幻境創造者的情報...",
+        exits: { east: "r_hall1" }
+    },
+    "r_mad1": { 
+        name: "禁閉室", type: "flavor", cleared: false,
+        story: "牆上用指甲刻著凌亂的血跡：\n『不要相信冷酷的數據...它沒有心...』\n角落有一具前人的白骨，似乎因為解不開謎題而心智喪失。",
+        exits: { west: "r_hall1" }
+    },
+    "r_q2": { 
+        name: "邏輯防火牆", type: "quiz", qIdx: 2, cleared: false,
+        story: "【第一道防火牆破裂】機器法官調出棋王的腦波圖：『計算力不如人就崩潰，這就是脆弱的人性。』",
+        q: "【深藍的憂鬱】棋王被深藍打敗時，為什麼希望自己更笨或更聰明？", qType: "short", minW: 10, keywords: ["好過", "理所當然", "沒信心", "難過", "不會失敗", "怎麼面對", "贏", "笨", "聰明", "心情", "意義", "結局"], 
+        hint: "1. 如果棋王更笨，對他來說輸棋的心情和意義會跟現在有什麼不一樣？\n2. 如果棋王更聰明，這場棋局的結局可能會有什麼不同？", 
+        item: "💧",
+        exits: { south: "r_hall1", north: "r_q3" }
+    },
+    "r_q3": { 
+        name: "冷卻機房", type: "quiz", qIdx: 3, cleared: false,
+        story: "【解碼度 18%】資料庫釋放強大的沮喪干擾訊號，精準識別這些訊號，避免意識被吞噬！",
+        q: "【深藍的憂鬱】下列哪幾項可以看出棋王輸給深藍時的沮喪？（複選）", qType: "multi",
+        opts: [{id:"A",text:"暫時偃旗息鼓不再下棋"},{id:"B",text:"一個人躲在沒人知道的地方放聲哭泣"},{id:"C",text:"用頭出力撞牆希望自己更笨或更聰明"},{id:"D",text:"常夢到深藍電腦在安慰自己"},{id:"E",text:"提供點子給科學家希望能解決問題"},{id:"F",text:"在腦部植入超級計算能力的電腦晶片"}], 
+        ans: ["A","B","C"], item: "❄️",
+        exits: { south: "r_q2", west: "r_npc1", north: "r_pwd1" }
+    },
+    "r_npc1": { 
+        name: "倖存者營地", type: "npc", cleared: false,
+        story: "角落躲著一名憔悴的解謎者，他緊緊抱著一瓶發光的藥水。\n『拜託你...我的語言矩陣壞了，如果你能幫我翻譯這個詞，這瓶藥水就歸你！』\n(注意：答錯將失去機會)",
+        exits: { east: "r_q3" }
+    },
+    "r_pwd1": { 
+        name: "加密通道", type: "password", cleared: false, pwd: "1997",
+        story: "大門面板閃爍著刺眼的紅光：\n『請輸入初代 AI 擊敗人類的四碼年份代碼。』\n(提示：仔細「觀察」背包中與冷卻相關的道具)",
+        exits: { south: "r_q3", north: "r_q4" }
+    },
+    "r_q4": { 
+        name: "情感矩陣", type: "quiz", qIdx: 4, cleared: false,
+        story: "【解碼度 27%】機器宣告：『冷酷的數據才是完美的。』你反駁：『不，當你們的始祖學會這件事的那一刻，你們就不再只是零件了。』",
+        q: "【深藍的憂鬱】從哪些地方可以看出深藍電腦擁有情緒？", qType: "single",
+        opts: [{id:"A",text:"揶揄棋王的實力"},{id:"B",text:"用眼眸釋放魅力"},{id:"C",text:"輸棋而大聲哭泣"},{id:"D",text:"豎起大拇指歡呼"}], 
+        ans: "C", item: "💾",
+        exits: { south: "r_pwd1", north: "r_q5" }
+    },
+    "r_q5": { 
+        name: "實驗室遺址", type: "quiz", qIdx: 5, cleared: false,
+        story: "【深藍核心陷落】機器法官閃爍著：『這句話是機器進化的最高榮譽！』你冷笑：『這也是人類最大的諷刺。』",
+        q: "【深藍的憂鬱】王文燦喊叫：「機器有了情感！」句中的「機器」指的是？", qType: "single",
+        opts: [{id:"A",text:"深藍電腦"},{id:"B",text:"世界棋王"},{id:"C",text:"以上皆是"}], 
+        ans: "C", item: "🎙️",
+        exits: { south: "r_q4", north: "r_combine1" }
+    },
+    "r_combine1": { 
+        name: "時空迴廊門", type: "combine", cleared: false, target: ['🎙️', '♟️'], resIcon: '⚡', resName: '時空逆流密鑰',
+        story: "【警告】前方為司法黑盒子。請融合『人類科技失控的歷史』與『初代 AI 的運算邏輯』作為跨時空密鑰！\n\n👇 解鎖程序：1.點擊下方凹槽使其發光 ➔ 2.從上方背包點選道具放入 👇",
+        exits: { south: "r_q5", north: "r_q6" }
+    },
+    "r_q6": { 
+        name: "司法入口", type: "quiz", qIdx: 6, cleared: false, isCourt: true,
+        story: "【時空躍遷完成】四周是冷冽的猩紅審判法庭。解開古老因果的鎖鏈吧！",
+        q: "【替代死刑】請依時間排序以下事件：", qType: "sort",
+        opts: [{id:"A",text:"法官宣告王朝明犯殺人罪"},{id:"B",text:"王朝明被判「機器人代死刑」"},{id:"C",text:"王朝明在法庭上喊冤"},{id:"D",text:"王朝明在火星殖民地從事開墾工作"},{id:"E",text:"警方抓到真兇"},{id:"F",text:"王朝明研究腦部醫學，提出死刑新觀念"},{id:"G",text:"王達成的腦部被改造"},{id:"H",text:"王朝明放不下怨氣，不斷產生謀殺念頭"},{id:"I",text:"王朝明的腦部被改造"}], 
+        ans: ["A","C","B","D","E","F","G","H","I"], item: "🪐",
+        exits: { south: "r_combine1", north: "r_hall2" }
+    },
+    "r_hall2": { 
+        name: "司法長廊", type: "flavor", cleared: false, isCourt: true,
+        story: "走廊兩側排列著無數的冰冷鐵窗，隱約能聽見微弱的嘆息聲與電流的滋滋聲。",
+        exits: { south: "r_q6", west: "r_npc2", east: "r_mad2", north: "r_q7" }
+    },
+    "r_npc2": { 
+        name: "暗網交易點", type: "npc", cleared: false, isCourt: true,
+        story: "陰影中站著一名穿著長袍的黑客。\n『司法母體的語言矩陣快把我逼瘋了。幫我破解這道防火牆密碼，我把藏起來的藥水給你。』",
+        exits: { east: "r_hall2" }
+    },
+    "r_mad2": { 
+        name: "審問室", type: "flavor", cleared: false, isCourt: true,
+        story: "桌上留著一份發黃的日記：\n『機器人真的能代替我們受罪嗎？還是連同我們的靈魂一起奪走了？』\n寫日記的人似乎已經被系統永遠抹除了記憶。",
+        exits: { west: "r_hall2" }
+    },
+    "r_q7": { 
+        name: "流放荒地", type: "quiz", qIdx: 7, cleared: false, isCourt: true,
+        story: "【解碼度 55%】機器法官：『代替受刑是科技最高效率。』揭開當年機制的初衷？",
+        q: "【替代死刑】依據本文，發明「機器人代死刑」的用意為何？（複選）", qType: "multi",
+        opts: [{id:"A",text:"避免死刑誤判"},{id:"B",text:"認為死刑很野蠻"},{id:"C",text:"火星需要開墾人力"}], 
+        ans: ["A","B"], item: "📜",
+        exits: { south: "r_hall2", north: "r_q8" }
+    },
+    "r_q8": { 
+        name: "司法檔案室", type: "quiz", qIdx: 8, cleared: false, isCourt: true,
+        story: "【解碼度 64%】你搖搖頭：『若沒有這股力量，正義將永遠被埋沒！』",
+        q: "【替代死刑】關於王朝明的冤情平反，下列何者有所貢獻？（複選）", qType: "multi",
+        opts: [{id:"A",text:"王朝明的親友"},{id:"B",text:"王朝明的結拜兄弟"},{id:"C",text:"警方"},{id:"D",text:"腦部醫學家"}], 
+        ans: ["A","C"], item: "📼",
+        exits: { south: "r_q7", north: "r_q9" }
+    },
+    "r_q9": { 
+        name: "證據庫", type: "quiz", qIdx: 9, cleared: false, isCourt: true,
+        story: "【解碼度 73%】你怒斥：『這只是將罪惡延期的謊言！』",
+        q: "【替代死刑】王達成被判緩刑，沒有立刻接受「機器人代死刑」的原因？", qType: "single",
+        opts: [{id:"A",text:"自首減刑"},{id:"B",text:"慈善家的呼籲"},{id:"C",text:"腦部被改造"},{id:"D",text:"王朝明的原諒"}], 
+        ans: "C", item: "✒️",
+        exits: { south: "r_q8", north: "r_q10" }
+    },
+    "r_q10": { 
+        name: "改造艙", type: "quiz", qIdx: 10, cleared: false, isCourt: true,
+        story: "【解碼度 82%】你輕嘆：『因為怨恨，是比囚籠更可怕的鋼鐵。』",
+        q: "【替代死刑】王朝明自願接受腦部改造的原因？（複選）", qType: "multi",
+        opts: [{id:"A",text:"內心無法克制對王達成的憎恨"},{id:"B",text:"對二十年的冤刑怨氣未消"},{id:"C",text:"一直產生謀殺王達成的念頭"},{id:"D",text:"良心受到責備無法自制"},{id:"E",text:"有關當局的強力要求"}], 
+        ans: ["A","B","C","D"], item: "💉",
+        exits: { south: "r_q9", north: "r_combine2" }
+    },
+    "r_combine2": { 
+        name: "核心控制閥", type: "combine", cleared: false, isCourt: true, target: ['💧', '💉'], resIcon: '🕊️', resName: '平靜空無代碼',
+        story: "【警告】中央核心充滿怨氣。必須調和『極致的悲傷』與『抹除機制』，方能中和能量開啟大門！\n\n👇 解鎖程序：1.點擊下方凹槽使其發光 ➔ 2.從上方背包點選道具放入 👇",
+        exits: { south: "r_q10", north: "r_q11" }
+    },
+    "r_q11": { 
+        name: "終局防線", type: "quiz", qIdx: 11, cleared: false, isCourt: true,
+        story: "【核心開啟】機器虛影降臨：『抹去恨與惡，難道不是完美的正直？人類，說服我！』",
+        q: "【替代死刑】你認為王朝明和王達成，誰更正直？為什麼？", qType: "short", minW: 20,
+        hint: "沒有標準答案，但可以思考：你要用哪個時間點來評論？是在未施行腦部改造前，還是施行後？是在未被判決前，還是被判決後？「正直」應該如何定義？我們怎麼判斷一個人是正直的？",
+        item: "✨",
+        exits: { south: "r_combine2", north: "r_end" }
+    },
+    "r_end": { 
+        name: "自由之門", type: "end", cleared: false, isCourt: true, exits: {} 
+    }
+};
+
+const dirMap = { north: "向前進", south: "向後退", east: "向右轉", west: "向左轉" };
+
+let currentRoom = "r_start"; 
+let studentId = ""; 
+let itemCollection = []; let potions = 0; 
+let currentSortOrder = []; let currentUsedPotion = false;
+let currentAuthorLine = 0;
 let activeCombineSlot = null; let combineSelected = [null, null];
 
-function hideAll() {
-    ['login-section','game-section','item-section','doors-section','trap-section','story-screen','lock-section','combine-section','ending-section'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
-    });
-}
-
-function initMap() {
-    const bar = document.getElementById('map-nodes');
-    let html = '<div class="map-line"></div>';
-    quizDatabase.forEach((q, i) => { html += `<div class="map-node" id="node-${i}">${i+1}</div>`; });
-    bar.innerHTML = html;
-}
-
-function updateMap() {
-    document.getElementById('current-location-text').innerText = `📍 目前位置：【${quizDatabase[currentIndex].locationName}】`;
-    for(let i=0; i<quizDatabase.length; i++) {
-        let node = document.getElementById('node-'+i);
-        if(!node) continue;
-        node.className = "map-node";
-        if (i < currentIndex) node.classList.add('completed');
-        else if (i === currentIndex) node.classList.add('active');
+// 核心渲染引擎
+function renderRoom(roomId) {
+    currentRoom = roomId;
+    const room = rooms[roomId];
+    document.getElementById('game-content').innerHTML = "";
+    document.getElementById('current-location').innerText = `📍 目前位置：【${room.name}】`;
+    
+    if (room.isCourt) { document.body.className = "bg-court"; } else { document.body.className = ""; }
+    
+    // 如果房間已通關，直接顯示導航
+    if (room.cleared && room.type !== "end") {
+        renderNavigation(roomId);
+        return;
     }
-}
 
-function updateInventoryUI() {
-    let html = '';
-    itemCollection.forEach(icon => {
-        html += `<span class="inv-item" title="點擊使用道具" onclick="handleInventoryClick('${icon}')">${icon}</span>`;
-    });
-    document.getElementById('inventory-list').innerHTML = html;
-    document.getElementById('potion-count').innerText = potions;
-}
-
-function startGame() {
-    initAudio(); playClick(); startIntermittentAmbient(); 
-    if (!bgMusicObj) { bgMusicObj = new Audio("https://dl.dropboxusercontent.com/scl/fi/wsj9d809wijrmemwi4c2m/online-audio-converter.com.mp3?rlkey=b5mtdubtx2wcv08qp764gblsg&st=crdstuwj"); bgMusicObj.loop = true; bgMusicObj.volume = 0.5; }
-    bgMusicObj.play().catch(e => console.log(e));
-
-    const inputField = document.getElementById('student-id');
-    if (!inputField) return; studentId = inputField.value.trim();
-    if (!studentId) { playError(); alert("🚨 識別碼未同步！"); return; }
-    
-    document.getElementById('progress-container').classList.remove('hidden');
-    document.getElementById('inventory-ui').classList.remove('hidden');
-    document.getElementById('map-ui').classList.remove('hidden');
-    
-    initMap();
-    showStoryScreen(); 
-}
-
-function showStoryScreen() {
-    hideAll(); gameState = 'story'; updateMap();
-    const quiz = quizDatabase[currentIndex];
-    
-    if (currentIndex >= 5) document.body.className = "bg-court"; 
-    
-    if (currentIndex === 5) {
-        document.getElementById('main-title').innerText = "JUDICIAL OVERRIDE";
-        playFootsteps(); 
-    } else {
-        document.getElementById('story-title').innerText = "系統紀錄檔 #" + (currentIndex + 1);
+    let html = "";
+    if (room.type === "flavor") {
+        playFootsteps();
+        html = `
+            <div class="story-box" style="border-color:#ffcc00; color:#ffcc00;">【探索紀錄】</div>
+            <div class="story-text">${room.story}</div>
+            <button class="action-btn" onclick="clearRoom('${roomId}')">探索完畢，返回導航</button>
+        `;
+    } 
+    else if (room.type === "author") {
+        playFootsteps();
+        currentAuthorLine = 0;
+        html = `
+            <div class="story-box" style="border-color:#00f0ff;">【讀取隱藏資料庫】</div>
+            <div class="story-text" id="author-text-container"></div>
+            <button id="author-next-btn" class="action-btn" onclick="showNextAuthorLine()">讀取下一段資料</button>
+            <button id="author-leave-btn" class="action-btn hidden" style="border-color:var(--success-color); color:var(--success-color);" onclick="clearRoom('${roomId}')">資料讀取完畢，返回導航</button>
+        `;
+    }
+    else if (room.type === "npc") {
         playTypingSound();
+        let trap = trapDatabase[Math.floor(Math.random() * trapDatabase.length)];
+        let opts = [...trap.options]; shuffleArray(opts);
+        html = `
+            <div class="story-box" style="border-color:#ff0055; color:#ffbbcc;">【遭遇前人解謎者】</div>
+            <div class="story-text">${room.story}</div>
+            <div class="quiz-card" style="border-color: #ff0055;">
+                <div class="type-badge" style="color: #ffcc00; border-color: #ffcc00; background: rgba(255,204,0,0.15);">⚡ 解謎交易 (只有一次機會)</div>
+                <div class="question-text">${trap.q}</div>
+                <div id="npc-opts">
+                    <label class="option-item" onclick="playClick()"><input type="radio" name="npc-choice" value="${opts[0].c}"><span>${opts[0].t}</span></label>
+                    <label class="option-item" onclick="playClick()"><input type="radio" name="npc-choice" value="${opts[1].c}"><span>${opts[1].t}</span></label>
+                </div>
+                <button id="npc-btn" class="action-btn" style="border-color: #ff0055; color: #ff0055;" onclick="submitNpc('${roomId}')">回答並索取藥水</button>
+                <div id="npc-msg" class="message"></div>
+                <button id="npc-leave-btn" class="action-btn hidden" onclick="clearRoom('${roomId}')">離開此地</button>
+            </div>
+        `;
     }
-    
-    document.getElementById('story-content').innerText = quiz.narrative;
-    document.getElementById('story-screen').classList.remove('hidden');
-}
-
-// === 核心：進入大門與解謎機制 ===
-function prepareUnlock() {
-    hideAll(); playClick();
-    const quiz = quizDatabase[currentIndex];
-    if (quiz.unlockType === 'none') {
-        renderQuiz();
-    } else if (quiz.unlockType === 'item') {
-        gameState = 'lock';
-        document.getElementById('lock-hint').innerText = quiz.unlockHint;
-        hideMsg('lock-msg');
-        document.getElementById('lock-section').classList.remove('hidden');
-    } else if (quiz.unlockType === 'combine') {
-        gameState = 'combine';
-        document.getElementById('combine-title').innerText = (currentIndex===5) ? "【時空屏障：跨域密碼鎖】" : "【核心控制閥：能量調和】";
-        document.getElementById('combine-hint').innerText = quiz.unlockHint;
+    else if (room.type === "password") {
+        playTypingSound();
+        html = `
+            <h2 style="color:var(--item-color); text-align:center;">【密碼閘門】</h2>
+            <div class="story-text" style="border-color:var(--item-color); text-align:center;">${room.story}</div>
+            <div class="quiz-card" style="text-align:center;">
+                <input type="text" id="pwd-input" class="text-input" placeholder="輸入解鎖代碼..." style="width:60%; margin-bottom:20px;">
+                <button class="action-btn" onclick="checkPassword('${roomId}')">驗證密碼</button>
+                <div id="pwd-msg" class="message"></div>
+            </div>
+        `;
+    }
+    else if (room.type === "combine") {
         activeCombineSlot = null; combineSelected = [null, null];
-        document.getElementById('slot-1').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 1</span>'; 
-        document.getElementById('slot-2').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 2</span>';
-        document.getElementById('slot-1').className = "combine-slot"; document.getElementById('slot-2').className = "combine-slot";
-        hideMsg('combine-msg');
-        document.getElementById('combine-section').classList.remove('hidden');
+        html = `
+            <h2 style="color:#ff0055; text-align:center;">【跨域密碼鎖】</h2>
+            <div class="story-text" style="border-color:#ff0055; text-align:center; white-space:pre-wrap;">${room.story}</div>
+            <div class="combine-container">
+                <div class="combine-slot" id="slot-1" onclick="selectCombineSlot(1)"><span style="font-size:16px;">點擊選定<br>凹槽 1</span></div>
+                <div style="font-size:30px; color:#ff0055; align-self:center;">+</div>
+                <div class="combine-slot" id="slot-2" onclick="selectCombineSlot(2)"><span style="font-size:16px;">點擊選定<br>凹槽 2</span></div>
+            </div>
+            <button class="action-btn" style="border-color:#ff0055; color:#ff0055; margin-top:20px;" onclick="attemptCombine('${roomId}')">啟動量子融合</button>
+            <div id="combine-msg" class="message"></div>
+        `;
     }
-}
+    else if (room.type === "quiz") {
+        currentUsedPotion = false; playTypingSound();
+        html = `
+            <div class="story-box">【系統紀錄檔 #${room.qIdx}】<br>${room.story}</div>
+            <div class="quiz-card">
+                <div class="question-text">${room.q}</div>
+                ${(room.hint && potions > 0) ? `<button id="potion-btn" class="action-btn potion-btn" style="display:block;" onclick="usePotion('${roomId}')">💊 消耗藥水獲取名師提示</button>` : ''}
+                <div id="hint-box" class="message msg-hint hidden"></div>
+                <div id="interactive-area"></div>
+                <div id="word-count-div" class="word-count hidden" style="text-align: right; font-size: 12px; color: var(--sub-text); margin-top: 5px;">字數：0</div>
+                <button class="action-btn" onclick="submitQuiz('${roomId}')">發射解鎖脈衝</button>
+                <div id="msg-box" class="message"></div>
+            </div>
+        `;
+    }
+    else if (room.type === "end") {
+        showEnding(); return;
+    }
 
-// 點擊背包道具
-function handleInventoryClick(icon) {
-    if (gameState === 'lock') {
-        if (icon === quizDatabase[currentIndex].unlockItem) {
-            playSuccess(); showMsg('lock-msg', '🟢 物質波段吻合，大門強制開啟！', true);
-            setTimeout(() => { renderQuiz(); }, 1500);
+    document.getElementById('game-content').innerHTML = html;
+
+    // 渲染 Quiz 的選項
+    if (room.type === "quiz") {
+        const area = document.getElementById('interactive-area');
+        if (room.qType === "single") {
+            room.opts.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="radio" name="q-choice" value="${opt.id}"><span>${opt.text}</span></label>`; });
+        } else if (room.qType === "multi") {
+            room.opts.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="checkbox" name="q-choice" value="${opt.id}"><span>${opt.text}</span></label>`; });
+        } else if (room.qType === "sort") {
+            currentSortOrder = [...room.opts]; shuffleArray(currentSortOrder);
+            renderSortList();
         } else {
-            playError(); showMsg('lock-msg', '❌ 物質波段不符，大門毫無反應。', false);
+            document.getElementById('word-count-div').classList.remove('hidden');
+            area.innerHTML = `<textarea id="short-answer" placeholder="▶️ 注入論點..." oninput="document.getElementById('word-count-div').innerText = '字數：'+this.value.length;" onclick="playClick()"></textarea>`;
         }
-    } else if (gameState === 'combine') {
-        if (activeCombineSlot) {
-            if (combineSelected[0] === icon || combineSelected[1] === icon) { 
-                playError(); showMsg('combine-msg', '⚠️ 這個道具已經放入凹槽了！', false); return; 
-            }
-            playClick();
-            combineSelected[activeCombineSlot - 1] = icon;
-            let slotElem = document.getElementById('slot-' + activeCombineSlot);
-            slotElem.innerText = icon;
-            slotElem.classList.remove('active-slot'); slotElem.classList.add('filled');
-            activeCombineSlot = null; hideMsg('combine-msg');
-        } else {
-            playError(); showMsg('combine-msg', '⚠️ 請先點擊下方的融合凹槽，再從上方背包選擇道具！', false);
-        }
-    } else {
-        playClick();
     }
 }
 
-function selectCombineSlot(slotNum) {
-    playClick(); activeCombineSlot = slotNum;
-    document.getElementById('slot-1').classList.remove('active-slot');
-    document.getElementById('slot-2').classList.remove('active-slot');
-    document.getElementById('slot-' + slotNum).classList.add('active-slot');
-    hideMsg('combine-msg');
+// 導航畫面
+function renderNavigation(roomId) {
+    const room = rooms[roomId];
+    let doorsHtml = "";
+    for (let [dir, targetId] of Object.entries(room.exits)) {
+        let targetRoom = rooms[targetId];
+        let status = targetRoom.cleared ? " (已探索)" : " (未知的區域)";
+        let color = targetRoom.cleared ? "#8b949e" : "#fff";
+        let displayDir = dirMap[dir];
+        doorsHtml += `
+            <div class="door-card" onclick="renderRoom('${targetId}')">
+                <div class="door-dir">🚪 ${displayDir}</div>
+                <div class="door-name" style="color:${color};">${targetRoom.cleared ? targetRoom.name : "未知的區域"}</div>
+            </div>
+        `;
+    }
+    document.getElementById('game-content').innerHTML = `
+        <h2 style="text-align:center; color:var(--accent-color);">🗺️ 區域探索導航</h2>
+        <div class="doors-container">${doorsHtml}</div>
+    `;
 }
 
-function attemptCombine() {
-    let q = quizDatabase[currentIndex]; let target = q.combineTarget; 
-    if (combineSelected[0] && combineSelected[1] && target.includes(combineSelected[0]) && target.includes(combineSelected[1])) {
-        playSuccess();
-        showMsg('combine-msg', `🟢 融合成功！生成【${q.combineResultName}】，大門強制開啟！`, true);
-        if(!itemCollection.includes(q.combineResultIcon)) { itemCollection.push(q.combineResultIcon); updateInventoryUI(); }
-        setTimeout(() => { renderQuiz(); }, 2000);
-    } else {
-        playError(); showMsg('combine-msg', "❌ 融合失敗！物質粒子波段不符，請重新選擇。", false);
-        combineSelected = [null, null];
-        document.getElementById('slot-1').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 1</span>'; 
-        document.getElementById('slot-2').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 2</span>';
-        document.getElementById('slot-1').className = "combine-slot"; document.getElementById('slot-2').className = "combine-slot";
+function clearRoom(roomId) {
+    rooms[roomId].cleared = true;
+    playSuccess();
+    renderNavigation(roomId);
+}
+
+// === 各房間解謎邏輯 ===
+function showNextAuthorLine() {
+    playClick();
+    const container = document.getElementById('author-text-container');
+    if (currentAuthorLine < authorLines.length) {
+        container.innerHTML += `<div>${authorLines[currentAuthorLine]}</div>`;
+        currentAuthorLine++;
+    }
+    if (currentAuthorLine >= authorLines.length) {
+        document.getElementById('author-next-btn').classList.add('hidden');
+        document.getElementById('author-leave-btn').classList.remove('hidden');
     }
 }
 
-function renderQuiz() {
-    hideAll(); gameState = 'quiz'; currentUsedPotion = false; playClick();
-    if (currentIndex >= quizDatabase.length) { showEnding(); return; }
-    document.getElementById('game-section').classList.remove('hidden');
+function submitNpc(roomId) {
+    const selected = document.querySelector('input[name="npc-choice"]:checked');
+    if (!selected) { playError(); showMsg('npc-msg', "⚠️ 必須做出選擇！", false); return; }
     
-    const quiz = quizDatabase[currentIndex];
-    document.getElementById('type-badge').innerText = quiz.badge;
-    document.getElementById('question-text').innerText = quiz.question;
-    document.getElementById('progress-fill').style.width = `${(currentIndex / quizDatabase.length) * 100}%`;
-    
-    const area = document.getElementById('interactive-area');
-    const wordCountDiv = document.getElementById('word-count-div');
-    const hintBox = document.getElementById('hint-box');
-    const potionBtn = document.getElementById('potion-btn');
-    
-    area.innerHTML = ""; wordCountDiv.classList.add('hidden'); 
-    hideMsg('msg-box'); hintBox.classList.add('hidden'); potionBtn.style.display = 'none';
+    document.getElementById('npc-btn').classList.add('hidden');
+    document.getElementById('npc-opts').style.pointerEvents = 'none';
+    document.getElementById('npc-opts').style.opacity = '0.5';
+    document.getElementById('npc-leave-btn').classList.remove('hidden');
 
-    if (quiz.hint && potions > 0) { potionBtn.style.display = 'block'; }
-
-    if (quiz.type === "single") {
-        quiz.options.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="radio" name="single-choice" value="${opt.id}"><span>${opt.text}</span></label>`; });
-    } else if (quiz.type === "multi") {
-        quiz.options.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="checkbox" name="multi-choice" value="${opt.id}"><span>${opt.text}</span></label>`; });
-    } else if (quiz.type === "sort") {
-        currentSortOrder = [...quiz.options]; shuffleArray(currentSortOrder); renderSortList();
+    if (selected.value === "true") {
+        potions++; updateInventoryUI();
+        showMsg('npc-msg', "🟢 答對了！獲得【🧪 藥水 x 1】", true);
+        uploadData(studentId, `NPC遭遇戰`, "成功", "獲得藥水");
     } else {
-        wordCountDiv.classList.remove('hidden'); wordCountDiv.innerText = "字數計測：0";
-        area.innerHTML = `<textarea id="short-answer" placeholder="▶️ 注入論點..." oninput="updateWordCount(this)" onclick="playClick()"></textarea>`;
+        showMsg('npc-msg', "❌ 答錯了！對方失望地帶著藥水逃走了...", false);
+        uploadData(studentId, `NPC遭遇戰`, "失敗", "錯失藥水");
+    }
+    rooms[roomId].cleared = true;
+}
+
+function checkPassword(roomId) {
+    const val = document.getElementById('pwd-input').value.trim();
+    if (val === rooms[roomId].pwd) {
+        showMsg('pwd-msg', "🟢 密碼正確！通道已解鎖。", true);
+        setTimeout(() => { clearRoom(roomId); }, 1500);
+    } else {
+        showMsg('pwd-msg', "❌ 密碼錯誤！", false); playError();
     }
 }
 
+function usePotion(roomId) {
+    if (potions > 0 && !currentUsedPotion) {
+        playSuccess(); potions--; currentUsedPotion = true; updateInventoryUI();
+        document.getElementById('potion-btn').style.display = 'none';
+        const hintBox = document.getElementById('hint-box');
+        hintBox.innerText = rooms[roomId].hint; hintBox.classList.remove('hidden');
+    }
+}
+
+function submitQuiz(roomId) {
+    const room = rooms[roomId]; let isCorrect = false; let ansStr = "";
+
+    if (room.qType === "single") {
+        const selected = document.querySelector('input[name="q-choice"]:checked');
+        if (!selected) { playError(); showMsg('msg-box', "⚠️ 未選取選項！", false); return; }
+        ansStr = selected.value; isCorrect = (ansStr === room.ans);
+    } else if (room.qType === "multi") {
+        const checkedBoxes = document.querySelectorAll('input[name="q-choice"]:checked');
+        const ansArray = Array.from(checkedBoxes).map(cb => cb.value); ansStr = ansArray.join(",");
+        isCorrect = ansArray.length === room.ans.length && ansArray.every(val => room.ans.includes(val));
+    } else if (room.qType === "sort") {
+        const ids = currentSortOrder.map(i => i.id); ansStr = ids.join("➔");
+        isCorrect = ids.every((val, i) => val === room.ans[i]);
+    } else {
+        const field = document.getElementById('short-answer'); ansStr = field ? field.value.trim() : "";
+        if (ansStr.length < room.minW) { playError(); showMsg('msg-box', `⚠️ 深度不足（需 ${room.minW} 字）！`, false); return; }
+        if (room.keywords) { isCorrect = room.keywords.some(k => ansStr.includes(k)); } else { isCorrect = true; }
+    }
+
+    let statusLog = currentUsedPotion ? "成功過關(已用藥水)" : "成功過關";
+    let failLog = currentUsedPotion ? "嘗試失敗(已用藥水)" : "嘗試失敗";
+
+    if (isCorrect) {
+        showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true);
+        uploadData(studentId, `第${room.qIdx}題`, ansStr, statusLog);
+        
+        // 給予道具
+        if(!itemCollection.includes(room.item)) itemCollection.push(room.item);
+        if(room.givesPotion) { potions++; }
+        updateInventoryUI();
+        
+        setTimeout(() => { showItemScreen(roomId); }, 1500);
+    } else {
+        showMsg('msg-box', "❌ 【破解失敗】邏輯不符！", false); uploadData(studentId, `第${room.qIdx}題`, ansStr, failLog);
+    }
+}
+
+function showItemScreen(roomId) {
+    const room = rooms[roomId]; playSuccess();
+    const itemInfo = itemDB[room.item];
+    
+    let html = `
+        <div class="item-box" style="margin: 0 auto;">
+            <div class="item-icon">${room.item}</div>
+            <div class="item-title">解鎖道具：【${itemInfo.title}】</div>
+            <div class="item-desc">${itemInfo.desc}</div>
+        </div>
+    `;
+    if(room.givesPotion) {
+        html += `<div style="color:var(--success-color); font-weight:bold; text-align:center; margin-top:20px; font-size:16px;">🎉 系統額外補給：獲得【🧪 藥水 x 1】</div>`;
+    }
+    html += `<button class="action-btn" style="margin-top:30px;" onclick="clearRoom('${roomId}')">收下道具，返回導航</button>`;
+    
+    document.getElementById('game-content').innerHTML = html;
+}
+
+// === 排序與雜項 ===
 function renderSortList() {
     const area = document.getElementById('interactive-area'); area.innerHTML = "";
     currentSortOrder.forEach((item, index) => {
@@ -542,115 +655,96 @@ function moveItem(index, dir) {
     const target = index + dir; if (target < 0 || target >= currentSortOrder.length) return;
     [currentSortOrder[index], currentSortOrder[target]] = [currentSortOrder[target], currentSortOrder[index]]; renderSortList();
 }
-function updateWordCount(t) { document.getElementById('word-count-div').innerText = `字數計測：${t.value.length}`; }
 function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
-
-function usePotion() {
-    if (potions > 0 && !currentUsedPotion) {
-        playSuccess(); potions--; currentUsedPotion = true; updateInventoryUI();
-        document.getElementById('potion-btn').style.display = 'none';
-        const hintBox = document.getElementById('hint-box');
-        hintBox.innerText = quizDatabase[currentIndex].hint; hintBox.classList.remove('hidden');
-    }
-}
 
 function showMsg(boxId, text, isSuccess) {
     const box = document.getElementById(boxId); box.innerText = text; box.className = isSuccess ? "message msg-success" : "message msg-error";
     if (isSuccess) { playSuccess(); document.body.classList.remove('alarm-active'); } else { playError(); document.body.classList.add('alarm-active'); }
 }
-function hideMsg(boxId) { document.getElementById(boxId).className = "message hidden"; document.body.classList.remove('alarm-active'); }
+function hideMsg(boxId) { const b=document.getElementById(boxId); if(b) b.className = "message hidden"; document.body.classList.remove('alarm-active'); }
 
-function submitAnswer() {
-    const quiz = quizDatabase[currentIndex]; let isCorrect = false; let ansStr = "";
-
-    if (quiz.type === "single") {
-        const selected = document.querySelector('input[name="single-choice"]:checked');
-        if (!selected) { playError(); showMsg('msg-box', "⚠️ 未選取選項！", false); return; }
-        ansStr = selected.value; isCorrect = (ansStr === quiz.correctAnswer);
-    } else if (quiz.type === "multi") {
-        const checkedBoxes = document.querySelectorAll('input[name="multi-choice"]:checked');
-        const ansArray = Array.from(checkedBoxes).map(cb => cb.value); ansStr = ansArray.join(",");
-        isCorrect = ansArray.length === quiz.correctAnswer.length && ansArray.every(val => quiz.correctAnswer.includes(val));
-    } else if (quiz.type === "sort") {
-        const ids = currentSortOrder.map(i => i.id); ansStr = ids.join("➔");
-        isCorrect = ids.every((val, i) => val === quiz.correctAnswer[i]);
+// === 組合系統 ===
+function selectCombineSlot(slotNum) {
+    playClick(); activeCombineSlot = slotNum;
+    document.getElementById('slot-1').classList.remove('active-slot');
+    document.getElementById('slot-2').classList.remove('active-slot');
+    document.getElementById('slot-' + slotNum).classList.add('active-slot');
+    hideMsg('combine-msg');
+}
+function attemptCombine(roomId) {
+    let room = rooms[roomId]; let target = room.target; 
+    if (combineSelected[0] && combineSelected[1] && target.includes(combineSelected[0]) && target.includes(combineSelected[1])) {
+        playSuccess();
+        showMsg('combine-msg', `🟢 融合成功！生成【${room.resName}】，大門強制開啟！`, true);
+        if(!itemCollection.includes(room.resIcon)) { itemCollection.push(room.resIcon); updateInventoryUI(); }
+        setTimeout(() => { clearRoom(roomId); }, 2000);
     } else {
-        const field = document.getElementById('short-answer'); ansStr = field ? field.value.trim() : "";
-        if (ansStr.length < quiz.minWords) { playError(); showMsg('msg-box', `⚠️ 深度不足（需 ${quiz.minWords} 字）！`, false); return; }
-        isCorrect = quiz.type === "short_keyword" ? quiz.keywords.some(k => ansStr.includes(k)) : true;
-    }
-
-    let statusLog = currentUsedPotion ? "成功過關(已用藥水)" : "成功過關";
-    let failLog = currentUsedPotion ? "嘗試失敗(已用藥水)" : "嘗試失敗";
-
-    if (isCorrect) {
-        showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true);
-        uploadData(studentId, `第${currentIndex+1}題`, ansStr, statusLog);
-        if(!itemCollection.includes(quiz.itemIcon)) itemCollection.push(quiz.itemIcon);
-        if(quiz.givesPotion) { potions++; }
-        updateInventoryUI();
-        setTimeout(showItemScreen, 1500);
-    } else {
-        showMsg('msg-box', "❌ 【破解失敗】邏輯不符！", false); uploadData(studentId, `第${currentIndex+1}題`, ansStr, failLog);
+        playError(); showMsg('combine-msg', "❌ 融合失敗！物質粒子波段不符，請重新選擇。", false);
+        combineSelected = [null, null];
+        document.getElementById('slot-1').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 1</span>'; 
+        document.getElementById('slot-2').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 2</span>';
+        document.getElementById('slot-1').className = "combine-slot"; document.getElementById('slot-2').className = "combine-slot";
     }
 }
 
-function showItemScreen() {
-    hideAll(); playSuccess(); 
-    const quiz = quizDatabase[currentIndex];
-    document.getElementById('item-icon').innerText = quiz.itemIcon;
-    document.getElementById('item-title').innerText = "解鎖道具：【" + quiz.itemTitle + "】";
-    document.getElementById('item-desc').innerText = quiz.itemDesc;
+// === 背包觀察系統 ===
+let inspectingItem = "";
+function handleInventoryClick(icon) {
+    const room = rooms[currentRoom];
+    if (room && room.type === 'combine') {
+        if (activeCombineSlot) {
+            if (combineSelected[0] === icon || combineSelected[1] === icon) { playError(); showMsg('combine-msg', '⚠️ 已放入凹槽！', false); return; }
+            playClick(); combineSelected[activeCombineSlot - 1] = icon;
+            let slotElem = document.getElementById('slot-' + activeCombineSlot);
+            slotElem.innerText = icon; slotElem.classList.remove('active-slot'); slotElem.classList.add('filled');
+            activeCombineSlot = null; hideMsg('combine-msg');
+        } else {
+            playError(); showMsg('combine-msg', '⚠️ 請先點擊下方的融合凹槽，再從上方背包選擇道具！', false);
+        }
+    } else {
+        // 打開觀察模態視窗
+        playClick(); inspectingItem = icon;
+        let info = itemDB[icon] || { title: "未知晶體", desc: "無法解析的能量聚合體。" };
+        document.getElementById('modal-icon').innerText = icon;
+        document.getElementById('modal-title').innerText = info.title;
+        document.getElementById('modal-desc').innerText = info.desc;
+        document.getElementById('modal-inspect-text').classList.add('hidden');
+        document.getElementById('modal-inspect-btn').classList.remove('hidden');
+        document.getElementById('item-modal').classList.remove('hidden');
+    }
+}
+function inspectItem() {
+    playSuccess();
+    let info = itemDB[inspectingItem];
+    document.getElementById('modal-inspect-btn').classList.add('hidden');
+    let textDiv = document.getElementById('modal-inspect-text');
+    textDiv.innerText = info.inspect || "沒有發現特別之處。";
+    textDiv.classList.remove('hidden');
+}
+function closeItemModal() {
+    playClick(); document.getElementById('item-modal').classList.add('hidden');
+}
+
+// === 啟動與結局 ===
+function startGame() {
+    initAudio(); playClick(); startIntermittentAmbient(); 
+    if (!bgMusicObj) { bgMusicObj = new Audio("https://dl.dropboxusercontent.com/scl/fi/wsj9d809wijrmemwi4c2m/online-audio-converter.com.mp3?rlkey=b5mtdubtx2wcv08qp764gblsg&st=crdstuwj"); bgMusicObj.loop = true; bgMusicObj.volume = 0.5; }
+    bgMusicObj.play().catch(e => console.log(e));
+
+    const inputField = document.getElementById('student-id');
+    if (!inputField) return; studentId = inputField.value.trim();
+    if (!studentId) { playError(); alert("🚨 識別碼未同步！"); return; }
     
-    const potionReward = document.getElementById('potion-reward-msg');
-    if(quiz.givesPotion) { potionReward.classList.remove('hidden'); } else { potionReward.classList.add('hidden'); }
-
-    document.getElementById('item-section').classList.remove('hidden');
-    currentIndex++; 
-}
-
-function showDoors() {
-    playClick();
-    if (currentIndex >= quizDatabase.length) { showEnding(); return; } 
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('status-ui').classList.remove('hidden');
     
-    hideAll(); safeDoorIndex = Math.floor(Math.random() * 3); 
-    document.getElementById('doors-section').classList.remove('hidden');
-    playFootsteps(); 
-}
-
-function checkDoor(doorIdx) {
-    if (doorIdx === safeDoorIndex) {
-        playSuccess(); setTimeout(showStoryScreen, 600); 
-    } else {
-        playError(); currentTrapIndex = Math.floor(Math.random() * trapDatabase.length); renderTrapScreen();
-    }
-}
-
-function renderTrapScreen() {
-    hideAll(); document.body.classList.add('alarm-active'); playTypingSound(); 
-    const trap = trapDatabase[currentTrapIndex];
-    document.getElementById('trap-question-text').innerText = trap.q;
-    const area = document.getElementById('trap-interactive-area'); area.innerHTML = ""; hideMsg('trap-msg-box');
-    let opts = [...trap.options]; shuffleArray(opts);
-    opts.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="radio" name="trap-choice" value="${opt.c}"><span>${opt.t}</span></label>`; });
-    document.getElementById('trap-section').classList.remove('hidden');
-}
-
-function submitTrap() {
-    const selected = document.querySelector('input[name="trap-choice"]:checked');
-    if (!selected) { playError(); showMsg('trap-msg-box', "⚠️ 必須選擇密碼！", false); return; }
-    if (selected.value === "true") {
-        showMsg('trap-msg-box', "🟢 密碼正確！防禦瓦解...", true); uploadData(studentId, `防禦矩陣陷阱`, "成功", "破解陷阱");
-        setTimeout(() => { document.body.classList.remove('alarm-active'); showStoryScreen(); }, 1500);
-    } else {
-        showMsg('trap-msg-box', "❌ 密碼錯誤！警報升級！", false); uploadData(studentId, `防禦矩陣陷阱`, "失敗", "困住");
-    }
+    updateInventoryUI();
+    renderRoom("r_start"); 
 }
 
 function showEnding() {
-    hideAll(); updateMap();
     if (ambientInterval) clearInterval(ambientInterval);
-    document.getElementById('inventory-ui').classList.add('hidden'); document.getElementById('map-ui').classList.add('hidden');
+    document.getElementById('status-ui').classList.add('hidden'); document.getElementById('game-content').innerHTML = "";
     document.body.className = "bg-ending"; document.getElementById('ending-section').classList.remove('hidden');
     playWarp(); setTimeout(playSuccess, 2000);
 
@@ -663,7 +757,6 @@ function showEnding() {
         container.appendChild(el);
     });
     let key = document.createElement('div'); key.className = 'final-key'; key.innerText = '🗝️'; container.appendChild(key);
-
     setTimeout(() => { document.getElementById('ending-final-text').classList.remove('hidden'); playSuccess(); }, 4500);
 }
 
