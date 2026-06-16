@@ -717,6 +717,7 @@ function usePotion(roomId) {
     if (potions > 0 && !currentUsedPotion) { playSuccess(); potions--; currentUsedPotion = true; updateInventoryUI(); document.getElementById('potion-btn').style.display = 'none'; const hintBox = document.getElementById('hint-box'); hintBox.innerText = rooms[roomId].hint; hintBox.classList.remove('hidden'); }
 }
 
+
 async function submitQuiz(roomId) {
     const room = rooms[roomId]; let isCorrect = false; let ansStr = "";
     
@@ -734,30 +735,35 @@ async function submitQuiz(roomId) {
         isCorrect = true; 
     }
 
-    let statusLog = currentUsedPotion ? "成功過關(已用藥水)" : "成功過關";
-    let failLog = currentUsedPotion ? "嘗試失敗(已用藥水)" : "嘗試失敗";
-
     if (!isCorrect) {
-        playError(); let errMsg = room.qType === "sort" ? "❌ 【破解失敗】歷史時序排列不正確，請重新調整！" : "❌ 【破解失敗】邏輯不符！";
-        showMsg('msg-box', errMsg, false); 
-        uploadData(studentId, `第${room.qIdx}題`, ansStr, failLog); 
+        playError(); 
+        let errMsg = room.qType === "sort" ? "❌ 【破解失敗】歷史時序排列不正確，請重新調整！" : "❌ 【破解失敗】邏輯不符！";
+        showMsg('msg-box', errMsg, false);
+        
+        // 🚀 關鍵修改：即便答錯，也不隱藏藥水按鈕，讓學生有機會補救！
+        if (room.hint && potions > 0) {
+            document.getElementById('potion-btn').style.display = 'block';
+        }
+        
+        uploadData(studentId, `第${room.qIdx}題`, ansStr, "嘗試失敗"); 
         return;
     }
 
-    const buttons = document.querySelectorAll('#game-content .quiz-card .action-btn');
-    const submitBtn = buttons[buttons.length - 1];
-
+    // 正確時的處理流程
+    const submitBtn = document.querySelector('#game-content .quiz-card .action-btn');
     if (room.qIdx === 2 || room.qIdx === 11) {
-        if(submitBtn) { submitBtn.innerText = "📡 系統連線中... 母體邏輯判定中..."; submitBtn.disabled = true; submitBtn.style.opacity = "0.5"; }
+        if(submitBtn) { submitBtn.innerText = "📡 系統連線中..."; submitBtn.disabled = true; }
         let result = await uploadData(studentId, `第${room.qIdx}題`, ansStr, "等待AI審核");
-        if(submitBtn) { submitBtn.innerText = "發射解鎖脈衝"; submitBtn.disabled = false; submitBtn.style.opacity = "1"; }
+        if(submitBtn) { submitBtn.innerText = "發射解鎖脈衝"; submitBtn.disabled = false; }
 
         if (result && result.isPass === false) {
             playError(); showMsg('msg-box', "❌ 【母體駁回】\n" + result.feedback, false);
+            // 彈性機制：即便被 AI 駁回，若有藥水仍可使用
+            if (room.hint && potions > 0) document.getElementById('potion-btn').style.display = 'block';
             return; 
         }
     } else {
-        uploadData(studentId, `第${room.qIdx}題`, ansStr, statusLog); 
+        uploadData(studentId, `第${room.qIdx}題`, ansStr, "成功過關"); 
     }
 
     showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true);
@@ -765,6 +771,7 @@ async function submitQuiz(roomId) {
     if(room.givesPotion) { potions++; } updateInventoryUI(); 
     setTimeout(() => { showItemReward(roomId); }, 1500);
 }
+
 
 function showItemReward(roomId) {
     const room = rooms[roomId]; playSuccess(); const itemInfo = getItemInfo(room.rewardItem);
