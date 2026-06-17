@@ -247,7 +247,7 @@ function playVictorySequence() {
     });
 }
 
-// ================= 道具與題庫 (全面整合您的 16 題形音義) =================
+// ================= 道具與題庫 =================
 const itemDB = {
     '♟️': { title: "破損的西洋棋子", desc: "初代 AI 的運算邏輯，可干擾母體運算。", inspect: "底部刻著細小的文字：『這不是終點，而是開端。』" },
     '💧': { title: "舊時代的眼淚結晶", desc: "含有高濃度的『悲傷與自卑』赫茲。", inspect: "冰冷的結晶中，倒映著深藍電腦初次戰勝人類的年份數字：\n『1997』" },
@@ -306,7 +306,7 @@ const rooms = {
         story: "【系統紀錄檔 #1】機器法官冷笑：『人類記憶充滿混亂，機器邏輯才是永恆。看啊，這就是你們棋王在智慧巨浪前的潰敗史...』",
         q: "【深藍的憂鬱】請依時間排序以下事件：", qType: "sort",
         opts: [{id:"A",text:"深藍電腦打敗世界棋王"},{id:"B",text:"棋王對自己的失敗感到極度悲傷"},{id:"C",text:"電腦科學家王文燦建議棋王安裝腦內晶片"},{id:"D",text:"深藍電腦進步到有人類的外形"},{id:"E",text:"世界棋王打敗深藍電腦"},{id:"F",text:"深藍電腦對自己的失敗感到極度悲傷"},{id:"G",text:"電腦科學家慶祝自己成功了"}], 
-        ans: ["A","B","C","D","E","F","G"], rewardItem: "♟️", givesPotion: false, onClear: "r_hall1" // 這裡改成 false，讓學生自己去翻棋子拿藥水
+        ans: ["A","B","C","D","E","F","G"], rewardItem: "♟️", givesPotion: false, onClear: "r_hall1"
     },
     "r_hall1": { 
         name: "主機走廊", type: "nav", 
@@ -320,7 +320,6 @@ const rooms = {
         name: "防火牆核心", type: "quiz", qIdx: 2, 
         story: "【系統紀錄檔 #2】機器法官調出棋王的腦波圖：『計算力不如人就崩潰，這就是脆弱的人性。』",
         q: "【深藍的憂鬱】棋王被深藍打敗時，為什麼希望自己更笨或更聰明？", qType: "short", minW: 10, rewardItem: "💧", onClear: "r_hall2",
-        // 🚀 三階段鷹架提示
         hints: [
             "💡 階段一：想像一下，如果你在自己最擅長、最驕傲的比賽項目中，被一個無法戰勝的對手徹底碾壓，那種「不甘心又無能為力」的感覺是什麼？世界棋王現在就是這種崩潰的心情喔！試著從這個角度出發。",
             "💡 階段二：我們先想「為什麼想變笨？」如果今天是一個剛接觸西洋棋的超級新手（笨），輸給超級電腦是理所當然還是不可思議？反過來，身為「世界冠軍」卻輸了，這個狀況跟超級新手（笨）有什麼不一樣？",
@@ -452,7 +451,6 @@ const rooms = {
         name: "終局防線", type: "quiz", qIdx: 11, isCourt: true, story: "【核心開啟】機器虛影：『抹去恨與惡，難道不是完美的正直？人類，說服我！』",
         q: "【替代死刑】你認為王朝明與王達成，誰更正直？為什麼？", qType: "short", minW: 20,
         rewardItem: "✨", onClear: "r_end",
-        // 🚀 三階段鷹架提示
         hints: [
             "💡 階段一：這題絕對沒有標準答案！要判斷誰比較「正直」，你可以先決定要用哪個「時間點」來當作標準：你要看他們「腦部改造前」的真實行為？還是看他們「改造後」做出的選擇？",
             "💡 階段二：如果你選「王朝明」：他白白坐了二十年冤獄，心裡充滿恨意、想報仇是非常正常的人性。但他最後發現自己快被仇恨吞噬時，主動要求改造腦部來消除殺意。他面對自己心中的惡的方式，算不算一種正直呢？",
@@ -486,6 +484,7 @@ let currentNpcIndex = 0;
 let chessQ1Solved = false;  
 let chessQ2Solved = false;  
 let chessQs = []; // 西洋棋的兩題隨機題
+let inspectingItem = "";
 
 // ================= 全息地圖更新系統 =================
 function updateHologramMap() {
@@ -560,7 +559,6 @@ function renderEngine(roomId) {
         }
         else if (room.type === "npc") {
             playTypingSound(); 
-            // 🚀 NPC 難度遞增系統
             let visits = npcVisits[roomId] || 0;
             let requiredQ = (visits === 0) ? 1 : 5;
             
@@ -745,9 +743,10 @@ function submitNpc(roomId) {
     }
 }
 
-// === 🚀 物品觀察與西洋棋隨機小遊戲 ===
+// === 🚀 物品深度觀察與西洋棋隨機小遊戲 ===
 function inspectItem() { 
-    playSuccess(); document.getElementById('modal-inspect-btn').classList.add('hidden'); 
+    playSuccess(); 
+    document.getElementById('modal-inspect-btn').classList.add('hidden'); 
     let textDiv = document.getElementById('modal-inspect-text'); 
     let info = getItemInfo(inspectingItem);
     let html = info.inspect;
@@ -779,6 +778,7 @@ function inspectItem() {
     textDiv.classList.remove('hidden'); 
 }
 
+// 啟動邏輯鎖問題
 function startChessQuiz(qNum) {
     playClick(); let textDiv = document.getElementById('modal-inspect-text');
     let qData = (qNum === 1) ? chessQs[0] : chessQs[1];
@@ -797,6 +797,7 @@ function startChessQuiz(qNum) {
     textDiv.innerHTML = html;
 }
 
+// 送出邏輯鎖答案
 function submitChessQuiz(qNum, correctText) {
     let selected = document.querySelector('input[name="chess-choice"]:checked');
     if (!selected) { playError(); showMsg('chess-quiz-msg', "⚠️ 必須選擇一個波段輸入！", false); return; }
@@ -946,6 +947,16 @@ function handleInventoryClick(idx) {
             activeCombineSlot = null; hideMsg('combine-msg');
         } else { openInspectModal(rawIcon); }
     } else { openInspectModal(rawIcon); }
+}
+
+function openInspectModal(icon) {
+    inspectingItem = icon; const info = getItemInfo(icon);
+    document.getElementById('modal-icon').innerText = icon;
+    document.getElementById('modal-title').innerText = info.title;
+    document.getElementById('modal-desc').innerText = info.desc;
+    document.getElementById('modal-inspect-text').classList.add('hidden');
+    document.getElementById('modal-inspect-btn').classList.remove('hidden');
+    document.getElementById('item-modal').classList.remove('hidden');
 }
 
 function closeItemModal() { playClick(); document.getElementById('item-modal').classList.add('hidden'); }
