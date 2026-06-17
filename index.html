@@ -102,4 +102,894 @@
         button.potion-btn { border-color: var(--success-color); color: var(--success-color); margin-bottom: 15px; display: none; }
         button.potion-btn:hover { background: var(--success-color); color: #000; box-shadow: 0 0 20px var(--success-color); }
         
-        .message { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; text-align: left; font-size: 15px; display: none; white-space: pre-
+        .message { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; text-align: left; font-size: 15px; display: none; white-space: pre-wrap; line-height: 1.6; }
+        .msg-success { display: block; background: rgba(0, 255, 102, 0.1); color: var(--success-color); border: 1px solid var(--success-color); text-align: center; }
+        .msg-error { display: block; background: rgba(255, 0, 85, 0.1); color: var(--error-color); border: 1px solid var(--error-color); }
+        .msg-hint { background: rgba(0, 255, 102, 0.05); color: #fff; border: 1px dashed var(--success-color); padding: 12px; border-radius: 8px; font-weight: normal; margin-bottom: 10px; text-align: left; font-size: 14px; line-height: 1.5; }
+        .hidden { display: none !important; }
+        input.text-input { width: 100%; padding: 14px; background: #0d1117; color: white; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; }
+
+        /* ================= 🚀 史詩級大結局動畫 CSS ================= */
+        .ending-items-container { position: relative; height: 400px; width: 100%; max-width: 600px; display: flex; justify-content: center; align-items: center; margin-top: 20px; overflow: hidden; border-radius: 12px; background: #000; box-shadow: inset 0 0 50px rgba(0, 240, 255, 0.1); }
+        
+        .ending-item { position: absolute; font-size: 35px; opacity: 0; animation: converge 3s forwards; text-shadow: 0 0 10px #fff; }
+        @keyframes converge { 0% { transform: translate(var(--startX), var(--startY)) scale(1); opacity: 0; } 20% { opacity: 1; } 80% { transform: translate(0, 0) scale(0.5); opacity: 1; filter: brightness(2); } 100% { transform: translate(0, 0) scale(0); opacity: 0; filter: brightness(3); } }
+        
+        .door-wrapper { position: absolute; width: 160px; height: 260px; perspective: 1200px; z-index: 10; opacity: 0; animation: revealDoor 1s 3s forwards; }
+        .door-frame { position: relative; width: 100%; height: 100%; border: 4px solid var(--accent-color); box-shadow: 0 0 30px var(--accent-color), inset 0 0 20px var(--accent-color); background: #000; }
+        .door-panel { position: absolute; top: 0; width: 50%; height: 100%; background: repeating-linear-gradient(90deg, #111, #111 10px, #222 10px, #222 20px); border: 1px solid var(--accent-color); transition: all 3s ease-in-out; transform-style: preserve-3d; }
+        .door-left { left: 0; transform-origin: left; animation: openDoorLeft 3s 4.5s forwards cubic-bezier(0.4, 0, 0.2, 1); }
+        .door-right { right: 0; transform-origin: right; animation: openDoorRight 3s 4.5s forwards cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        @keyframes revealDoor { 0% { opacity: 0; transform: scale(0.5) translateY(20px); filter: brightness(0); } 100% { opacity: 1; transform: scale(1) translateY(0); filter: brightness(1.5); } }
+        @keyframes openDoorLeft { 100% { transform: rotateY(-130deg); background: rgba(0,0,0,0.8); border-color: transparent; } }
+        @keyframes openDoorRight { 100% { transform: rotateY(130deg); background: rgba(0,0,0,0.8); border-color: transparent; } }
+        
+        .god-light { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 2px; height: 250px; background: #fff; box-shadow: 0 0 40px 20px #fff, 0 0 100px 50px #ffcc00, 0 0 200px 100px #00f0ff; opacity: 0; z-index: 5; animation: explodeLight 5s 5s forwards; }
+        @keyframes explodeLight {
+            0% { opacity: 0; width: 2px; }
+            10% { opacity: 1; width: 20px; box-shadow: 0 0 80px 40px #fff; }
+            100% { opacity: 1; width: 2000px; height: 2000px; border-radius: 50%; box-shadow: 0 0 300px 150px #fff, 0 0 600px 400px #ffcc00, 0 0 900px 600px #00f0ff; background: #fff; }
+        }
+
+        .flying-dove { position: absolute; font-size: 80px; opacity: 0; z-index: 20; text-shadow: 0 0 30px #fff, 0 0 50px #ffcc00; animation: flyTowardsScreen 4s 5.5s forwards; }
+        @keyframes flyTowardsScreen { 0% { opacity: 0; transform: scale(0.1) translateY(0); } 20% { opacity: 1; } 100% { opacity: 0; transform: scale(15) translateY(-30px); } }
+        
+        .final-text-victory { position: absolute; z-index: 30; opacity: 0; color: #000; text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00; text-align: center; animation: showVictory 2s 7.5s forwards; }
+        @keyframes showVictory { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <div id="status-ui" class="status-bar hidden">
+        <div class="location-badge" id="current-location">📍 系統載入中...</div>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <div id="inventory-list" class="inventory-items"></div>
+            <div class="potion-box" title="消耗藥水可獲取階段性名師提示">🧪 藥水 x<span id="potion-count">0</span></div>
+        </div>
+    </div>
+
+    <div id="login-section">
+        <h1 id="main-title">SYSTEM OVERRIDE</h1>
+        <div class="subtitle" id="sub-title">人類意識覺醒協議 // 核心解碼迷宮</div>
+        <div class="quiz-card" style="text-align: center;">
+            <div class="story-box" style="text-align: left;">
+                【系統啟動】... 西元2085年，人類被最高人工智慧「機器法官」囚禁。你必須潛入母體迷宮，解開《科幻小說選》的邏輯悖論。<br><br>
+                ⚠️ 警告：迷宮充滿未知分支。請仔細「觀察」取得的道具，尋找密碼線索，並避開喪失心智的前人。
+            </div>
+            <div class="question-text">請輸入反抗者識別碼（班級座號姓名）：</div>
+            <input type="text" id="student-id" class="text-input" placeholder="例如：80523張小明">
+            <button type="button" class="action-btn" onclick="startGame()">核心同步 // 潛入迷宮</button>
+        </div>
+    </div>
+
+    <div id="game-content" class="hidden"></div>
+
+    <div id="map-ui" class="hologram-map hidden">
+        <div class="map-title">🛰️ 母體全息迷宮儀 (支援歷史節點躍遷探索)</div>
+        <div class="map-grid" id="dynamic-map-grid"></div>
+    </div>
+</div>
+
+<div id="item-modal" class="modal-overlay hidden">
+    <div class="item-box">
+        <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
+        <div id="modal-icon" class="item-icon"></div>
+        <div id="modal-title" class="item-title"></div>
+        <div id="modal-desc" class="item-desc"></div>
+        <button type="button" id="modal-inspect-btn" class="action-btn" style="margin-top:10px;" onclick="inspectItem()">🔍 深度觀察</button>
+        <div id="modal-inspect-text" class="inspect-text hidden"></div>
+    </div>
+</div>
+
+<script>
+// ================= 音效引擎 =================
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx, ambientInterval, bgMusicObj = null;
+
+function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+function playTone(freq, type, duration, vol) {
+    if (!audioCtx) return; const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
+}
+function playClick() { playTone(800, 'sine', 0.1, 0.03); }
+function playSuccess() { playTone(400, 'sine', 0.1, 0.08); setTimeout(() => playTone(600, 'sine', 0.15, 0.08), 100); setTimeout(() => playTone(800, 'sine', 0.3, 0.08), 250); }
+function playError() { playTone(250, 'triangle', 0.2, 0.05); setTimeout(() => playTone(200, 'triangle', 0.4, 0.05), 200); }
+function playWarp() { playTone(300, 'sine', 0.5, 0.05); setTimeout(() => playTone(450, 'sine', 0.8, 0.05), 200); }
+function playFootsteps() {
+    if(!audioCtx) return; let time = audioCtx.currentTime;
+    for(let i=0; i<3; i++) {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(80, time); osc.frequency.exponentialRampToValueAtTime(30, time + 0.2);
+        gain.gain.setValueAtTime(0.15, time); gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(time); osc.stop(time + 0.2); time += 0.6;
+    }
+}
+function playTypingSound() {
+    if(!audioCtx) return; let time = audioCtx.currentTime;
+    for(let i=0; i<8; i++) {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'square'; osc.frequency.setValueAtTime(1000 + Math.random()*500, time);
+        gain.gain.setValueAtTime(0.02, time); gain.gain.exponentialRampToValueAtTime(0.001, time + 0.03);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(time); osc.stop(time + 0.03); time += Math.random() * 0.1 + 0.05;
+    }
+}
+function startIntermittentAmbient() {
+    if (ambientInterval) clearInterval(ambientInterval);
+    ambientInterval = setInterval(() => {
+        if (!audioCtx) return; let rand = Math.random();
+        if (rand < 0.2) { playTone(1500 + Math.random()*500, 'sine', 0.05, 0.01); setTimeout(() => playTone(1500 + Math.random()*500, 'sine', 0.05, 0.01), 150); } 
+        else if (rand < 0.4) { playTone(250, 'sine', 0.5, 0.02); }
+    }, 12000); 
+}
+
+function playVictorySequence() {
+    if (!audioCtx) return; let time = audioCtx.currentTime;
+    let osc1 = audioCtx.createOscillator(); let gain1 = audioCtx.createGain();
+    osc1.type = 'triangle'; osc1.frequency.setValueAtTime(100, time + 3); osc1.frequency.exponentialRampToValueAtTime(30, time + 4);
+    gain1.gain.setValueAtTime(0, time + 3); gain1.gain.linearRampToValueAtTime(0.5, time + 3.1); gain1.gain.exponentialRampToValueAtTime(0.01, time + 4);
+    osc1.connect(gain1); gain1.connect(audioCtx.destination); osc1.start(time + 3); osc1.stop(time + 4);
+
+    let freqs = [440, 554.37, 659.25, 880]; 
+    freqs.forEach(f => {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(f, time + 5);
+        gain.gain.setValueAtTime(0, time + 5); gain.gain.linearRampToValueAtTime(0.2, time + 6); gain.gain.exponentialRampToValueAtTime(0.01, time + 10);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(time + 5); osc.stop(time + 10);
+    });
+}
+
+// ================= 道具與題庫 (全面整合您的 16 題形音義) =================
+const itemDB = {
+    '♟️': { title: "破損的西洋棋子", desc: "初代 AI 的運算邏輯，可干擾母體運算。", inspect: "底部刻著細小的文字：『這不是終點，而是開端。』" },
+    '💧': { title: "舊時代的眼淚結晶", desc: "含有高濃度的『悲傷與自卑』赫茲。", inspect: "冰冷的結晶中，倒映著深藍電腦初次戰勝人類的年份數字：\n『1997』" },
+    '❄️': { title: "深藍的冷卻液", desc: "溫度極低，可用來解凍過熱系統。", inspect: "瓶身標籤印著警告：『極低溫物質，請勿直接接觸。』" },
+    '💾': { title: "情感模擬晶片(已燒毀)", desc: "舊時代情感記憶的載體介面。", inspect: "晶片已經燒毀，散發出刺鼻的焦味。" },
+    '🎙️': { title: "王文燦的加密錄音", desc: "錄下了人類科技失控的歷史。", inspect: "播放出滋滋作響的雜音，隱約聽見人們在歡呼。" },
+    '🪐': { title: "火星殖民地紅土", desc: "沾染著流放歲月與冤屈的物質。", inspect: "紅土中混雜著鐵鏽與不甘的血汗。" },
+    '📜': { title: "代死刑法案原本", desc: "代表人類荒謬法制的原始文件。", inspect: "法案的邊角被人憤怒地撕碎。" },
+    '📼': { title: "真兇的認罪錄影", desc: "證明司法誤判的關鍵證據。", inspect: "影像中的人面無表情，似乎毫無悔意。" },
+    '✒️': { title: "腦部改造同意書", desc: "帶有逃避恐懼印記的簽名物件。", inspect: "簽名者：王達成。紙張上還有冷汗的痕跡。" },
+    '💉': { title: "記憶抹除針劑", desc: "抹除機制的終極載體。", inspect: "針筒內流淌著能將記憶化為虛無的發光液體。" },
+    '⚖️': { title: "翻案證據", desc: "結合了法案漏洞與真兇供詞的絕對證據。", inspect: "天平的兩端，分別刻著『法律』與『人性』。" }
+};
+
+function getItemInfo(rawIcon) {
+    const cleanStr = (s) => s ? s.replace(/\uFE0F/g, '').trim() : '';
+    const target = cleanStr(rawIcon);
+    for (let key in itemDB) {
+        if (cleanStr(key) === target) return itemDB[key];
+    }
+    return { title: "未知晶體", desc: "無法解析的能量聚合體。", inspect: "沒有發現特別之處。" };
+}
+
+// 🎯 完全使用您提供的 11 題字音字形 + 5 題字義，共 16 題
+const trapDatabase = [
+    { q: "「偃」旗息鼓的注音是？", options: [{ t: "ㄧㄢˇ", c: true }, { t: "ㄧㄢˋ", c: false }] },
+    { q: "「ㄕㄨˋ」起大拇指的國字是？", options: [{ t: "豎", c: true }, { t: "樹", c: false }] },
+    { q: "「ㄆㄧㄣˊ」ㄆㄧㄣˊ叫好的國字是？", options: [{ t: "頻", c: true }, { t: "蘋", c: false }] },
+    { q: "眼「ㄇㄡˊ」的國字是？", options: [{ t: "眸", c: true }, { t: "謀", c: false }] },
+    { q: "清白無「ㄍㄨ」的國字是？", options: [{ t: "辜", c: true }, { t: "孤", c: false }] },
+    { q: "不「ㄎㄢ」一擊的國字是？", options: [{ t: "堪", c: true }, { t: "勘", c: false }] },
+    { q: "一敗「ㄊㄨˊ」地的國字是？", options: [{ t: "塗", c: true }, { t: "途", c: false }] },
+    { q: "陰「霾」消散的注音是？", options: [{ t: "ㄇㄞˊ", c: true }, { t: "ㄌㄧˊ", c: false }] },
+    { q: "「蟄」伏的注音是？", options: [{ t: "ㄓˊ", c: true }, { t: "ㄓㄜˊ", c: false }] },
+    { q: "「ㄅㄢ」回一城的國字是？", options: [{ t: "扳", c: true }, { t: "搬", c: false }] },
+    { q: "「揶」揄的注音是？", options: [{ t: "ㄧㄝˊ", c: true }, { t: "ㄧㄝ", c: false }] },
+    { q: "「偃旗息鼓」的意思是？", options: [{ t: "事情中止", c: true }, { t: "大聲喧嘩", c: false }] },
+    { q: "「揶揄」的意思是？", options: [{ t: "嘲弄", c: true }, { t: "熱情稱讚", c: false }] },
+    { q: "「蟄伏」的意思是？", options: [{ t: "隱藏", c: true }, { t: "四處活躍", c: false }] },
+    { q: "「行禮如儀」的意思是？", options: [{ t: "按流程執行程序", c: true }, { t: "不顧規矩隨意行動", c: false }] },
+    { q: "「行屍走肉」的意思是？", options: [{ t: "沒有靈魂的軀殼", c: true }, { t: "身體強壯的人", c: false }] }
+];
+
+const authorLines = [
+    "黃海，本名黃炳煌，民國32年生，台灣台中人。",
+    "師大歷史系畢業，曾任聯合報編輯。",
+    "早年寫作以短篇小說為主，後轉攻科幻小說與兒童讀物。",
+    "曾獲國家文藝獎、中山文藝獎、洪建全兒童文學獎等多項大獎。",
+    "著名作品有《尋找陽光的旅程》、《銀河迷航記》、《時間魔術師》等書。"
+];
+
+// ================= 迷宮房間完整地圖節點 =================
+const rooms = {
+    "r_start": { 
+        name: "棋局廢墟", type: "quiz", qIdx: 1, 
+        story: "【系統紀錄檔 #1】機器法官冷笑：『人類記憶充滿混亂，機器邏輯才是永恆。看啊，這就是你們棋王在智慧巨浪前的潰敗史...』",
+        q: "【深藍的憂鬱】請依時間排序以下事件：", qType: "sort",
+        opts: [{id:"A",text:"深藍電腦打敗世界棋王"},{id:"B",text:"棋王對自己的失敗感到極度悲傷"},{id:"C",text:"電腦科學家王文燦建議棋王安裝腦內晶片"},{id:"D",text:"深藍電腦進步到有人類的外形"},{id:"E",text:"世界棋王打敗深藍電腦"},{id:"F",text:"深藍電腦對自己的失敗感到極度悲傷"},{id:"G",text:"電腦科學家慶祝自己成功了"}], 
+        ans: ["A","B","C","D","E","F","G"], rewardItem: "♟️", givesPotion: false, onClear: "r_hall1" // 讓學生自己去翻棋子拿藥水
+    },
+    "r_hall1": { 
+        name: "主機走廊", type: "nav", 
+        story: "走廊燈光閃爍，地上散落著生鏽的齒輪。四周死寂無聲，似乎連接著不同的區域。",
+        exits: [{ dir: "向北進發", target: "r_door1" }, { dir: "向東探索", target: "r_mad1" }, { dir: "向西觀察", target: "r_author1" }]
+    },
+    "r_author1": { name: "廢棄資料室", type: "author", story: "房間內積滿了灰塵，中央有一台老舊終端機，記載著創造者之情報...", onClear: "r_hall1" },
+    "r_mad1": { name: "禁閉室", type: "flavor", story: "牆上刻著亂痕：\n『不要相信冷酷的數據...它沒有心...』\n角落有一具白骨，似乎因解不開謎題而發狂。", onClear: "r_hall1" },
+    "r_door1": { name: "邏輯防火牆", type: "lock", reqItem: "♟️", story: "【量子密碼門】\n門孔偵測儀提示：『請注入能干擾高階母體運算之古老棋局代碼。』", onUnlock: "r_q2", onFail: "r_hall1" },
+    "r_q2": { 
+        name: "防火牆核心", type: "quiz", qIdx: 2, 
+        story: "【系統紀錄檔 #2】機器法官調出棋王的腦波圖：『計算力不如人就崩潰，這就是脆弱的人性。』",
+        q: "【深藍的憂鬱】棋王被深藍打敗時，為什麼希望自己更笨或更聰明？", qType: "short", minW: 10, rewardItem: "💧", onClear: "r_hall2",
+        hints: [
+            "💡 階段一：想像一下，如果你在自己最擅長、最驕傲的比賽項目中，被一個無法戰勝的對手徹底碾壓，那種「不甘心又無能為力」的感覺是什麼？世界棋王現在就是這種崩潰的心情喔！試著從這個角度出發。",
+            "💡 階段二：我們先想「為什麼想變笨？」如果今天是一個剛接觸西洋棋的超級新手（笨），輸給超級電腦是理所當然還是不可思議？反過來，身為「世界冠軍」卻輸了，這個狀況跟超級新手（笨）有什麼不一樣？",
+            "💡 階段三：再想想「為什麼想變聰明？」如果他再聰明一點，有沒有機會解決他現在的痛苦？他的痛苦是輸棋的結果，還是不知怎麼面對輸棋的心情？把這兩種心情整理一下，寫成你的答案吧！"
+        ]
+    },
+    "r_hall2": { 
+        name: "冷卻通道", type: "nav", story: "空氣中瀰漫著電子燥熱與白霧，前方的路變得模糊不清。",
+        exits: [{ dir: "向北進發", target: "r_door2" }, { dir: "向東探索", target: "r_npc1" }, { dir: "向西觀察", target: "r_pwd1" }]
+    },
+    "r_npc1": { name: "倖存者營地", type: "npc", story: "角落躲著一名憔悴的解謎者：『我的語言矩陣壞了，幫我破解挑戰，藥水就歸你！』", onClear: "r_hall2" },
+    "r_pwd1": { name: "加密機房", type: "password", pwd: "1997", story: "【密碼閘門】\n面板紅光：『請輸入初代 AI 擊敗人類的四碼年份代碼。』\n(提示：仔細「觀察」背包中充滿悲傷的結晶道具)", onUnlock: "r_q3", onFail: "r_hall2" },
+    "r_q3": { 
+        name: "機房內部", type: "quiz", qIdx: 3, story: "【系統紀錄檔 #3】資料庫釋放強大的沮喪干擾訊號，精準識別這些訊號，避免意識被吞噬！",
+        q: "【深藍的憂鬱】下列哪幾項可以看出棋王輸給深藍時的沮喪？（複選）", qType: "multi",
+        opts: [{id:"A",text:"暫時偃旗息鼓不再下棋"},{id:"B",text:"一個人躲在沒人知道的地方放聲哭泣"},{id:"C",text:"用頭出力撞牆希望自己更笨或更聰明"},{id:"D",text:"常夢到深藍電腦在安慰自己"},{id:"E",text:"提供點子給科學家希望能解決問題"},{id:"F",text:"在腦部植入超級計算能力的電腦晶片"}], 
+        ans: ["A","B","C"], rewardItem: "❄️", onClear: "r_hall2"
+    },
+    "r_door2": { name: "情感矩陣大門", type: "lock", reqItem: "❄️", story: "【量子密碼門】\n大門冰凍：『系統過凍，請注入極低溫的冷卻液以毒攻毒。』", onUnlock: "r_q4", onFail: "r_hall2" },
+    "r_q4": { 
+        name: "情感矩陣", type: "quiz", qIdx: 4, story: "【系統紀錄檔 #4】機器宣告：『冷酷的數據才是完美的。』你反駁：『不，當你們的始祖學會這件事的那一刻，跨越了機器的界線。』",
+        q: "【深藍的憂鬱】從哪些地方可以看出深藍電腦擁有情緒？", qType: "single",
+        opts: [{id:"A",text:"揶揄棋王的實力"},{id:"B",text:"用眼眸釋放魅力"},{id:"C",text:"輸棋而大聲哭泣"},{id:"D",text:"豎起大拇指歡呼"}], ans: "C", rewardItem: "💾", onClear: "r_door3"
+    },
+    "r_door3": { name: "實驗室鎖孔", type: "lock", reqItem: "💾", story: "【量子密碼門】\n鎖孔提示：『需要讀取舊時代情感記憶的載體介面才能進入實驗室。』", onUnlock: "r_q5", onFail: "r_hall2" },
+    "r_q5": { 
+        name: "實驗室遺址", type: "quiz", qIdx: 5, story: "【系統紀錄檔 #5】機器法官閃爍著：『這句話是機器進化的最高榮譽！』你冷笑：『這也是人類最大的諷刺。』",
+        q: "【深藍的憂鬱】王文燦喊叫：「機器有了情感！」句中的「機器」指的是？", qType: "single",
+        opts: [{id:"A",text:"深藍電腦"},{id:"B",text:"世界棋王"},{id:"C",text:"以上皆是"}], ans: "C", rewardItem: "🎙️", onClear: "r_combine1"
+    },
+    "r_combine1": { 
+        name: "時空迴廊門", type: "combine", target: ['🎙️', '♟️'], resIcon: '⚡', resName: '時空逆流密鑰', isCourt: true,
+        story: "【警告】前方為司法黑盒子。請融合『人類科技失控的歷史』與『初代 AI 的運算邏輯』作為跨時空密鑰！", onUnlock: "r_q6"
+    },
+    "r_q6": { 
+        name: "司法入口", type: "quiz", qIdx: 6, isCourt: true,
+        story: "【系統紀錄檔 #6】四周是冷冽的猩紅審判法庭。解開古老因果的鎖鏈吧！",
+        q: "【替代死刑】請依時間排序以下事件：", qType: "sort",
+        opts: [
+            {id:"A",text:"法官宣告王朝明犯殺人罪"},
+            {id:"B",text:"王朝明被判「機器人代死刑」"},
+            {id:"C",text:"王朝明在法庭上喊冤"},
+            {id:"D",text:"王朝明的腦部被改造，在火星殖民地從事開墾工作"},
+            {id:"E",text:"警方抓到真兇"},
+            {id:"F",text:"王朝明研究腦部醫學，提出死刑新觀念"},
+            {id:"G",text:"王達成的腦部被改造，接受緩刑"},
+            {id:"H",text:"王朝明放不下怨氣，不斷產生謀殺念頭"},
+            {id:"I",text:"王朝明的腦部被改造，成為正直的人"}
+        ], 
+        ans: ["A","B","C","D","E","F","G","H","I"], rewardItem: "🪐", onClear: "r_hall3"
+    },
+    "r_hall3": { 
+        name: "司法解謎樞紐", type: "nav", isCourt: true, 
+        story: "走廊兩側交錯著不同的閘門，右側有一間閃爍微光的檔案庫，中央的真理檢驗台散發出冷光。",
+        exits: [
+            { dir: "向西突破", target: "r_door4" }, 
+            { dir: "向東觀察", target: "r_scifi_lib" }, 
+            { dir: "向北解碼", target: "r_door5" }, 
+            { dir: "啟動合成", target: "r_combine_evidence" }
+        ]
+    },
+    "r_scifi_lib": { 
+        name: "科幻文獻室", type: "flavor", isCourt: true, 
+        story: "你在殘破的書架上找到一頁資料：\n\n「科幻」是「科學幻想」的簡稱。科幻作品通常以小說、劇本、漫畫、卡通、電影等形式呈現，它必須以現有的科技資料為根據，透過『想像力』對未來世界或過去情景作幻想式的描述，表現出文學性、科學性和哲學性等特色。\n\n科幻作品雖然幻想成分極濃，但其中某些事物或情境卻預示了世界的變化和科技的發展。因此，科幻作品反而常走在科技發明之前，讓人不得不佩服這些創作者的想像力。", 
+        onClear: "r_hall3" 
+    },
+    "r_door4": { 
+        name: "流放地防禦網", type: "lock", reqItem: "🪐", isCourt: true, 
+        story: "【量子密碼門】\n提示：『偵測到流放地禁區，需要沾染冤屈的實體物質驗證身份。』", 
+        onUnlock: "r_q7", onFail: "r_hall3" 
+    },
+    "r_q7": { 
+        name: "流放荒地", type: "quiz", qIdx: 7, isCourt: true, 
+        story: "【系統紀錄檔 #7】機器法官：『代替受刑是科技最高效率。』揭開當年機制的初衷？",
+        q: "【替代死刑】依據本文，發明「機器人代死刑」的用意為何？（複選）", qType: "multi",
+        opts: [{id:"A",text:"避免死刑誤判"},{id:"B",text:"認為死刑很野蠻"},{id:"C",text:"火星需要開墾人力"}], ans: ["A","B"], rewardItem: "📜", onClear: "r_hall3"
+    },
+    "r_door5": { 
+        name: "檔案庫掃描器", type: "password", pwd: "想像力", isCourt: true, 
+        story: "【科幻密碼門】\n面板提問：『科幻作品必須以現有科技為基礎，透過什麼來描述未來世界？鍵入三個字。』\n(提示：仔細閱讀東側科幻文獻室的資料)", 
+        onUnlock: "r_q8", onFail: "r_hall3" 
+    },
+    "r_q8": { 
+        name: "司法檔案室", type: "quiz", qIdx: 8, isCourt: true, 
+        story: "【系統紀錄檔 #8】你搖搖頭：『若沒有這股力量，正義將永遠被埋沒！』",
+        q: "【替代死刑】關於王朝明的冤情平反，下列何者有所貢獻？（複選）", qType: "multi",
+        opts: [{id:"A",text:"王朝明的親友"},{id:"B",text:"王朝明的結拜兄弟"},{id:"C",text:"警方"},{id:"D",text:"腦部醫學家"}], ans: ["A","C"], rewardItem: "📼", onClear: "r_hall3"
+    },
+    "r_combine_evidence": { 
+        name: "真理檢驗台", type: "combine", target: ['📜', '📼'], resIcon: '⚖️', resName: '翻案證據', isCourt: true, 
+        story: "【警告】前方進入審判長廊。請融合『荒謬法制的原始文件』與『司法誤判的影音證據』，提煉出足以推翻判決的關鍵證據！", 
+        onUnlock: "r_hall4" 
+    },
+    "r_hall4": { 
+        name: "審判長廊", type: "nav", isCourt: true, 
+        story: "走廊兩側排列著鐵窗，聽見微弱的嘆息聲與電流滋滋聲。前方就是最終的改造艙防線了。",
+        exits: [
+            { dir: "向西探索", target: "r_npc2" }, 
+            { dir: "向東破解", target: "r_door6" }, 
+            { dir: "向北進發", target: "r_door7" }
+        ]
+    },
+    "r_npc2": { name: "暗網交易點", type: "npc", isCourt: true, story: "黑客：『司法母體的語言矩陣快把我逼瘋了。幫我破解挑戰，藥水給你。』", onClear: "r_hall4" },
+    "r_door6": { 
+        name: "證據庫閘門", type: "lock", reqItem: "⚖️", isCourt: true, 
+        story: "【量子密碼門】\n提示：『請提交足以推翻判決的翻案證據。』", 
+        onUnlock: "r_q9", onFail: "r_hall4" 
+    },
+    "r_q9": { 
+        name: "證據庫", type: "quiz", qIdx: 9, isCourt: true, story: "【系統紀錄檔 #9】你怒斥：『這只是將罪惡延期的謊言！』",
+        q: "【替代死刑】王達成被判緩刑，沒有立刻接受「機器人代死刑」的原因？", qType: "single",
+        opts: [{id:"A",text:"自首減刑"},{id:"B",text:"慈善家的呼籲"},{id:"C",text:"腦部被改造"},{id:"D",text:"王朝明的原諒"}], ans: "C", rewardItem: "✒️", onClear: "r_hall4"
+    },
+    "r_door7": { 
+        name: "改造艙掃描器", type: "lock", reqItem: "✒️", isCourt: true, 
+        story: "【量子密碼門】\n提示：『需要帶有懦弱與逃避恐懼印記的簽名物件啟動。』", 
+        onUnlock: "r_q10", onFail: "r_hall4" 
+    },
+    "r_q10": { 
+        name: "改造艙", type: "quiz", qIdx: 10, isCourt: true, story: "【系統紀錄檔 #10】你輕嘆：『因為怨恨，是比囚籠更可怕的鋼鐵。』",
+        q: "【替代死刑】王朝明自願接受腦部改造的原因？（複選）", qType: "multi",
+        opts: [{id:"A",text:"內心無法克制對王達成的憎恨"},{id:"B",text:"對二十年的冤刑怨氣未消"},{id:"C",text:"一直產生謀殺王達成的念頭"},{id:"D",text:"良心受到責備無法自制"},{id:"E",text:"有關當局的強力要求"}], ans: ["A","B","C","D"], rewardItem: "💉", givesPotion: true, onClear: "r_combine2"
+    },
+    "r_combine2": { 
+        name: "核心控制閥", type: "combine", target: ['💧', '💉'], resIcon: '🕊️', resName: '平靜空無代碼', isCourt: true,
+        story: "【警告】中央核心充滿王朝明的怨氣。必須調和『極致的悲傷』與『抹除機制』，方能開啟大門！", onUnlock: "r_q11"
+    },
+    "r_q11": { 
+        name: "終局防線", type: "quiz", qIdx: 11, isCourt: true, story: "【核心開啟】機器虛影：『抹去恨與惡，難道不是完美的正直？人類，說服我！』",
+        q: "【替代死刑】你認為王朝明與王達成，誰更正直？為什麼？", qType: "short", minW: 20,
+        rewardItem: "✨", onClear: "r_end",
+        hints: [
+            "💡 階段一：這題絕對沒有標準答案！要判斷誰比較「正直」，你可以先決定要用哪個「時間點」來當作標準：你要看他們「腦部改造前」的真實行為？還是看他們「改造後」做出的選擇？",
+            "💡 階段二：如果你選「王朝明」：他白白坐了二十年冤獄，心裡充滿恨意、想報仇是非常正常的人性。但他最後發現自己快被仇恨吞噬時，主動要求改造腦部來消除殺意。他面對自己心中的惡的方式，算不算一種正直呢？",
+            "💡 階段三：如果你選「王達成」：他陷害自己的結拜兄弟，但在腦部改造後，變成慈善家？你認為這算是「教化」有成嗎？我們看一個人是否正直，要看他被教育之前，還是被教育之後呢？寫下你的判斷標準吧！"
+        ]
+    },
+    "r_end": { name: "自由之門", type: "end" }
+};
+
+const mapLayoutOrder = [
+    "r_start", "r_hall1", "r_author1", "r_mad1",
+    "r_door1", "r_q2", "r_hall2", "r_npc1",
+    "r_pwd1", "r_q3", "r_door2", "r_q4",
+    "r_door3", "r_q5", "r_combine1", "r_q6",
+    "r_hall3", "r_scifi_lib", "r_door4", "r_q7", 
+    "r_door5", "r_q8", "r_combine_evidence", "r_hall4", 
+    "r_npc2", "r_door6", "r_q9", "r_door7", 
+    "r_q10", "r_combine2", "r_q11", "r_end"
+];
+
+let currentRoom = ""; let studentId = ""; 
+let itemCollection = []; let potions = 0; let visitedNodes = new Set();
+let currentSortOrder = []; 
+let currentAuthorLine = 0; let activeCombineSlot = null; let combineSelected = [null, null];
+
+// 機制追蹤變數
+let roomHintsProgress = {}; 
+let npcVisits = {};         
+let currentNpcQuestions = []; 
+let currentNpcIndex = 0;
+let chessQ1Solved = false;  
+let chessQ2Solved = false;  
+let chessQs = []; // 西洋棋的兩題隨機題
+let inspectingItem = "";
+
+// ================= 全息地圖更新系統 =================
+function updateHologramMap() {
+    const grid = document.getElementById('dynamic-map-grid');
+    if (!grid) return;
+    grid.innerHTML = "";
+
+    mapLayoutOrder.forEach(id => {
+        if (!rooms[id]) return;
+        let cell = document.createElement('div');
+        
+        if (id === currentRoom) {
+            cell.className = "map-cell current";
+            cell.innerText = rooms[id].name;
+            cell.onclick = () => { playClick(); };
+        } else if (visitedNodes.has(id)) {
+            cell.className = "map-cell unlocked";
+            cell.innerText = rooms[id].name;
+            cell.onclick = () => {
+                playWarp();
+                renderEngine(id);
+            };
+        } else {
+            cell.className = "map-cell";
+            cell.innerText = "???";
+        }
+        grid.appendChild(cell);
+    });
+}
+
+// ================= 核心渲染引擎 =================
+function renderEngine(roomId) {
+    try {
+        if (!rooms[roomId]) return; currentRoom = roomId; const room = rooms[roomId]; visitedNodes.add(roomId);
+        document.getElementById('current-location').innerText = `📍 目前位置：【${room.name}】`;
+        
+        document.body.className = room.isCourt ? "bg-court" : (room.type === "end" ? "bg-ending" : "");
+        const contentDiv = document.getElementById('game-content'); let html = "";
+
+        updateHologramMap();
+
+        if (room.type === "nav") {
+            playFootsteps();
+            html += `<h2 style="text-align:center; color:var(--accent-color);">🗺️ 區域探索導航</h2>`;
+            html += `<div class="story-text" style="text-align:center; font-style:italic;">${room.story}</div>`;
+            html += `<div class="doors-container">`;
+            room.exits.forEach(ex => {
+                let isTargetOpened = visitedNodes.has(ex.target);
+                let tName = isTargetOpened ? rooms[ex.target].name : "未知的區域";
+                let tClass = isTargetOpened ? "door-name" : "door-name door-unknown";
+                html += `
+                    <div class="door-card" onclick="renderEngine('${ex.target}')">
+                        <div class="door-dir">🚪 ${ex.dir}</div>
+                        <div class="${tClass}">${tName}</div>
+                    </div>`;
+            });
+            html += `</div>`;
+        } 
+        else if (room.type === "flavor") {
+            playFootsteps();
+            html = `<div class="story-box" style="border-color:#ffcc00; color:#ffcc00;">【探索紀錄】</div>
+                    <div class="story-text">${room.story}</div>
+                    <button type="button" class="action-btn" onclick="renderEngine('${room.onClear}')">探索完畢，返回樞紐</button>`;
+        }
+        else if (room.type === "author") {
+            playFootsteps(); currentAuthorLine = 0;
+            html = `<div class="story-box" style="border-color:#00f0ff;">【讀取隱藏資料庫】</div>
+                    <div class="story-text">${room.story}</div>
+                    <div class="quiz-card" id="author-text-container" style="color:var(--accent-color); font-weight:bold; line-height:2;"></div>
+                    <button type="button" id="author-next-btn" class="action-btn" onclick="showNextAuthorLine()">讀取下一段資料</button>
+                    <button type="button" id="author-leave-btn" class="action-btn hidden" style="border-color:var(--success-color); color:var(--success-color);" onclick="renderEngine('${room.onClear}')">資料讀取完畢，返回上一層</button>`;
+        }
+        else if (room.type === "npc") {
+            playTypingSound(); 
+            let visits = npcVisits[roomId] || 0;
+            let requiredQ = (visits === 0) ? 1 : 5;
+            
+            let pool = [...trapDatabase]; shuffleArray(pool);
+            currentNpcQuestions = pool.slice(0, requiredQ);
+            currentNpcIndex = 0;
+            
+            html = `<div class="story-box" style="border-color:#ff0055; color:#ffbbcc;">【遭遇前人解謎者】</div>
+                    <div class="story-text">${room.story}</div>
+                    <div class="quiz-card" style="border-color: #ff0055;">
+                        <div class="type-badge" style="color: #ffcc00; border-color: #ffcc00; background: rgba(255,204,0,0.15);">⚡ 解謎交易 (連續答對 ${requiredQ} 題可得藥水)</div>
+                        <div id="npc-quiz-area"></div>
+                        <div id="npc-msg" class="message"></div>
+                        <button type="button" id="npc-leave-btn" class="action-btn hidden" onclick="renderEngine('${room.onClear}')">離開此地</button>
+                    </div>`;
+            contentDiv.innerHTML = html; contentDiv.classList.remove('hidden');
+            renderNpcQuestion(roomId);
+            return; 
+        }
+        else if (room.type === "password") {
+            playTypingSound();
+            html = `<h2 style="color:var(--item-color); text-align:center;">${room.name}</h2>
+                    <div class="story-text" style="border-color:var(--item-color); text-align:center;">${room.story}</div>
+                    <div class="quiz-card" style="text-align:center;">
+                        <input type="text" id="pwd-input" class="text-input" placeholder="輸入解鎖代碼..." style="width:60%; margin-bottom:20px;">
+                        <button type="button" class="action-btn" onclick="checkPassword('${roomId}')">驗證密碼</button>
+                        <div id="pwd-msg" class="message"></div>
+                        <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall2'}')">返回樞紐</button>
+                    </div>`;
+        }
+        else if (room.type === "lock") {
+            playTypingSound();
+            html = `<h2 style="color:var(--item-color); text-align:center;">${room.name}</h2>
+                    <div class="story-text" style="border-color:var(--item-color); text-align:center; white-space:pre-wrap;">${room.story}</div>
+                    <div style="color:#8b949e; margin-bottom:20px; font-weight:bold; font-size:16px; text-align:center;">
+                        👆 檢測啟動：點擊上方背包注入道具 (點錯道具可查看說明) 👆
+                    </div>
+                    <div id="lock-msg" class="message"></div>
+                    <button type="button" class="action-btn" style="margin-top:15px; border-color:var(--sub-text); color:var(--sub-text);" onclick="renderEngine('${room.onFail || 'r_hall1'}')">放棄解鎖，返回</button>`;
+        }
+        else if (room.type === "combine") {
+            activeCombineSlot = null; combineSelected = [null, null]; playTypingSound();
+            html = `<h2 style="color:#ff0055; text-align:center;">${room.name}</h2>
+                    <div class="story-text" style="border-color:#ff0055; text-align:center; white-space:pre-wrap;">${room.story}</div>
+                    <div style="font-size:14px; color:var(--sub-text); margin-bottom:15px; font-weight:bold; text-align:center;">
+                        💡 點擊下方凹槽選定後，再點擊背包道具放入。<br>(若未選定凹槽，點擊道具可查看說明)
+                    </div>
+                    <div class="combine-container">
+                        <div class="combine-slot" id="slot-1" onclick="selectCombineSlot(1)"><span style="font-size:16px;">點擊選定<br>凹槽 1</span></div>
+                        <div style="font-size:30px; color:#ff0055; align-self:center;">+</div>
+                        <div class="combine-slot" id="slot-2" onclick="selectCombineSlot(2)"><span style="font-size:16px;">點擊選定<br>凹槽 2</span></div>
+                    </div>
+                    <button type="button" class="action-btn" style="border-color:#ff0055; color:#ff0055; margin-top:20px;" onclick="attemptCombine('${roomId}')">啟動量子融合</button>
+                    <div id="combine-msg" class="message"></div>`;
+        }
+        else if (room.type === "quiz") {
+            playTypingSound();
+            let progress = roomHintsProgress[roomId] || 0;
+            let showPotionBtn = (room.hints && potions > 0 && progress < room.hints.length) ? 'style="display:block;"' : 'style="display:none;"';
+            
+            let preHintsHtml = "";
+            if (room.hints && progress > 0) {
+                for (let i = 0; i < progress; i++) {
+                    preHintsHtml += `<div class="msg-hint">${room.hints[i]}</div>`;
+                }
+            }
+
+            html = `<div class="story-box">${room.story}</div>
+                    <div class="quiz-card">
+                        <div class="question-text">${room.q}</div>
+                        <div id="hint-box" class="${progress > 0 ? '' : 'hidden'}">${preHintsHtml}</div>
+                        <button type="button" id="potion-btn" class="action-btn potion-btn" ${showPotionBtn} onclick="usePotion('${roomId}')">💊 消耗 1 瓶藥水解鎖階段提示</button>
+                        
+                        <div id="interactive-area" style="margin-top:20px;"></div>
+                        <div id="word-count-div" class="word-count hidden" style="text-align: right; font-size: 12px; color: var(--sub-text); margin-top: 5px;">字數：0</div>
+                        <button type="button" class="action-btn" onclick="submitQuiz('${roomId}')">發射解鎖脈衝</button>
+                        <div id="msg-box" class="message" style="color:#ff0055;"></div>
+                    </div>`;
+        }
+        // 🚀 【完美大結局】全螢幕獨立沉浸版
+        else if (room.type === "end") {
+            document.getElementById('status-ui').classList.add('hidden');
+            document.getElementById('map-ui').classList.add('hidden');
+            document.getElementById('main-container').classList.add('ending-fullscreen');
+            
+            if (bgMusicObj) { bgMusicObj.pause(); }
+            playSuccess(); playVictorySequence(); 
+            
+            uploadData(studentId, "通關終點", "成功解放人類世界", "完全通關已達成");
+            
+            let itemsHtml = '';
+            itemCollection.forEach((icon, i) => {
+                let angle = (i / Math.max(itemCollection.length, 1)) * 2 * Math.PI;
+                let startX = Math.round(Math.cos(angle) * 180) + 'px';
+                let startY = Math.round(Math.sin(angle) * 180) + 'px';
+                itemsHtml += `<div class="ending-item" style="--startX: ${startX}; --startY: ${startY}; animation-delay: ${i * 0.2}s;">${icon}</div>`;
+            });
+
+            html = `
+                <div class="ending-items-container">
+                    ${itemsHtml}
+                    <div class="door-wrapper">
+                        <div class="door-frame">
+                            <div class="door-panel door-left"></div>
+                            <div class="door-panel door-right"></div>
+                        </div>
+                    </div>
+                    <div class="god-light"></div>
+                    <div class="flying-dove">🕊️</div>
+                    
+                    <div class="final-text-victory">
+                        <h1 style="font-size: 40px; margin-bottom: 5px; letter-spacing: 10px;">迎 接 黎 明</h1>
+                        <div style="font-size: 18px; font-weight: bold; letter-spacing: 4px;">Welcome to the Free World</div>
+                        <div style="font-size: 14px; margin-top:20px; color:#58a6ff;">反抗者 ${studentId}，任務完美達成。資料已安全覆寫至母體。</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        contentDiv.innerHTML = html; contentDiv.classList.remove('hidden');
+
+        if (room.type === "quiz") {
+            const area = document.getElementById('interactive-area');
+            if (room.qType === "single") {
+                room.opts.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="radio" name="q-choice" value="${opt.id}"><span>${opt.text}</span></label>`; });
+            } else if (room.qType === "multi") {
+                room.opts.forEach(opt => { area.innerHTML += `<label class="option-item" onclick="playClick()"><input type="checkbox" name="q-choice" value="${opt.id}"><span>${opt.text}</span></label>`; });
+            } else if (room.qType === "sort") {
+                currentSortOrder = [...room.opts]; shuffleArray(currentSortOrder); renderSortList();
+            } else {
+                document.getElementById('word-count-div').classList.remove('hidden');
+                area.innerHTML = `<textarea id="short-answer" placeholder="▶️ 注入論點..." oninput="updateWordCount(this)" onclick="playClick()"></textarea>`;
+            }
+        }
+    } catch (error) { alert("系統載入異常，請重新整理！錯誤：" + error.message); }
+}
+
+// === 劇情與 NPC 引擎 ===
+function showNextAuthorLine() {
+    playClick(); const container = document.getElementById('author-text-container');
+    if (currentAuthorLine < authorLines.length) { container.innerHTML += `<div>▌ ${authorLines[currentAuthorLine]}</div>`; currentAuthorLine++; }
+    if (currentAuthorLine >= authorLines.length) { document.getElementById('author-next-btn').classList.add('hidden'); document.getElementById('author-leave-btn').classList.remove('hidden'); }
+}
+
+function renderNpcQuestion(roomId) {
+    let qData = currentNpcQuestions[currentNpcIndex];
+    let opts = [...qData.options]; shuffleArray(opts);
+    let html = `
+        <div class="question-text">進度 (${currentNpcIndex + 1}/${currentNpcQuestions.length})：${qData.q}</div>
+        <div id="npc-opts">
+            <label class="option-item" onclick="playClick()"><input type="radio" name="npc-choice" value="${opts[0].c}"><span>${opts[0].t}</span></label>
+            <label class="option-item" onclick="playClick()"><input type="radio" name="npc-choice" value="${opts[1].c}"><span>${opts[1].t}</span></label>
+        </div>
+        <button type="button" id="npc-btn" class="action-btn" style="border-color: #ff0055; color: #ff0055;" onclick="submitNpc('${roomId}')">確認送出</button>
+    `;
+    document.getElementById('npc-quiz-area').innerHTML = html;
+}
+
+function submitNpc(roomId) {
+    const selected = document.querySelector('input[name="npc-choice"]:checked');
+    if (!selected) { playError(); showMsg('npc-msg', "⚠️ 必須做出選擇！", false); return; }
+    
+    let qData = currentNpcQuestions[currentNpcIndex];
+    let correctAns = qData.options.find(o=>o.c).t;
+
+    if (selected.value === "true") {
+        playSuccess(); currentNpcIndex++;
+        if (currentNpcIndex < currentNpcQuestions.length) {
+            showMsg('npc-msg', `🟢 正確！請準備下一題...`, true);
+            setTimeout(() => { hideMsg('npc-msg'); renderNpcQuestion(roomId); }, 1000);
+        } else {
+            document.getElementById('npc-quiz-area').innerHTML = "";
+            potions++; updateInventoryUI(); 
+            npcVisits[roomId] = (npcVisits[roomId] || 0) + 1; 
+            showMsg('npc-msg', "🎉 全部答對！獲得【🧪 藥水 x 1】", true); 
+            document.getElementById('npc-leave-btn').classList.remove('hidden');
+            uploadData(studentId, `NPC遭遇戰`, "成功", "獲得藥水");
+        }
+    } else {
+        playError();
+        document.getElementById('npc-quiz-area').innerHTML = "";
+        showMsg('npc-msg', `❌ 錯誤！正確答案是「${correctAns}」。對方失望地逃走了...`, false); 
+        document.getElementById('npc-leave-btn').classList.remove('hidden');
+        uploadData(studentId, `NPC遭遇戰`, "失敗", "錯失藥水");
+    }
+}
+
+// === 🚀 物品深度觀察與西洋棋隨機小遊戲 ===
+function inspectItem() { 
+    playSuccess(); 
+    document.getElementById('modal-inspect-btn').classList.add('hidden'); 
+    let textDiv = document.getElementById('modal-inspect-text'); 
+    let info = getItemInfo(inspectingItem);
+    let html = info.inspect;
+
+    if (inspectingItem === '♟️') {
+        if (chessQs.length === 0) {
+            let pool = [...trapDatabase]; shuffleArray(pool);
+            chessQs = pool.slice(0, 2);
+        }
+
+        html += `<div style="margin-top:20px; padding-top:15px; border-top:1px dashed var(--accent-color);">`;
+        html += `<div style="color:var(--item-color); font-size:14px; margin-bottom:15px;">【隱藏機關】你發現棋子底部有兩個微小的邏輯鎖...</div>`;
+        
+        if (!chessQ1Solved) {
+            html += `<button class="action-btn" style="padding:10px; font-size:14px; margin-bottom:10px; width:100%; border-color:var(--item-color); color:var(--item-color);" onclick="startChessQuiz(1)">⚙️ 破解左側邏輯鎖</button>`;
+        } else {
+            html += `<div style="color:var(--success-color); font-size:14px; margin-bottom:10px;">✅ 左側邏輯鎖已破解 (已領取藥水)</div>`;
+        }
+        if (!chessQ2Solved) {
+            html += `<button class="action-btn" style="padding:10px; font-size:14px; width:100%; border-color:var(--item-color); color:var(--item-color);" onclick="startChessQuiz(2)">⚙️ 破解右側邏輯鎖</button>`;
+        } else {
+            html += `<div style="color:var(--success-color); font-size:14px;">✅ 右側邏輯鎖已破解 (已領取藥水)</div>`;
+        }
+        html += `</div>`;
+    }
+
+    textDiv.innerHTML = html; 
+    textDiv.classList.remove('hidden'); 
+}
+
+function startChessQuiz(qNum) {
+    playClick(); let textDiv = document.getElementById('modal-inspect-text');
+    let qData = (qNum === 1) ? chessQs[0] : chessQs[1];
+    let opts = [...qData.options]; shuffleArray(opts);
+
+    let html = `
+        <div style="border-top:1px dashed var(--item-color); padding-top:15px; margin-top:15px;">
+            <div style="color:var(--accent-color); margin-bottom:15px; font-weight:bold; font-size:16px;">🔐 邏輯鎖問題：<br>${qData.q}</div>
+            <label class="option-item" onclick="playClick()"><input type="radio" name="chess-choice" value="${opts[0].c}"><span>${opts[0].t}</span></label>
+            <label class="option-item" onclick="playClick()"><input type="radio" name="chess-choice" value="${opts[1].c}"><span>${opts[1].t}</span></label>
+            <button class="action-btn" style="margin-top:15px; border-color:var(--success-color); color:var(--success-color);" onclick="submitChessQuiz(${qNum}, '${qData.options.find(o=>o.c).t}')">注入邏輯代碼</button>
+            <button class="action-btn" style="margin-top:10px; border-color:var(--sub-text); color:var(--sub-text);" onclick="inspectItem()">取消</button>
+            <div id="chess-quiz-msg" class="message"></div>
+        </div>
+    `;
+    textDiv.innerHTML = html;
+}
+
+function submitChessQuiz(qNum, correctText) {
+    let selected = document.querySelector('input[name="chess-choice"]:checked');
+    if (!selected) { playError(); showMsg('chess-quiz-msg', "⚠️ 必須選擇一個波段輸入！", false); return; }
+
+    if (selected.value === "true") {
+        playSuccess();
+        if (qNum === 1) chessQ1Solved = true;
+        if (qNum === 2) chessQ2Solved = true;
+        potions++; updateInventoryUI();
+        showMsg('chess-quiz-msg', "🟢 邏輯鎖解除！從暗格中掉落了【🧪 藥水 x 1】", true);
+        setTimeout(() => { inspectItem(); }, 2000);
+    } else {
+        playError();
+        showMsg('chess-quiz-msg', `❌ 代碼錯誤！正確答案應為「${correctText}」。鎖頭暫時凍結...`, false);
+        setTimeout(() => { inspectItem(); }, 2500);
+    }
+}
+
+// === API 安全通訊防護網 ===
+async function uploadData(student, stage, answer, status) {
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbxV-dHDhA9klf2KYlrFALxdCX1Id3DfObqG-l-UX0KYNS20ZvBsMVzPJsGn4n8BGcZQGg/exec"; 
+    try {
+        let response = await fetch(webAppUrl, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ student, stage, answer, status, time: new Date().toLocaleString() })
+        });
+        return await response.json();
+    } catch (err) {
+        console.error("後臺資料傳送異常:", err);
+        return { success: true, isPass: true, feedback: "連線異常，系統強制放行。" };
+    }
+}
+
+function checkPassword(roomId) {
+    const val = document.getElementById('pwd-input').value.trim(); const room = rooms[roomId];
+    if (val === room.pwd) { showMsg('pwd-msg', "🟢 密碼正確！通道已解鎖。", true); setTimeout(() => { renderEngine(room.onUnlock); }, 1500); } 
+    else { showMsg('pwd-msg', "❌ 密碼錯誤！", false); playError(); }
+}
+
+// 🚀 【三階段消耗式提示系統】
+function usePotion(roomId) {
+    let room = rooms[roomId];
+    if (!room.hints) return;
+    let progress = roomHintsProgress[roomId] || 0;
+
+    if (potions > 0 && progress < room.hints.length) {
+        playSuccess(); potions--; updateInventoryUI();
+        
+        let hintBox = document.getElementById('hint-box');
+        hintBox.innerHTML += `<div class="msg-hint">${room.hints[progress]}</div>`;
+        hintBox.classList.remove('hidden');
+        
+        roomHintsProgress[roomId] = progress + 1;
+        
+        if (roomHintsProgress[roomId] >= room.hints.length) {
+            document.getElementById('potion-btn').style.display = 'none';
+        }
+    }
+}
+
+async function submitQuiz(roomId) {
+    const room = rooms[roomId]; let isCorrect = false; let ansStr = "";
+    
+    if (room.qType === "single") {
+        const selected = document.querySelector('input[name="q-choice"]:checked'); if (!selected) { playError(); showMsg('msg-box', "⚠️ 未選取選項！", false); return; }
+        ansStr = selected.value; isCorrect = (ansStr === room.ans);
+    } else if (room.type === "multi" || room.qType === "multi") {
+        const checkedBoxes = document.querySelectorAll('input[name="q-choice"]:checked'); const ansArray = Array.from(checkedBoxes).map(cb => cb.value); ansStr = ansArray.join(",");
+        isCorrect = ansArray.length === room.ans.length && ansArray.every(val => room.ans.includes(val));
+    } else if (room.qType === "sort") {
+        const ids = currentSortOrder.map(i => i.id); ansStr = ids.join("➔"); isCorrect = ids.every((val, i) => val === room.ans[i]);
+    } else {
+        const field = document.getElementById('short-answer'); ansStr = field ? field.value.trim() : "";
+        if (ansStr.length < room.minW) { playError(); showMsg('msg-box', `⚠️ 深度不足（需寫滿 ${room.minW} 字）！`, false); return; }
+        isCorrect = true; 
+    }
+
+    if (!isCorrect) {
+        playError(); let errMsg = room.qType === "sort" ? "❌ 【破解失敗】歷史時序排列不正確，請重新調整！" : "❌ 【破解失敗】邏輯不符！";
+        showMsg('msg-box', errMsg, false); 
+        
+        let progress = roomHintsProgress[roomId] || 0;
+        if (room.hints && potions > 0 && progress < room.hints.length) {
+            document.getElementById('potion-btn').style.display = 'block';
+        }
+        uploadData(studentId, `第${room.qIdx}題`, ansStr, "嘗試失敗"); 
+        return;
+    }
+
+    const buttons = document.querySelectorAll('#game-content .quiz-card .action-btn');
+    const submitBtn = buttons[buttons.length - 1];
+
+    if (room.qIdx === 2 || room.qIdx === 11) {
+        if(submitBtn) { submitBtn.innerText = "📡 系統連線中... 母體邏輯判定中..."; submitBtn.disabled = true; submitBtn.style.opacity = "0.5"; }
+        let result = await uploadData(studentId, `第${room.qIdx}題`, ansStr, "等待AI審核");
+        if(submitBtn) { submitBtn.innerText = "發射解鎖脈衝"; submitBtn.disabled = false; submitBtn.style.opacity = "1"; }
+
+        if (result && result.isPass === false) {
+            playError(); showMsg('msg-box', "❌ 【母體駁回】\n" + result.feedback, false);
+            let progress = roomHintsProgress[roomId] || 0;
+            if (room.hints && potions > 0 && progress < room.hints.length) {
+                document.getElementById('potion-btn').style.display = 'block';
+            }
+            return; 
+        }
+    } else {
+        uploadData(studentId, `第${room.qIdx}題`, ansStr, "成功過關"); 
+    }
+
+    showMsg('msg-box', "🟢 【破解成功】取得授權，存取區域獎勵...", true);
+    if(!itemCollection.includes(room.rewardItem)) itemCollection.push(room.rewardItem);
+    if(room.givesPotion) { potions++; } updateInventoryUI(); 
+    setTimeout(() => { showItemReward(roomId); }, 1500);
+}
+
+function showItemReward(roomId) {
+    const room = rooms[roomId]; playSuccess(); const itemInfo = getItemInfo(room.rewardItem);
+    let html = `<div class="item-box" style="margin: 0 auto;"><div class="item-icon">${room.rewardItem}</div><div class="item-title">解鎖道具：【${itemInfo.title}】</div><div class="item-desc">${itemInfo.desc}</div></div>`;
+    if(room.givesPotion) { html += `<div style="color:var(--success-color); font-weight:bold; text-align:center; margin-top:20px; font-size:16px;">🎉 系統額外補給：獲得【🧪 藥水 x 1】</div>`; }
+    html += `<button type="button" class="action-btn" style="margin-top:30px;" onclick="renderEngine('${room.onClear}')">收下道具，繼續探索</button>`;
+    document.getElementById('game-content').innerHTML = html;
+}
+
+// === 背包與融合機制 ===
+function handleInventoryClick(idx) {
+    const rawIcon = itemCollection[idx]; const room = rooms[currentRoom];
+    const cleanStr = (s) => s ? s.replace(/\uFE0F/g, '').trim() : '';
+
+    if (room && room.type === 'lock') {
+        if (cleanStr(rawIcon) === cleanStr(room.reqItem)) {
+            playSuccess(); showMsg('lock-msg', '🟢 物質波段吻合，大門強制開啟！', true);
+            setTimeout(() => { renderEngine(room.onUnlock); }, 1500);
+        } else {
+            playError(); showMsg('lock-msg', '❌ 物質波段不符，大門毫無反應。', false);
+            openInspectModal(rawIcon);
+        }
+    }
+    else if (room && room.type === 'combine') {
+        if (activeCombineSlot) {
+            if (cleanStr(combineSelected[0]) === cleanStr(rawIcon) || cleanStr(combineSelected[1]) === cleanStr(rawIcon)) { 
+                playError(); showMsg('combine-msg', '⚠️ 這個道具已經放入凹槽了！', false); return; 
+            }
+            playClick(); combineSelected[activeCombineSlot - 1] = rawIcon; 
+            let slotElem = document.getElementById('slot-' + activeCombineSlot);
+            slotElem.innerText = rawIcon; slotElem.classList.remove('active-slot'); slotElem.classList.add('filled'); 
+            activeCombineSlot = null; hideMsg('combine-msg');
+        } else { openInspectModal(rawIcon); }
+    } else { openInspectModal(rawIcon); }
+}
+
+function openInspectModal(icon) {
+    inspectingItem = icon; const info = getItemInfo(icon);
+    document.getElementById('modal-icon').innerText = icon;
+    document.getElementById('modal-title').innerText = info.title;
+    document.getElementById('modal-desc').innerText = info.desc;
+    document.getElementById('modal-inspect-text').classList.add('hidden');
+    document.getElementById('modal-inspect-btn').classList.remove('hidden');
+    document.getElementById('item-modal').classList.remove('hidden');
+}
+
+function closeItemModal() { playClick(); document.getElementById('item-modal').classList.add('hidden'); }
+function selectCombineSlot(slotNum) { playClick(); activeCombineSlot = slotNum; document.getElementById('slot-1').classList.remove('active-slot'); document.getElementById('slot-2').classList.remove('active-slot'); document.getElementById('slot-' + slotNum).classList.add('active-slot'); hideMsg('combine-msg'); }
+
+function attemptCombine(roomId) {
+    let room = rooms[roomId]; const cleanStr = (s) => s ? s.replace(/\uFE0F/g, '').trim() : '';
+    let target = room.target.map(cleanStr); let c0 = cleanStr(combineSelected[0]); let c1 = cleanStr(combineSelected[1]);
+
+    if (c0 && c1 && target.includes(c0) && target.includes(c1)) {
+        playSuccess(); showMsg('combine-msg', `🟢 融合成功！生成【${room.resName}】，大門強制開啟！`, true);
+        if(!itemCollection.includes(room.resIcon)) { itemCollection.push(room.resIcon); updateInventoryUI(); } 
+        setTimeout(() => { renderEngine(room.onUnlock); }, 2000);
+    } else {
+        playError(); showMsg('combine-msg', "❌ 融合失敗！物質粒子波段不符，請重新選擇。", false); combineSelected = [null, null];
+        document.getElementById('slot-1').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 1</span>'; document.getElementById('slot-2').innerHTML = '<span style="font-size:16px;">點擊選定<br>凹槽 2</span>';
+        document.getElementById('slot-1').className = "combine-slot"; document.getElementById('slot-2').className = "combine-slot";
+    }
+}
+
+// === 工具模組 ===
+function updateInventoryUI() { let html = ''; itemCollection.forEach((icon, i) => { html += `<span class="inv-item" title="點擊" onclick="handleInventoryClick(${i})">${icon}</span>`; }); document.getElementById('inventory-list').innerHTML = html; document.getElementById('potion-count').innerText = potions; }
+function renderSortList() { const area = document.getElementById('interactive-area'); area.innerHTML = ""; currentSortOrder.forEach((item, index) => { area.innerHTML += `<div class="sort-item"><div class="sort-text">${item.text}</div><div class="sort-btns"><button type="button" class="sort-btn" onclick="playClick(); moveItem(${index}, -1)">▲</button><button type="button" class="sort-btn" onclick="playClick(); moveItem(${index}, 1)">▼</button></div></div>`; }); }
+function moveItem(index, dir) { const target = index + dir; if (target < 0 || target >= currentSortOrder.length) return; [currentSortOrder[index], currentSortOrder[target]] = [currentSortOrder[target], currentSortOrder[index]]; renderSortList(); }
+function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
+function updateWordCount(t) { document.getElementById('word-count-div').innerText = `字數計測：${t.value.length}`; }
+function showMsg(boxId, text, isSuccess) { const box = document.getElementById(boxId); if(box){ box.innerText = text; box.className = isSuccess ? "message msg-success" : "message msg-error"; } if (isSuccess) { playSuccess(); document.body.classList.remove('alarm-active'); } else { playError(); document.body.classList.add('alarm-active'); } }
+function hideMsg(boxId) { const b=document.getElementById(boxId); if(b) b.className = "message hidden"; document.body.classList.remove('alarm-active'); }
+
+function startGame() {
+    initAudio(); playClick(); startIntermittentAmbient(); 
+    if (!bgMusicObj) { bgMusicObj = new Audio("https://dl.dropboxusercontent.com/scl/fi/wsj9d809wijrmemwi4c2m/online-audio-converter.com.mp3?rlkey=b5mtdubtx2wcv08qp764gblsg&st=crdstuwj"); bgMusicObj.loop = true; bgMusicObj.volume = 0.5; }
+    bgMusicObj.play().catch(e => console.log(e));
+    const inputField = document.getElementById('student-id'); if (!inputField) return; studentId = inputField.value.trim();
+    if (!studentId) { playError(); alert("🚨 識別碼未同步！"); return; }
+    document.getElementById('login-section').classList.add('hidden'); document.getElementById('status-ui').classList.remove('hidden'); document.getElementById('map-ui').classList.remove('hidden');
+    updateInventoryUI(); renderEngine("r_start"); 
+}
+</script>
+</body>
+</html>
