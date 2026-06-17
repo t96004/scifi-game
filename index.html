@@ -142,6 +142,7 @@
 <body>
 
 <div class="container" id="main-container">
+    <!-- 頂部狀態列 -->
     <div id="status-ui" class="status-bar hidden">
         <div class="location-badge" id="current-location">📍 系統載入中...</div>
         <div style="display:flex; align-items:center; gap:20px;">
@@ -150,6 +151,7 @@
         </div>
     </div>
 
+    <!-- 登入區塊 -->
     <div id="login-section">
         <h1 id="main-title">SYSTEM OVERRIDE</h1>
         <div class="subtitle" id="sub-title">人類意識覺醒協議 // 核心解碼迷宮</div>
@@ -164,14 +166,17 @@
         </div>
     </div>
 
+    <!-- 動態渲染區塊 -->
     <div id="game-content" class="hidden"></div>
 
+    <!-- 下方動態全息迷宮地圖 -->
     <div id="map-ui" class="hologram-map hidden">
         <div class="map-title">🛰️ 母體全息迷宮儀 (支援歷史節點躍遷探索)</div>
         <div class="map-grid" id="dynamic-map-grid"></div>
     </div>
 </div>
 
+<!-- 道具觀察模態視窗 -->
 <div id="item-modal" class="modal-overlay hidden">
     <div class="item-box">
         <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
@@ -242,7 +247,7 @@ function playVictorySequence() {
     });
 }
 
-// ================= 道具與題庫 (全面整合您的 16 題形音義) =================
+// ================= 道具與題庫 (共 16 題形音義) =================
 const itemDB = {
     '♟️': { title: "破損的西洋棋子", desc: "初代 AI 的運算邏輯，可干擾母體運算。", inspect: "底部刻著細小的文字：『這不是終點，而是開端。』" },
     '💧': { title: "舊時代的眼淚結晶", desc: "含有高濃度的『悲傷與自卑』赫茲。", inspect: "冰冷的結晶中，倒映著深藍電腦初次戰勝人類的年份數字：\n『1997』" },
@@ -266,7 +271,6 @@ function getItemInfo(rawIcon) {
     return { title: "未知晶體", desc: "無法解析的能量聚合體。", inspect: "沒有發現特別之處。" };
 }
 
-// 🎯 完全使用您提供的 11 題字音字形 + 5 題字義，共 16 題
 const trapDatabase = [
     { q: "「偃」旗息鼓的注音是？", options: [{ t: "ㄧㄢˇ", c: true }, { t: "ㄧㄢˋ", c: false }] },
     { q: "「ㄕㄨˋ」起大拇指的國字是？", options: [{ t: "豎", c: true }, { t: "樹", c: false }] },
@@ -301,7 +305,7 @@ const rooms = {
         story: "【系統紀錄檔 #1】機器法官冷笑：『人類記憶充滿混亂，機器邏輯才是永恆。看啊，這就是你們棋王在智慧巨浪前的潰敗史...』",
         q: "【深藍的憂鬱】請依時間排序以下事件：", qType: "sort",
         opts: [{id:"A",text:"深藍電腦打敗世界棋王"},{id:"B",text:"棋王對自己的失敗感到極度悲傷"},{id:"C",text:"電腦科學家王文燦建議棋王安裝腦內晶片"},{id:"D",text:"深藍電腦進步到有人類的外形"},{id:"E",text:"世界棋王打敗深藍電腦"},{id:"F",text:"深藍電腦對自己的失敗感到極度悲傷"},{id:"G",text:"電腦科學家慶祝自己成功了"}], 
-        ans: ["A","B","C","D","E","F","G"], rewardItem: "♟️", givesPotion: false, onClear: "r_hall1" // 讓學生自己去翻棋子拿藥水
+        ans: ["A","B","C","D","E","F","G"], rewardItem: "♟️", givesPotion: false, onClear: "r_hall1"
     },
     "r_hall1": { 
         name: "主機走廊", type: "nav", 
@@ -478,8 +482,9 @@ let currentNpcQuestions = [];
 let currentNpcIndex = 0;
 let chessQ1Solved = false;  
 let chessQ2Solved = false;  
-let chessQs = []; // 西洋棋的兩題隨機題
+let chessQs = []; 
 let inspectingItem = "";
+let authorQuizSolved = false; // 🚀 新增：追蹤作者資料室防護破解狀態
 
 // ================= 全息地圖更新系統 =================
 function updateHologramMap() {
@@ -544,13 +549,21 @@ function renderEngine(roomId) {
                     <div class="story-text">${room.story}</div>
                     <button type="button" class="action-btn" onclick="renderEngine('${room.onClear}')">探索完畢，返回樞紐</button>`;
         }
+        // 🚀 更新：作者資料室新增隱藏解謎機制
         else if (room.type === "author") {
             playFootsteps(); currentAuthorLine = 0;
             html = `<div class="story-box" style="border-color:#00f0ff;">【讀取隱藏資料庫】</div>
                     <div class="story-text">${room.story}</div>
-                    <div class="quiz-card" id="author-text-container" style="color:var(--accent-color); font-weight:bold; line-height:2;"></div>
+                    <div class="quiz-card" id="author-text-container" style="color:var(--accent-color); font-weight:bold; line-height:2; text-align:left;"></div>
                     <button type="button" id="author-next-btn" class="action-btn" onclick="showNextAuthorLine()">讀取下一段資料</button>
-                    <button type="button" id="author-leave-btn" class="action-btn hidden" style="border-color:var(--success-color); color:var(--success-color);" onclick="renderEngine('${room.onClear}')">資料讀取完畢，返回上一層</button>`;
+                    
+                    <div id="author-quiz-section" class="hidden" style="margin-top:20px; border-top:1px dashed var(--accent-color); padding-top:15px;">
+                        <div style="color:var(--item-color); margin-bottom:10px; font-weight:bold;">⚠️ 系統偵測：資料庫底層殘留一道加密防護，是否嘗試破解以獲取補給？</div>
+                        <button type="button" class="action-btn" style="border-color:var(--item-color); color:var(--item-color);" onclick="startAuthorQuiz()">開始破解防護</button>
+                    </div>
+                    <div id="author-quiz-area"></div>
+
+                    <button type="button" id="author-leave-btn" class="action-btn hidden" style="border-color:var(--success-color); color:var(--success-color); margin-top:15px;" onclick="renderEngine('${room.onClear}')">資料讀取完畢，返回上一層</button>`;
         }
         else if (room.type === "npc") {
             playTypingSound(); 
@@ -633,7 +646,7 @@ function renderEngine(roomId) {
                         <div id="msg-box" class="message" style="color:#ff0055;"></div>
                     </div>`;
         }
-        // 🚀 【完美大結局】全螢幕獨立沉浸版
+        // 🚀 【完美大結局】
         else if (room.type === "end") {
             document.getElementById('status-ui').classList.add('hidden');
             document.getElementById('map-ui').classList.add('hidden');
@@ -655,13 +668,16 @@ function renderEngine(roomId) {
             html = `
                 <div class="ending-items-container">
                     ${itemsHtml}
+                    <!-- 科幻鋼鐵大門 -->
                     <div class="door-wrapper">
                         <div class="door-frame">
                             <div class="door-panel door-left"></div>
                             <div class="door-panel door-right"></div>
                         </div>
                     </div>
+                    <!-- 爆發的自由之光 -->
                     <div class="god-light"></div>
+                    <!-- 飛向鏡頭的和平鴿 -->
                     <div class="flying-dove">🕊️</div>
                     
                     <div class="final-text-victory">
@@ -691,13 +707,67 @@ function renderEngine(roomId) {
     } catch (error) { alert("系統載入異常，請重新整理！錯誤：" + error.message); }
 }
 
-// === 劇情與 NPC 引擎 ===
+// === 🚀 劇情與作者資料室解謎機制 ===
 function showNextAuthorLine() {
     playClick(); const container = document.getElementById('author-text-container');
-    if (currentAuthorLine < authorLines.length) { container.innerHTML += `<div>▌ ${authorLines[currentAuthorLine]}</div>`; currentAuthorLine++; }
-    if (currentAuthorLine >= authorLines.length) { document.getElementById('author-next-btn').classList.add('hidden'); document.getElementById('author-leave-btn').classList.remove('hidden'); }
+    if (currentAuthorLine < authorLines.length) { 
+        container.innerHTML += `<div>▌ ${authorLines[currentAuthorLine]}</div>`; 
+        currentAuthorLine++; 
+    }
+    if (currentAuthorLine >= authorLines.length) { 
+        document.getElementById('author-next-btn').classList.add('hidden'); 
+        
+        // 若未解鎖過防護，則顯示破解按鈕；否則直接顯示離開按鈕
+        if (!authorQuizSolved) {
+            document.getElementById('author-quiz-section').classList.remove('hidden');
+        } else {
+            document.getElementById('author-leave-btn').classList.remove('hidden');
+        }
+    }
 }
 
+function startAuthorQuiz() {
+    playClick();
+    document.getElementById('author-quiz-section').classList.add('hidden');
+    
+    let pool = [...trapDatabase]; shuffleArray(pool);
+    let qData = pool[0];
+    let opts = [...qData.options]; shuffleArray(opts);
+
+    let html = `
+        <div style="border:1px solid var(--item-color); padding:15px; border-radius:8px; margin-bottom:15px;">
+            <div style="color:var(--accent-color); margin-bottom:15px; font-weight:bold; font-size:16px;">🔐 終端機提問：<br>${qData.q}</div>
+            <label class="option-item" onclick="playClick()"><input type="radio" name="author-choice" value="${opts[0].c}"><span>${opts[0].t}</span></label>
+            <label class="option-item" onclick="playClick()"><input type="radio" name="author-choice" value="${opts[1].c}"><span>${opts[1].t}</span></label>
+            <button class="action-btn" style="margin-top:15px; border-color:var(--success-color); color:var(--success-color);" onclick="submitAuthorQuiz('${qData.options.find(o=>o.c).t}')">送出解答</button>
+            <div id="author-quiz-msg" class="message"></div>
+        </div>
+    `;
+    document.getElementById('author-quiz-area').innerHTML = html;
+}
+
+function submitAuthorQuiz(correctText) {
+    let selected = document.querySelector('input[name="author-choice"]:checked');
+    if (!selected) { playError(); showMsg('author-quiz-msg', "⚠️ 必須選擇一個答案！", false); return; }
+
+    let btn = document.querySelector('#author-quiz-area .action-btn');
+    if (btn) btn.classList.add('hidden'); // 隱藏提交按鈕
+
+    if (selected.value === "true") {
+        playSuccess();
+        authorQuizSolved = true;
+        potions++; updateInventoryUI();
+        showMsg('author-quiz-msg', "🟢 防護解除！獲得【🧪 藥水 x 1】", true);
+        setTimeout(() => { document.getElementById('author-leave-btn').classList.remove('hidden'); }, 1500);
+    } else {
+        playError();
+        authorQuizSolved = true; // 答錯也視為結束，防止刷藥水
+        showMsg('author-quiz-msg', `❌ 錯誤！正確答案應為「${correctText}」。防護已永久鎖死...`, false);
+        setTimeout(() => { document.getElementById('author-leave-btn').classList.remove('hidden'); }, 2500);
+    }
+}
+
+// === NPC 遞增挑戰引擎 ===
 function renderNpcQuestion(roomId) {
     let qData = currentNpcQuestions[currentNpcIndex];
     let opts = [...qData.options]; shuffleArray(opts);
