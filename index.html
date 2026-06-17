@@ -24,7 +24,7 @@
             --border-color: #4a001a; --neon-shadow: 0 0 20px rgba(255, 0, 85, 0.4); --grid-color: rgba(255, 0, 85, 0.05);
         }
         
-        /* 🚀 修改：確保大結局時不會出現難看的卷軸 */
+        /* 🚀 確保大結局時不會出現難看的卷軸，並隱藏背景網格 */
         body.bg-ending {
             background: #000000 !important; background-image: none !important;
             overflow: hidden !important; 
@@ -32,6 +32,7 @@
         
         .container { max-width: 750px; margin: 20px auto; background: var(--container-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--accent-color); box-shadow: var(--neon-shadow); backdrop-filter: blur(10px); position: relative; transition: all 1s ease; }
         
+        /* 🚀 獨立大結局專用全螢幕樣式 */
         .container.ending-fullscreen {
             max-width: 100% !important; margin: 0 !important; padding: 0 !important;
             background: transparent !important; border: none !important; box-shadow: none !important;
@@ -147,7 +148,6 @@
 <body>
 
 <div class="container" id="main-container">
-    <!-- 頂部狀態列 -->
     <div id="status-ui" class="status-bar hidden">
         <div class="location-badge" id="current-location">📍 系統載入中...</div>
         <div style="display:flex; align-items:center; gap:20px;">
@@ -156,7 +156,6 @@
         </div>
     </div>
 
-    <!-- 登入區塊 -->
     <div id="login-section">
         <h1 id="main-title">SYSTEM OVERRIDE</h1>
         <div class="subtitle" id="sub-title">人類意識覺醒協議 // 核心解碼迷宮</div>
@@ -171,17 +170,14 @@
         </div>
     </div>
 
-    <!-- 動態渲染區塊 -->
     <div id="game-content" class="hidden"></div>
 
-    <!-- 下方動態全息迷宮地圖 -->
     <div id="map-ui" class="hologram-map hidden">
         <div class="map-title">🛰️ 母體全息迷宮儀 (支援歷史節點躍遷探索)</div>
         <div class="map-grid" id="dynamic-map-grid"></div>
     </div>
 </div>
 
-<!-- 道具觀察模態視窗 -->
 <div id="item-modal" class="modal-overlay hidden">
     <div class="item-box">
         <div style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#8b949e;" onclick="closeItemModal()">✖</div>
@@ -252,7 +248,7 @@ function playVictorySequence() {
     });
 }
 
-// ================= 道具與題庫 =================
+// ================= 道具與題庫 (共 16 題形音義) =================
 const itemDB = {
     '♟️': { title: "破損的西洋棋子", desc: "初代 AI 的運算邏輯，可干擾母體運算。", inspect: "底部刻著細小的文字：『這不是終點，而是開端。』" },
     '💧': { title: "舊時代的眼淚結晶", desc: "含有高濃度的『悲傷與自卑』赫茲。", inspect: "冰冷的結晶中，倒映著深藍電腦初次戰勝人類的年份數字：\n『1997』" },
@@ -263,7 +259,7 @@ const itemDB = {
     '📜': { title: "代死刑法案原本", desc: "代表人類荒謬法制的原始文件。", inspect: "法案的邊角被人憤怒地撕碎。" },
     '📼': { title: "真兇的認罪錄影", desc: "證明司法誤判的關鍵證據。", inspect: "影像中的人面無表情，似乎毫無悔意。" },
     '✒️': { title: "腦部改造同意書", desc: "帶有逃避恐懼印記的簽名物件。", inspect: "簽名者：王達成。紙張上還有冷汗的痕跡。" },
-    '💉': { title: "記憶抹除針劑", desc: "抹除機制的終極載體。", inspect: "針筒內流淌著能將記憶化為虛無的發光液體。" },
+    '💉': { title: "記憶抹除針劑", desc: "抹除機制的終極載體。", inspect: "針筒內流淌着能將記憶化為虛無的發光液體。" },
     '⚖️': { title: "翻案證據", desc: "結合了法案漏洞與真兇供詞的絕對證據。", inspect: "天平的兩端，分別刻著『法律』與『人性』。" }
 };
 
@@ -276,7 +272,6 @@ function getItemInfo(rawIcon) {
     return { title: "未知晶體", desc: "無法解析的能量聚合體。", inspect: "沒有發現特別之處。" };
 }
 
-// 🎯 共 16 題字音字形與字義
 const trapDatabase = [
     { q: "「偃」旗息鼓的注音是？", options: [{ t: "ㄧㄢˇ", c: true }, { t: "ㄧㄢˋ", c: false }] },
     { q: "「ㄕㄨˋ」起大拇指的國字是？", options: [{ t: "豎", c: true }, { t: "樹", c: false }] },
@@ -555,7 +550,6 @@ function renderEngine(roomId) {
                     <div class="story-text">${room.story}</div>
                     <button type="button" class="action-btn" onclick="renderEngine('${room.onClear}')">探索完畢，返回樞紐</button>`;
         }
-        // 🚀 修改：作者資料室新增隱藏解謎機制
         else if (room.type === "author") {
             playFootsteps(); currentAuthorLine = 0;
             html = `<div class="story-box" style="border-color:#00f0ff;">【讀取隱藏資料庫】</div>
@@ -672,23 +666,19 @@ function renderEngine(roomId) {
             });
 
             html = `
-                <!-- 立即顯示的系統解鎖文字，填補大門浮現前的空白 -->
                 <div style="position:absolute; top:15%; text-align:center; color:var(--success-color); font-size:20px; font-weight:bold; letter-spacing:5px; animation: fadeOutText 3s forwards; z-index: 50;">
                     [ 核心授權確認・實體鎖定解除 ]
                 </div>
 
                 <div class="ending-items-container">
                     ${itemsHtml}
-                    <!-- 科幻鋼鐵大門 -->
                     <div class="door-wrapper">
                         <div class="door-frame">
                             <div class="door-panel door-left"></div>
                             <div class="door-panel door-right"></div>
                         </div>
                     </div>
-                    <!-- 爆發的自由之光 -->
                     <div class="god-light"></div>
-                    <!-- 飛向鏡頭的和平鴿 -->
                     <div class="flying-dove">🕊️</div>
                     
                     <div class="final-text-victory">
@@ -718,7 +708,7 @@ function renderEngine(roomId) {
     } catch (error) { alert("系統載入異常，請重新整理！錯誤：" + error.message); }
 }
 
-// === 🚀 劇情與作者資料室解謎機制 ===
+// === 劇情與作者資料室解謎機制 ===
 function showNextAuthorLine() {
     playClick(); const container = document.getElementById('author-text-container');
     if (currentAuthorLine < authorLines.length) { 
@@ -728,7 +718,6 @@ function showNextAuthorLine() {
     if (currentAuthorLine >= authorLines.length) { 
         document.getElementById('author-next-btn').classList.add('hidden'); 
         
-        // 若未解鎖過防護，則顯示破解按鈕；否則直接顯示離開按鈕
         if (!authorQuizSolved) {
             document.getElementById('author-quiz-section').classList.remove('hidden');
         } else {
@@ -822,7 +811,7 @@ function submitNpc(roomId) {
     }
 }
 
-// === 🚀 物品深度觀察與西洋棋隨機小遊戲 ===
+// === 物品深度觀察與西洋棋隨機小遊戲 ===
 function inspectItem() { 
     playSuccess(); 
     document.getElementById('modal-inspect-btn').classList.add('hidden'); 
@@ -914,7 +903,7 @@ function checkPassword(roomId) {
     else { showMsg('pwd-msg', "❌ 密碼錯誤！", false); playError(); }
 }
 
-// 🚀 【三階段消耗式提示系統】
+// 🚀 三階段消耗式提示系統
 function usePotion(roomId) {
     let room = rooms[roomId];
     if (!room.hints) return;
